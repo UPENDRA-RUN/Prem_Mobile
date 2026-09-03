@@ -2,16 +2,50 @@
 @tailwind components;
 @tailwind utilities;
 
+/* THREE-TIER DESIGN TOKENS ARCHITECTURE (v1.0.0) */
 :root {
-  --black: #050505;
-  --dark-black: #0a0a0a;
-  --yellow: #ffd000;
-  --gold: #f4b800;
-  --red: #e51b23;
-  --white: #ffffff;
-  --light-gray: #f5f5f5;
-  --gray: #777777;
-  --border: #dedede;
+  /* TIER 1: PRIMITIVE TOKENS */
+  --primitive-color-black-900: #050505;
+  --primitive-color-black-800: #111111;
+  --primitive-color-yellow-500: #FFD400;
+  --primitive-color-yellow-600: #e6be00;
+  --primitive-color-red-600: #E31B23;
+  --primitive-color-red-700: #cc141c;
+  --primitive-color-green-500: #25D366;
+  --primitive-color-slate-50: #F6F6F6;
+  --primitive-color-slate-200: #e2e8f0;
+  --primitive-color-white-100: #ffffff;
+
+  /* TIER 2: SEMANTIC TOKENS */
+  --semantic-color-interactive-primary-default: var(--primitive-color-yellow-500);
+  --semantic-color-interactive-primary-hover: var(--primitive-color-yellow-600);
+  --semantic-color-interactive-primary-text: var(--primitive-color-black-900);
+
+  --semantic-color-interactive-danger-default: var(--primitive-color-red-600);
+  --semantic-color-interactive-danger-hover: var(--primitive-color-red-700);
+
+  --semantic-color-bg-body: var(--primitive-color-slate-50);
+  --semantic-color-bg-surface: var(--primitive-color-white-100);
+  --semantic-color-bg-dark: var(--primitive-color-black-900);
+
+  --semantic-color-text-primary: var(--primitive-color-black-900);
+  --semantic-color-text-inverse: var(--primitive-color-white-100);
+  --semantic-color-text-brand: var(--primitive-color-yellow-500);
+
+  --semantic-color-border-subtle: var(--primitive-color-slate-200);
+  --semantic-color-border-focus: var(--primitive-color-yellow-500);
+
+  /* TIER 3: COMPONENT TOKENS */
+  --component-button-primary-bg: var(--semantic-color-interactive-primary-default);
+  --component-button-primary-text: var(--semantic-color-interactive-primary-text);
+  --component-button-primary-hover-bg: var(--semantic-color-interactive-primary-hover);
+
+  --component-card-bg: var(--semantic-color-bg-surface);
+  --component-card-border: var(--semantic-color-border-subtle);
+  --component-card-border-hover: var(--semantic-color-border-focus);
+
+  --component-badge-discount-bg: var(--primitive-color-red-600);
+  --component-badge-discount-text: var(--primitive-color-white-100);
 }
 
 @layer base {
@@ -22,8 +56,8 @@
   
   body {
     overflow-x: hidden;
-    background-color: var(--white);
-    color: var(--black);
+    background-color: var(--semantic-color-bg-body);
+    color: var(--semantic-color-text-primary);
   }
 }
 
@@ -42,16 +76,16 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #050505;
+  background: var(--primitive-color-black-900);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #ffd000;
+  background: var(--primitive-color-yellow-500);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #f4b800;
+  background: var(--primitive-color-yellow-600);
 }
 
 /* Hide scrollbar utility */
@@ -69,5 +103,5 @@
 }
 
 .glow-yellow {
-  box-shadow: 0 0 25px rgba(255, 208, 0, 0.4);
+  box-shadow: 0 0 25px rgba(255, 208, 0, 0.45);
 }

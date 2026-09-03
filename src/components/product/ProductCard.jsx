@@ -6,9 +6,10 @@ import { useWishlist } from '../../context/WishlistContext';
 import { formatCurrency } from '../../utils/formatters';
 import { openProductWhatsApp } from '../../utils/whatsapp';
 import RatingStars from '../common/RatingStars';
+import HighlightText from '../common/HighlightText';
 import QuickEnquiryModal from './QuickEnquiryModal';
 
-export default function ProductCard({ product }) {
+export default function ProductCard({ product, searchQuery = '' }) {
   const { addToCart } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
   const [isEnquiryModalOpen, setIsEnquiryModalOpen] = useState(false);
@@ -69,7 +70,7 @@ export default function ProductCard({ product }) {
           <div className="space-y-1">
             <div className="flex items-center justify-between gap-1">
               <span className="text-[11px] font-black text-[#E31B23] uppercase tracking-wider">
-                {product.brand}
+                <HighlightText text={product.brand} query={searchQuery} />
               </span>
               <RatingStars rating={product.rating} showText={false} size="sm" />
             </div>
@@ -79,7 +80,7 @@ export default function ProductCard({ product }) {
               className="block group-hover:text-[#E31B23] transition-colors"
             >
               <h3 className="font-bold text-xs sm:text-sm text-[#050505] line-clamp-2 leading-snug h-8 sm:h-9">
-                {product.name}
+                <HighlightText text={product.name} query={searchQuery} />
               </h3>
             </Link>
 

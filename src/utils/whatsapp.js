@@ -24,7 +24,7 @@ Brand: ${product.brand || 'Prem Mobile'}
 Price: ₹${product.price?.toLocaleString('en-IN') || ''}
 Store Tagline: “${storeConfig.tagline}”
 
-${customNote ? `My Note: ${customNote}\n` : ''}Please share availability and store pickup details at Pinto Park, Gwalior.`;
+${customNote ? `${customNote}\n` : ''}Please share availability and store pickup details at Pinto Park, Gwalior.`;
 
   window.open(getWhatsAppUrl(message), '_blank');
 }
@@ -32,27 +32,42 @@ ${customNote ? `My Note: ${customNote}\n` : ''}Please share availability and sto
 /**
  * Open WhatsApp with cart items enquiry
  * @param {Array} cartItems 
- * @param {number} totalAmount 
+ * @param {number} subtotal 
+ * @param {object} appliedPromo 
+ * @param {number} promoDiscount 
+ * @param {number} finalTotal 
  */
-export function openCartWhatsApp(cartItems, totalAmount) {
+export function openCartWhatsApp(cartItems, subtotal, appliedPromo = null, promoDiscount = 0, finalTotal = null) {
   if (!cartItems || cartItems.length === 0) return;
 
+  const totalPayable = finalTotal !== null && finalTotal !== undefined ? finalTotal : subtotal;
+
   const itemList = cartItems
-    .map((item, idx) => `${idx + 1}. *${item.name}* (Qty: ${item.quantity}) - ₹${(item.price * item.quantity).toLocaleString('en-IN')}`)
+    .map((item, idx) => {
+      const variantStr = item.selectedVariants
+        ? ` [${Object.entries(item.selectedVariants).map(([k, v]) => `${k}: ${v}`).join(', ')}]`
+        : '';
+      return `${idx + 1}. *${item.name}*${variantStr} (Qty: ${item.quantity}) - ₹${(item.price * item.quantity).toLocaleString('en-IN')}`;
+    })
     .join('\n');
+
+  const promoLine = appliedPromo && promoDiscount > 0
+    ? `\n*Applied Coupon (${appliedPromo.code}):* -₹${promoDiscount.toLocaleString('en-IN')}`
+    : '';
 
   const message = 
 `Hello Prem Mobile (Gwalior),
-I would like to enquire about the following items from my cart:
+I would like to place an order / enquiry for the following items from my cart:
 
 ${itemList}
 
 -------------------------
-*Total Estimated Amount:* ₹${totalAmount.toLocaleString('en-IN')}
+*Subtotal:* ₹${subtotal.toLocaleString('en-IN')}${promoLine}
+*Total Estimated Amount:* ₹${totalPayable.toLocaleString('en-IN')}
 *Tagline:* “${storeConfig.tagline}”
 -------------------------
 
-Please let me know availability for store pickup or delivery at Pinto Park, Gwalior.`;
+Please confirm item availability and store pickup or delivery options at Pinto Park, Gwalior.`;
 
   window.open(getWhatsAppUrl(message), '_blank');
 }

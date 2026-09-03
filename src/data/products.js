@@ -1,5 +1,5 @@
 export const products = [
-  // --- FIRST 6 FEATURED PRODUCTS (EXACT MATCH WITH REFERENCE SCREENSHOT) ---
+  // --- FIRST 6 FEATURED PRODUCTS ---
   {
     id: 1,
     name: "boAt Airdopes 161",
@@ -23,6 +23,10 @@ export const products = [
       "IPX5 Sweat and Water Resistance",
       "Type-C Quick Charging Port"
     ],
+    variants: {
+      color: ["Pebble Black", "Denim Blue", "Almond Cream"],
+      style: ["Standard Fit", "Sport Wingtips"]
+    },
     availability: "In Stock at Store",
     isFeatured: true,
     isNew: false,
@@ -51,6 +55,9 @@ export const products = [
       "IPX7 Water and Sweat Resistance rating",
       "Magnetic smart earbuds with ergonomic fit"
     ],
+    variants: {
+      color: ["Active Black", "Navy Blue", "Teal Green"]
+    },
     availability: "In Stock at Store",
     isFeatured: true,
     isNew: false,
@@ -79,6 +86,10 @@ export const products = [
       "Heart Rate, SpO2 & Sleep Health Tracking",
       "IP68 Dust, Sweat and Splash Resistance"
     ],
+    variants: {
+      color: ["Charcoal Black", "Deep Blue", "Rose Gold"],
+      strap: ["Silicone Band", "Metal Mesh Strap"]
+    },
     availability: "In Stock at Store",
     isFeatured: true,
     isNew: true,
@@ -107,6 +118,9 @@ export const products = [
       "Instacharge: 10 min charge = 200 min playtime",
       "Ultra-low latency gaming mode"
     ],
+    variants: {
+      color: ["Charcoal Black", "Snow White", "Mint Green"]
+    },
     availability: "In Stock at Store",
     isFeatured: true,
     isNew: false,
@@ -135,6 +149,9 @@ export const products = [
       "Dual Input: Type-C and Micro-USB ports",
       "12-Layer Advanced Circuit Protection"
     ],
+    variants: {
+      color: ["Matte Black", "Sandstone White"]
+    },
     availability: "In Stock at Store",
     isFeatured: true,
     isNew: false,
@@ -163,6 +180,9 @@ export const products = [
       "120 Sports Modes & Health Suite",
       "IP67 Water Resistant metal casing"
     ],
+    variants: {
+      color: ["Black Metal", "Gold Pink", "Dark Green"]
+    },
     availability: "In Stock at Store",
     isFeatured: true,
     isNew: true,
@@ -172,7 +192,7 @@ export const products = [
   // --- SMARTPHONES & OTHER PRODUCTS ---
   {
     id: 7,
-    name: "Realme 12 Pro 5G (8GB/256GB, Submarine Blue)",
+    name: "Realme 12 Pro 5G",
     brand: "Realme",
     category: "Smartphones",
     categorySlug: "smartphones",
@@ -192,6 +212,10 @@ export const products = [
       "Snapdragon 6 Gen 1 High Speed 5G",
       "5000mAh Battery with 67W SuperVOOC Charger"
     ],
+    variants: {
+      color: ["Submarine Blue", "Navigator Beige"],
+      storage: ["8GB / 128GB", "8GB / 256GB", "12GB / 256GB"]
+    },
     availability: "In Stock at Store",
     isFeatured: false,
     isNew: false,
@@ -199,7 +223,7 @@ export const products = [
   },
   {
     id: 8,
-    name: "Redmi Note 13 5G (6GB/128GB, Arctic White)",
+    name: "Redmi Note 13 5G",
     brand: "Xiaomi",
     category: "Smartphones",
     categorySlug: "smartphones",
@@ -219,6 +243,10 @@ export const products = [
       "6.67-inch FHD+ 120Hz AMOLED Screen",
       "33W Fast Turbo Charger with 5000mAh Battery"
     ],
+    variants: {
+      color: ["Arctic White", "Stealth Black", "Prism Gold"],
+      storage: ["6GB / 128GB", "8GB / 256GB"]
+    },
     availability: "In Stock at Store",
     isFeatured: false,
     isNew: true,
@@ -226,7 +254,7 @@ export const products = [
   },
   {
     id: 9,
-    name: "Samsung Galaxy A15 5G (8GB/128GB, Blue Black)",
+    name: "Samsung Galaxy A15 5G",
     brand: "Samsung",
     category: "Smartphones",
     categorySlug: "smartphones",
@@ -246,6 +274,10 @@ export const products = [
       "Octa-Core 5G Processor",
       "5000mAh Long-lasting Battery"
     ],
+    variants: {
+      color: ["Blue Black", "Light Blue", "Personality Yellow"],
+      storage: ["8GB / 128GB", "8GB / 256GB"]
+    },
     availability: "In Stock at Store",
     isFeatured: false,
     isNew: true,
@@ -273,6 +305,9 @@ export const products = [
       "Storage for up to 2000 contacts and 500 SMS",
       "Built-in Bright LED Flashlight"
     ],
+    variants: {
+      color: ["Cyan", "Black", "Red"]
+    },
     availability: "In Stock at Store",
     isFeatured: false,
     isNew: false,
@@ -280,7 +315,7 @@ export const products = [
   },
   {
     id: 11,
-    name: "boAt Bassheads 90C Type-C Wired Earphones",
+    name: "boAt Bassheads 90C Wired Earphones",
     brand: "boAt",
     category: "Earbuds",
     categorySlug: "earbuds",
@@ -293,13 +328,17 @@ export const products = [
     images: [
       "/images/boat-basshead.jpg"
     ],
-    description: "Official Prem Mobile Deal! boAt Bassheads 90C Type-C Wired Earphones with Super Extra Bass, HD in-line mic, and tangle-free cable.",
+    description: "Official Prem Mobile Deal! boAt Bassheads 90C Wired Earphones with Super Extra Bass, HD in-line mic, and tangle-free cable.",
     features: [
       "Type-C & 3.5mm Universal Compatibility",
       "Super Extra Punchy Bass Sound Output",
       "HD Microphone with one-button call control",
       "Comfort fit ergonomic ear tips"
     ],
+    variants: {
+      style: ["Type-C Jack", "3.5mm Audio Jack"],
+      color: ["Raging Red", "Furious Black"]
+    },
     availability: "In Stock at Store",
     isFeatured: false,
     isNew: true,
@@ -327,6 +366,9 @@ export const products = [
       "Automatic Cut-Off for over-temperature protection",
       "Stainless Steel heating plate"
     ],
+    variants: {
+      color: ["Canary Yellow", "Soft Pink", "Mint Blue"]
+    },
     availability: "In Stock at Store",
     isFeatured: false,
     isNew: true,
@@ -354,6 +396,9 @@ export const products = [
       "Heavy-duty elastic breathable harness",
       "Perfect for motorcycle riding and outdoor POV recording"
     ],
+    variants: {
+      style: ["Standard Harness", "Pro Padded Harness"]
+    },
     availability: "In Stock at Store",
     isFeatured: false,
     isNew: true,
@@ -381,6 +426,9 @@ export const products = [
       "Multipurpose personal blender & chopper combo",
       "Food-grade BPA free jars"
     ],
+    variants: {
+      type: ["Cordless Trimmer Set", "Nutri Blender 400W"]
+    },
     availability: "In Stock at Store",
     isFeatured: false,
     isNew: true,
@@ -407,9 +455,95 @@ export const products = [
       "Up to 15 Hours Playback Time",
       "Plush Padded Earcups & Foldable Design"
     ],
+    variants: {
+      color: ["Lush Black", "Hazel Beige", "Aqua Blue"]
+    },
     availability: "In Stock at Store",
     isFeatured: false,
     isNew: false,
     tag: "Best Seller"
+  },
+
+  // --- SUGGESTED COMPLEMENTARY ADD-ONS ---
+  {
+    id: 101,
+    name: "9H UV Curved Tempered Screen Protector",
+    brand: "Prem Care",
+    category: "Accessories",
+    categorySlug: "accessories",
+    price: 199,
+    originalPrice: 499,
+    discount: 60,
+    rating: 4.9,
+    reviewsCount: 520,
+    image: "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?auto=format&fit=crop&w=800&q=80",
+    description: "Ultra-clear scratch-resistant 9H hardness tempered glass with oleophobic coating. Free professional fitting at Pinto Park store!",
+    features: ["Free In-Store Fitting", "9H Scratch Proof", "Oleophobic Anti-Fingerprint"],
+    isAddon: true,
+    availability: "In Stock at Store",
+    tag: "Recommended Add-on"
+  },
+  {
+    id: 102,
+    name: "25W Type-C Super Fast Power Adapter",
+    brand: "Prem Care",
+    category: "Accessories",
+    categorySlug: "accessories",
+    price: 499,
+    originalPrice: 1299,
+    discount: 61,
+    rating: 4.8,
+    reviewsCount: 310,
+    image: "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=800&q=80",
+    description: "Power Delivery (PD 3.0) fast charger for Samsung, iPhone, Xiaomi, and Realme. Overheat & surge protection.",
+    features: ["25W Fast Charge", "PD 3.0 Standard", "Multi-layer Safety"],
+    variants: {
+      color: ["Pure White", "Jet Black"]
+    },
+    isAddon: true,
+    availability: "In Stock at Store",
+    tag: "Recommended Add-on"
+  },
+  {
+    id: 103,
+    name: "Shockproof Anti-Drop Armor Case",
+    brand: "Prem Care",
+    category: "Accessories",
+    categorySlug: "accessories",
+    price: 249,
+    originalPrice: 599,
+    discount: 58,
+    rating: 4.7,
+    reviewsCount: 280,
+    image: "https://images.unsplash.com/photo-1541877944-ac82a091518a?auto=format&fit=crop&w=800&q=80",
+    description: "Military-grade drop test certified protective case with air-cushioned corners and tactile buttons.",
+    features: ["Air Cushion Protection", "Raised Camera Lip", "Non-slip Grip"],
+    variants: {
+      color: ["Smokey Black", "Clear Transparent", "Navy Matte"]
+    },
+    isAddon: true,
+    availability: "In Stock at Store",
+    tag: "Recommended Add-on"
+  },
+  {
+    id: 104,
+    name: "Braided 65W Fast Charging Type-C Cable (1.5m)",
+    brand: "Prem Care",
+    category: "Accessories",
+    categorySlug: "accessories",
+    price: 179,
+    originalPrice: 399,
+    discount: 55,
+    rating: 4.9,
+    reviewsCount: 190,
+    image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80",
+    description: "Heavy-duty nylon braided fast charging cable supporting up to 65W power output and 480Mbps high-speed data sync.",
+    features: ["Nylon Braided Tough Cable", "65W High Power Output", "480Mbps Data Sync"],
+    variants: {
+      color: ["Black Braided", "Red Braided"]
+    },
+    isAddon: true,
+    availability: "In Stock at Store",
+    tag: "Recommended Add-on"
   }
 ];

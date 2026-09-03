@@ -3,6 +3,7 @@ import { Link, NavLink, useLocation } from 'react-router-dom';
 import { storeConfig } from '../../config/store';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
+import { formatCurrency } from '../../utils/formatters';
 import {
   Search,
   Heart,
@@ -11,7 +12,9 @@ import {
   Menu,
   X,
   Smartphone,
-  ChevronDown
+  ChevronDown,
+  User,
+  Settings
 } from 'lucide-react';
 import SearchModal from './SearchModal';
 
@@ -21,7 +24,7 @@ export default function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
   
-  const { totalItems, setIsCartDrawerOpen } = useCart();
+  const { totalItems, subtotal, setIsCartDrawerOpen } = useCart();
   const { wishlistCount } = useWishlist();
   const location = useLocation();
 
@@ -65,7 +68,7 @@ export default function Navbar() {
           </Link>
 
           {/* CENTER: DESKTOP NAVIGATION */}
-          <nav className="hidden lg:flex items-center gap-7 xl:gap-8">
+          <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
             {/* HOME */}
             <NavLink
               to="/"
@@ -176,7 +179,7 @@ export default function Navbar() {
                     to="/categories"
                     className="block px-4 py-2 text-xs font-black text-[#e51b23] hover:bg-slate-50"
                   >
-                    View All 12 Categories →
+                    View All Categories →
                   </Link>
                 </div>
               )}
@@ -196,6 +199,27 @@ export default function Navbar() {
               {({ isActive }) => (
                 <>
                   <span>OFFERS</span>
+                  {isActive && (
+                    <span className="absolute -bottom-2 w-full h-[3px] bg-[#e51b23] rounded-full" />
+                  )}
+                </>
+              )}
+            </NavLink>
+
+            {/* FAQ */}
+            <NavLink
+              to="/faq"
+              className={({ isActive }) =>
+                `relative text-[14.5px] font-extrabold tracking-wide uppercase transition-colors py-2 flex flex-col items-center ${
+                  isActive
+                    ? 'text-[#e51b23]'
+                    : 'text-[#050505] hover:text-[#e51b23]'
+                }`
+              }
+            >
+              {({ isActive }) => (
+                <>
+                  <span>FAQ</span>
                   {isActive && (
                     <span className="absolute -bottom-2 w-full h-[3px] bg-[#e51b23] rounded-full" />
                   )}
@@ -246,10 +270,10 @@ export default function Navbar() {
             </NavLink>
           </nav>
 
-          {/* RIGHT: SEARCH, WISHLIST, CART, SHOP NOW */}
-          <div className="flex items-center gap-5 sm:gap-6">
+          {/* RIGHT: SEARCH, USER ACCOUNT / LOGIN, WISHLIST, CART & LIVE TOTAL, SHOP NOW */}
+          <div className="flex items-center gap-4 sm:gap-5">
             
-            {/* Search (Icon on top, label below) */}
+            {/* Search */}
             <button
               onClick={() => setIsSearchOpen(true)}
               className="flex flex-col items-center justify-center text-[#050505] hover:text-[#e51b23] transition-colors p-1"
@@ -261,7 +285,19 @@ export default function Navbar() {
               </span>
             </button>
 
-            {/* Wishlist (Icon with red 0 badge + label below) */}
+            {/* User Account Settings & Login */}
+            <Link
+              to="/account"
+              className="flex flex-col items-center justify-center text-[#050505] hover:text-[#e51b23] transition-colors p-1"
+              title="My Account Settings"
+            >
+              <User className="w-5 h-5 stroke-[2.2]" />
+              <span className="text-[10px] font-bold text-[#050505] mt-0.5 leading-none">
+                Account
+              </span>
+            </Link>
+
+            {/* Wishlist */}
             <Link
               to="/wishlist"
               className="flex flex-col items-center justify-center text-[#050505] hover:text-[#e51b23] transition-colors p-1 relative"
@@ -278,21 +314,33 @@ export default function Navbar() {
               </span>
             </Link>
 
-            {/* Cart (Icon with red 0 badge + label below) */}
+            {/* Cart with Live Item Count & Price Total Badge */}
             <button
               onClick={() => setIsCartDrawerOpen(true)}
-              className="flex flex-col items-center justify-center text-[#050505] hover:text-[#e51b23] transition-colors p-1 relative"
-              title="Cart"
+              className="flex items-center gap-2 p-1.5 rounded-2xl hover:bg-slate-100 transition-colors relative text-[#050505]"
+              title="Cart View & Checkout"
             >
-              <div className="relative">
-                <ShoppingCart className="w-5 h-5 stroke-[2.2]" />
-                <span className="absolute -top-1.5 -right-2 w-4 h-4 rounded-full bg-[#e51b23] text-white text-[9px] font-black flex items-center justify-center shadow-xs">
-                  {totalItems}
+              <div className="relative flex flex-col items-center">
+                <div className="relative">
+                  <ShoppingCart className="w-5 h-5 stroke-[2.2] text-[#050505]" />
+                  <span className="absolute -top-1.5 -right-2.5 w-4.5 h-4.5 rounded-full bg-[#e51b23] text-white text-[9px] font-black flex items-center justify-center shadow-xs animate-bounce">
+                    {totalItems}
+                  </span>
+                </div>
+                <span className="text-[10px] font-bold text-[#050505] mt-0.5 leading-none">
+                  Cart
                 </span>
               </div>
-              <span className="text-[10px] font-bold text-[#050505] mt-0.5 leading-none">
-                Cart
-              </span>
+
+              {/* LIVE TOTAL PRICE PREVIEW BADGE */}
+              {totalItems > 0 && (
+                <div className="hidden xl:flex flex-col text-left pl-1 border-l border-slate-300">
+                  <span className="text-[9px] font-black text-[#e51b23] uppercase">Total</span>
+                  <span className="text-xs font-black font-display text-[#050505]">
+                    {formatCurrency(subtotal)}
+                  </span>
+                </div>
+              )}
             </button>
 
             {/* Large Yellow SHOP NOW Button */}
@@ -300,8 +348,8 @@ export default function Navbar() {
               to="/shop"
               className="hidden sm:inline-flex items-center justify-center gap-2 bg-[#ffd000] hover:bg-[#ffcb05] text-[#050505] font-black text-[13px] uppercase tracking-wider transition-all duration-200 shadow-sm"
               style={{
-                width: '160px',
-                height: '46px',
+                width: '140px',
+                height: '44px',
                 borderRadius: '8px'
               }}
             >
@@ -341,7 +389,9 @@ export default function Navbar() {
               <Link to="/shop" className="px-4 py-2.5 rounded-xl bg-slate-50 text-xs font-bold text-[#050505]">SHOP</Link>
               <Link to="/categories" className="px-4 py-2.5 rounded-xl bg-slate-50 text-xs font-bold text-[#050505]">CATEGORIES</Link>
               <Link to="/offers" className="px-4 py-2.5 rounded-xl bg-red-50 text-xs font-bold text-[#e51b23]">OFFERS 🔥</Link>
-              <Link to="/about" className="px-4 py-2.5 rounded-xl bg-slate-50 text-xs font-bold text-[#050505]">ABOUT US</Link>
+              <Link to="/faq" className="px-4 py-2.5 rounded-xl bg-slate-50 text-xs font-bold text-[#050505]">FAQ & HELP</Link>
+              <Link to="/account" className="px-4 py-2.5 rounded-xl bg-[#050505] text-xs font-bold text-[#ffd000]">ACCOUNT SETTINGS</Link>
+              <Link to="/login" className="px-4 py-2.5 rounded-xl bg-slate-50 text-xs font-bold text-[#050505]">SIGN IN / LOGIN</Link>
               <Link to="/contact" className="px-4 py-2.5 rounded-xl bg-slate-50 text-xs font-bold text-[#050505]">CONTACT</Link>
             </div>
 

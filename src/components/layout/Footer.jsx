@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { storeConfig } from '../../config/store';
+import { openGeneralWhatsApp } from '../../utils/whatsapp';
+import LegalModal from '../common/LegalModal';
+import SupportModal from '../common/SupportModal';
 import {
   Smartphone,
   MapPin,
@@ -9,175 +12,411 @@ import {
   MessageCircle,
   ExternalLink,
   Instagram,
-  Facebook
+  Facebook,
+  Youtube,
+  ArrowUp,
+  ShieldCheck,
+  Lock,
+  FileCheck,
+  Sparkles,
+  Download,
+  CreditCard,
+  CheckCircle2,
+  HelpCircle,
+  Layers,
+  Layout,
+  Loader2,
+  Edit3,
+  Sliders,
+  MousePointer,
+  Bell
 } from 'lucide-react';
-import { openGeneralWhatsApp } from '../../utils/whatsapp';
+
+const PARTNER_BRANDS = [
+  { name: 'boAt', tag: 'Official Partner' },
+  { name: 'Xiaomi', tag: 'Authorized Store' },
+  { name: 'Realme', tag: 'Genuine Partner' },
+  { name: 'Samsung', tag: 'Store Partner' },
+  { name: 'Noise', tag: 'Official Dealer' },
+  { name: 'Fire-Boltt', tag: 'Official Dealer' },
+  { name: 'AGARO', tag: 'Lifestyle Tech' }
+];
 
 export default function Footer() {
+  const [legalModalType, setLegalModalType] = useState(null);
+  const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
-    <footer className="bg-[#050505] text-white pt-14 pb-10 border-t-2 border-[#ffd000]">
-      <div className="max-w-[1500px] mx-auto px-6">
+    <>
+      <footer className="w-full bg-[#050505] text-white pt-14 pb-10 border-t-4 border-[#FFD400] relative font-sans">
         
-        {/* MAIN FOOTER GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 pb-10 border-b border-[#222222]">
+        {/* BACK TO TOP FLOATING / CORNER BUTTON */}
+        <div className="absolute -top-6 right-6 sm:right-12 z-10">
+          <button
+            onClick={scrollToTop}
+            className="p-3.5 rounded-2xl bg-[#FFD400] hover:bg-[#e6be00] text-[#050505] font-black shadow-xl flex items-center gap-2 transition-transform hover:scale-110"
+            title="Scroll back to top of page"
+          >
+            <ArrowUp className="w-5 h-5 stroke-[2.5]" />
+            <span className="text-xs uppercase tracking-wider hidden sm:inline">TOP</span>
+          </button>
+        </div>
+
+        <div className="max-w-[1500px] mx-auto px-6 space-y-12">
           
-          {/* Brand Info (2 cols) */}
-          <div className="lg:col-span-2 space-y-4">
-            <Link to="/" className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-[#111111] text-[#ffd000] flex items-center justify-center border border-[#ffd000]/40">
-                <Smartphone className="w-5 h-5 text-[#ffd000]" />
-              </div>
-              <div className="font-display font-black text-2xl tracking-tight leading-none">
-                <span className="text-[#e51b23]">PREM</span>{' '}
-                <span className="text-white">MOBILE</span>
-              </div>
-            </Link>
-
-            <div className="inline-block px-3 py-1 rounded-md bg-[#ffd000] text-[#050505] text-xs font-black uppercase tracking-wider">
-              {storeConfig.tagline}
+          {/* OFFICIAL BRAND PARTNERS STRIP */}
+          <div className="pb-8 border-b border-[#222222] space-y-3">
+            <div className="flex items-center justify-between text-xs text-slate-400 font-bold uppercase tracking-wider">
+              <span className="flex items-center gap-1.5 text-[#FFD400]">
+                <Sparkles className="w-3.5 h-3.5 fill-[#FFD400]" />
+                <span>OFFICIAL BRAND PARTNERS & AUTHORIZED DEALERSHIP IN GWALIOR</span>
+              </span>
+              <span className="hidden sm:inline text-slate-500">100% Original Warranted Products</span>
             </div>
 
-            <p className="text-xs sm:text-sm text-slate-400 leading-relaxed pr-4">
-              Your trusted local mobile and electronics store in Gwalior. Explore genuine smartphones, true wireless earbuds, power banks, fast chargers, egg boilers, and daily tech accessories at Pinto Park.
-            </p>
-
-            <div className="pt-1 flex flex-wrap gap-2.5">
-              <button
-                onClick={() => openGeneralWhatsApp('Footer WhatsApp Link')}
-                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-[#25D366] hover:bg-[#20ba5a] text-white text-xs font-black uppercase tracking-wider shadow-sm transition-colors"
-              >
-                <MessageCircle className="w-3.5 h-3.5 fill-white" />
-                <span>WhatsApp: {storeConfig.displayPhone}</span>
-              </button>
-
-              <a
-                href={storeConfig.mapsUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#111111] hover:bg-[#1a1a1a] text-[#ffd000] text-xs font-bold border border-[#ffd000]/40 transition-colors"
-              >
-                <MapPin className="w-3.5 h-3.5" />
-                <span>Google Maps</span>
-              </a>
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+              {PARTNER_BRANDS.map((b) => (
+                <div
+                  key={b.name}
+                  className="px-4 py-2 rounded-2xl bg-[#111111] border border-[#222222] hover:border-[#FFD400]/50 transition-colors flex items-center gap-2 text-xs"
+                >
+                  <span className="font-display font-black text-white text-sm">{b.name}</span>
+                  <span className="text-[9px] font-bold text-slate-400 uppercase bg-black/50 px-1.5 py-0.5 rounded">
+                    {b.tag}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div>
-            <h4 className="font-display font-black text-white text-xs uppercase tracking-wider mb-3 text-[#ffd000] border-b border-[#222222] pb-1.5">
-              QUICK LINKS
-            </h4>
-            <ul className="space-y-2 text-xs sm:text-sm text-slate-400 font-medium">
-              <li>
-                <Link to="/" className="hover:text-[#ffd000] transition-colors">Home</Link>
-              </li>
-              <li>
-                <Link to="/shop" className="hover:text-[#ffd000] transition-colors">Shop</Link>
-              </li>
-              <li>
-                <Link to="/categories" className="hover:text-[#ffd000] transition-colors">Categories</Link>
-              </li>
-              <li>
-                <Link to="/offers" className="hover:text-[#ffd000] text-[#e51b23] font-bold transition-colors">Offers</Link>
-              </li>
-              <li>
-                <Link to="/about" className="hover:text-[#ffd000] transition-colors">About Us</Link>
-              </li>
-              <li>
-                <Link to="/contact" className="hover:text-[#ffd000] transition-colors">Contact</Link>
-              </li>
-            </ul>
-          </div>
+          {/* MAIN 5-COLUMN FOOTER GRID */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 pb-10 border-b border-[#222222]">
+            
+            {/* Col 1 & 2: Brand Lockup, Tagline & Contact Actions */}
+            <div className="lg:col-span-2 space-y-5">
+              <Link to="/" className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-2xl bg-[#111111] text-[#FFD400] flex items-center justify-center border border-[#FFD400]/40">
+                  <Smartphone className="w-5 h-5 text-[#FFD400]" />
+                </div>
+                <div className="font-display font-black text-2xl sm:text-3xl tracking-tight leading-none">
+                  <span className="text-[#E31B23]">PREM</span>{' '}
+                  <span className="text-white">MOBILE</span>
+                </div>
+              </Link>
 
-          {/* Categories */}
-          <div>
-            <h4 className="font-display font-black text-white text-xs uppercase tracking-wider mb-3 text-[#ffd000] border-b border-[#222222] pb-1.5">
-              CATEGORIES
-            </h4>
-            <ul className="space-y-2 text-xs sm:text-sm text-slate-400 font-medium">
-              <li>
-                <Link to="/shop?category=Smartphones" className="hover:text-[#ffd000] transition-colors">Smartphones</Link>
-              </li>
-              <li>
-                <Link to="/shop?category=Earbuds" className="hover:text-[#ffd000] transition-colors">Earbuds</Link>
-              </li>
-              <li>
-                <Link to="/shop?category=Headphones" className="hover:text-[#ffd000] transition-colors">Headphones</Link>
-              </li>
-              <li>
-                <Link to="/shop?category=Smartwatches" className="hover:text-[#ffd000] transition-colors">Smartwatches</Link>
-              </li>
-              <li>
-                <Link to="/shop?category=Accessories" className="hover:text-[#ffd000] transition-colors">Accessories</Link>
-              </li>
-              <li>
-                <Link to="/shop?category=Gadgets" className="hover:text-[#ffd000] transition-colors">Gadgets</Link>
-              </li>
-            </ul>
-          </div>
+              <div className="inline-block px-3 py-1 rounded-lg bg-[#FFD400] text-[#050505] text-xs font-black uppercase tracking-wider">
+                “{storeConfig.tagline}”
+              </div>
 
-          {/* Contact */}
-          <div className="space-y-3">
+              <p className="text-xs sm:text-sm text-slate-400 leading-relaxed pr-4">
+                Your trusted local mobile & electronics destination at Pinto Park, Gwalior. Explore original 5G smartphones, TWS earbuds, neckbands, smartwatches, power banks, fast chargers, and egg boilers with free screen guard fitting.
+              </p>
+
+              {/* Direct Action Buttons */}
+              <div className="flex flex-wrap gap-2.5 pt-1">
+                <button
+                  onClick={() => openGeneralWhatsApp('Footer Contact')}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white text-xs font-black uppercase tracking-wider shadow-md transition-transform hover:scale-102"
+                >
+                  <MessageCircle className="w-4 h-4 fill-white" />
+                  <span>WhatsApp Store Desk</span>
+                </button>
+
+                <button
+                  onClick={() => setIsSupportModalOpen(true)}
+                  className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#FFD400] hover:bg-[#e6be00] text-[#050505] text-xs font-black uppercase tracking-wider shadow-md transition-transform hover:scale-102"
+                >
+                  <HelpCircle className="w-4 h-4 text-[#050505]" />
+                  <span>Open Support Desk</span>
+                </button>
+              </div>
+
+              {/* Mobile App Download Badges */}
+              <div className="pt-3 space-y-2">
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">
+                  Get The Prem Mobile App (Coming Soon)
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  <div className="px-3 py-1.5 rounded-xl bg-[#111111] border border-[#333333] flex items-center gap-2 text-[11px] text-slate-300">
+                    <Download className="w-3.5 h-3.5 text-[#FFD400]" />
+                    <span>Android APK / Play Store</span>
+                  </div>
+                  <div className="px-3 py-1.5 rounded-xl bg-[#111111] border border-[#333333] flex items-center gap-2 text-[11px] text-slate-300">
+                    <span> Apple iOS App</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Col 3: Quick Links */}
             <div>
-              <h4 className="font-display font-black text-white text-xs uppercase tracking-wider mb-3 text-[#ffd000] border-b border-[#222222] pb-1.5">
-                CONTACT
+              <h4 className="font-display font-black text-white text-xs uppercase tracking-wider mb-4 text-[#FFD400] border-b border-[#222222] pb-2">
+                QUICK NAVIGATION
               </h4>
-              <ul className="space-y-2 text-xs text-slate-400 font-medium">
-                <li className="flex items-center gap-2">
-                  <Phone className="w-3.5 h-3.5 text-[#ffd000]" />
-                  <a href={`tel:${storeConfig.phone}`} className="text-white font-bold hover:text-[#ffd000]">
-                    {storeConfig.displayPhone}
-                  </a>
+              <ul className="space-y-1.5 text-xs sm:text-sm text-slate-400 font-medium">
+                <li>
+                  <Link to="/" className="hover:text-[#FFD400] transition-colors">Home</Link>
                 </li>
-                <li className="flex items-start gap-2">
-                  <MapPin className="w-3.5 h-3.5 text-[#ffd000] flex-shrink-0 mt-0.5" />
-                  <span>{storeConfig.address}</span>
+                <li>
+                  <Link to="/shop" className="hover:text-[#FFD400] transition-colors">All Catalog</Link>
                 </li>
-                <li className="flex items-start gap-2">
-                  <Clock className="w-3.5 h-3.5 text-[#ffd000] flex-shrink-0 mt-0.5" />
-                  <span>{storeConfig.timing}</span>
+                <li>
+                  <Link to="/categories" className="hover:text-[#FFD400] transition-colors">Categories</Link>
+                </li>
+                <li>
+                  <Link to="/offers" className="hover:text-[#FFD400] text-[#E31B23] font-bold transition-colors">Sunday Sale 🔥</Link>
+                </li>
+                <li>
+                  <Link to="/faq" className="hover:text-[#FFD400] text-[#FFD400] font-bold transition-colors">FAQ & Help Center</Link>
+                </li>
+                <li>
+                  <Link to="/design-tokens" className="hover:text-[#FFD400] text-emerald-400 font-bold transition-colors flex items-center gap-1">
+                    <Layers className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Design Tokens</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/skeleton-guide" className="hover:text-[#FFD400] text-amber-400 font-bold transition-colors flex items-center gap-1">
+                    <Layout className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Skeleton System</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/loading-guide" className="hover:text-[#FFD400] text-sky-400 font-bold transition-colors flex items-center gap-1">
+                    <Loader2 className="w-3.5 h-3.5 text-sky-400 animate-spin" />
+                    <span>Loading System</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/input-guide" className="hover:text-[#FFD400] text-indigo-400 font-bold transition-colors flex items-center gap-1">
+                    <Edit3 className="w-3.5 h-3.5 text-indigo-400" />
+                    <span>Input Field System</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/context-menu-guide" className="hover:text-[#FFD400] text-purple-400 font-bold transition-colors flex items-center gap-1">
+                    <Sliders className="w-3.5 h-3.5 text-purple-400" />
+                    <span>Context Menu System</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/button-guide" className="hover:text-[#FFD400] text-[#FFD400] font-bold transition-colors flex items-center gap-1">
+                    <MousePointer className="w-3.5 h-3.5 text-[#FFD400]" />
+                    <span>Button System</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/tabs-guide" className="hover:text-[#FFD400] text-teal-400 font-bold transition-colors flex items-center gap-1">
+                    <Layers className="w-3.5 h-3.5 text-teal-400" />
+                    <span>Tabs System</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/toast-guide" className="hover:text-[#FFD400] text-rose-400 font-bold transition-colors flex items-center gap-1">
+                    <Bell className="w-3.5 h-3.5 text-rose-400" />
+                    <span>Toast System</span>
+                  </Link>
                 </li>
               </ul>
             </div>
 
+            {/* Col 4: Categories & In-Store Services */}
             <div>
-              <h5 className="text-[11px] font-bold text-[#ffd000] uppercase mb-1.5">
-                Follow Us
-              </h5>
-              <div className="flex items-center gap-2">
-                <a
-                  href={storeConfig.socials?.instagram || 'https://instagram.com'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-7 h-7 rounded-lg bg-[#111111] hover:bg-[#ffd000] text-slate-300 hover:text-black border border-[#222222] flex items-center justify-center transition-colors"
-                >
-                  <Instagram className="w-3.5 h-3.5" />
-                </a>
-                <a
-                  href={storeConfig.socials?.facebook || 'https://facebook.com'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-7 h-7 rounded-lg bg-[#111111] hover:bg-[#ffd000] text-slate-300 hover:text-black border border-[#222222] flex items-center justify-center transition-colors"
-                >
-                  <Facebook className="w-3.5 h-3.5" />
-                </a>
+              <h4 className="font-display font-black text-white text-xs uppercase tracking-wider mb-4 text-[#FFD400] border-b border-[#222222] pb-2">
+                CATEGORIES & SERVICES
+              </h4>
+              <ul className="space-y-2.5 text-xs sm:text-sm text-slate-400 font-medium">
+                <li>
+                  <Link to="/shop?category=Smartphones" className="hover:text-[#FFD400] transition-colors">Smartphones 5G</Link>
+                </li>
+                <li>
+                  <Link to="/shop?category=Earbuds" className="hover:text-[#FFD400] transition-colors">Earbuds TWS</Link>
+                </li>
+                <li>
+                  <Link to="/shop?category=Headphones" className="hover:text-[#FFD400] transition-colors">Wireless Neckbands</Link>
+                </li>
+                <li>
+                  <Link to="/shop?category=Smartwatches" className="hover:text-[#FFD400] transition-colors">Smartwatches</Link>
+                </li>
+                <li>
+                  <Link to="/shop?category=Power%20Banks" className="hover:text-[#FFD400] transition-colors">Power Banks 20000mAh</Link>
+                </li>
+                <li>
+                  <Link to="/shop?category=Gadgets" className="hover:text-[#FFD400] transition-colors">Egg Boilers & Gadgets</Link>
+                </li>
+                <li className="pt-2 text-emerald-400 font-bold text-xs flex items-center gap-1">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Free Screen Guard Fitting</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Col 5: Store Hours, Legal Links & Socials */}
+            <div className="space-y-5">
+              <div>
+                <h4 className="font-display font-black text-white text-xs uppercase tracking-wider mb-4 text-[#FFD400] border-b border-[#222222] pb-2">
+                  STORE CONTACT & HOURS
+                </h4>
+                <ul className="space-y-2.5 text-xs text-slate-400 font-medium">
+                  <li className="flex items-center gap-2">
+                    <Phone className="w-4 h-4 text-[#FFD400]" />
+                    <a href={`tel:${storeConfig.phone}`} className="text-white font-bold hover:text-[#FFD400]">
+                      {storeConfig.displayPhone}
+                    </a>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <MapPin className="w-4 h-4 text-[#FFD400] flex-shrink-0 mt-0.5" />
+                    <span>{storeConfig.address}</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Clock className="w-4 h-4 text-[#FFD400] flex-shrink-0 mt-0.5" />
+                    <span>{storeConfig.timing}</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* LEGAL AND COMPLIANCE LINKS */}
+              <div className="pt-2">
+                <h5 className="text-[11px] font-bold text-[#FFD400] uppercase mb-2">
+                  Legal & Store Policies
+                </h5>
+                <ul className="space-y-1.5 text-xs text-slate-400 font-medium">
+                  <li>
+                    <button onClick={() => setLegalModalType('privacy')} className="hover:text-[#FFD400] hover:underline">
+                      Privacy Policy
+                    </button>
+                  </li>
+                  <li>
+                    <button onClick={() => setLegalModalType('terms')} className="hover:text-[#FFD400] hover:underline">
+                      Terms & Conditions
+                    </button>
+                  </li>
+                  <li>
+                    <button onClick={() => setLegalModalType('shipping')} className="hover:text-[#FFD400] hover:underline">
+                      Shipping & Store Pickup Policy
+                    </button>
+                  </li>
+                  <li>
+                    <button onClick={() => setLegalModalType('warranty')} className="hover:text-[#FFD400] hover:underline">
+                      100% Brand Warranty Policy
+                    </button>
+                  </li>
+                </ul>
+              </div>
+
+              {/* SOCIAL MEDIA LINKS */}
+              <div>
+                <h5 className="text-[11px] font-bold text-[#FFD400] uppercase mb-2">
+                  Connect With Us
+                </h5>
+                <div className="flex items-center gap-2">
+                  <a
+                    href={storeConfig.socials?.instagram || 'https://instagram.com'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-8 h-8 rounded-xl bg-[#111111] hover:bg-[#FFD400] text-slate-300 hover:text-black border border-[#222222] flex items-center justify-center transition-colors"
+                    title="Instagram"
+                  >
+                    <Instagram className="w-4 h-4" />
+                  </a>
+                  <a
+                    href={storeConfig.socials?.facebook || 'https://facebook.com'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-8 h-8 rounded-xl bg-[#111111] hover:bg-[#FFD400] text-slate-300 hover:text-black border border-[#222222] flex items-center justify-center transition-colors"
+                    title="Facebook"
+                  >
+                    <Facebook className="w-4 h-4" />
+                  </a>
+                  <a
+                    href="https://youtube.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-8 h-8 rounded-xl bg-[#111111] hover:bg-[#E31B23] text-slate-300 hover:text-white border border-[#222222] flex items-center justify-center transition-colors"
+                    title="YouTube Channel"
+                  >
+                    <Youtube className="w-4 h-4" />
+                  </a>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* TRUST CERTIFICATIONS & ACCEPTED PAYMENT METHODS */}
+          <div className="pt-2 pb-6 border-b border-[#222222] flex flex-col md:flex-row items-center justify-between gap-6">
+            
+            {/* Regulatory & Trust Badges */}
+            <div className="flex flex-wrap items-center gap-3 text-xs text-slate-300 font-bold">
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#111111] border border-[#222222]">
+                <ShieldCheck className="w-4 h-4 text-[#FFD400]" />
+                <span>100% Genuine Brand Warranty</span>
+              </div>
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#111111] border border-[#222222]">
+                <FileCheck className="w-4 h-4 text-emerald-400" />
+                <span>GST Verified Invoice</span>
+              </div>
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#111111] border border-[#222222]">
+                <Lock className="w-4 h-4 text-amber-400" />
+                <span>256-Bit SSL Encrypted</span>
               </div>
             </div>
+
+            {/* Accepted Payment Method Badges */}
+            <div className="space-y-1 text-center md:text-right">
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">
+                Accepted Payment Methods
+              </span>
+              <div className="flex flex-wrap items-center justify-center md:justify-end gap-2 text-xs font-bold">
+                <span className="px-2.5 py-1 rounded-lg bg-[#111111] border border-[#333333] text-slate-200">
+                  💳 Visa / Mastercard
+                </span>
+                <span className="px-2.5 py-1 rounded-lg bg-[#111111] border border-[#333333] text-slate-200">
+                  🇮🇳 RuPay
+                </span>
+                <span className="px-2.5 py-1 rounded-lg bg-[#111111] border border-[#333333] text-slate-200">
+                  ⚡ UPI / GPay / PhonePe
+                </span>
+                <span className="px-2.5 py-1 rounded-lg bg-[#111111] border border-[#333333] text-slate-200">
+                   Apple Pay
+                </span>
+                <span className="px-2.5 py-1 rounded-lg bg-amber-900/40 text-amber-300 border border-amber-500/40">
+                  🏪 Store Cash / Pickup
+                </span>
+              </div>
+            </div>
+
+          </div>
+
+          {/* BOTTOM COPYRIGHT */}
+          <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400">
+            <p>
+              © 2026 <strong className="text-[#FFD400]">Prem Mobile</strong>. All Rights Reserved.
+            </p>
+            <p className="text-slate-500 text-center sm:text-right">
+              Pinto Park, Jaderua Gate Ke Samne, Gwalior (M.P.) • “{storeConfig.tagline}”
+            </p>
           </div>
 
         </div>
+      </footer>
 
-        {/* BOTTOM COPYRIGHT */}
-        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-400">
-          <p>
-            © 2026 <strong className="text-[#ffd000]">Prem Mobile</strong>. All Rights Reserved.
-          </p>
-          <p className="text-slate-500 text-center sm:text-right">
-            Pinto Park, Jaderua Gate Ke Samne, Gwalior (M.P.) • “{storeConfig.tagline}”
-          </p>
-        </div>
+      {/* Global Modals */}
+      <LegalModal
+        isOpen={!!legalModalType}
+        policyType={legalModalType || 'privacy'}
+        onClose={() => setLegalModalType(null)}
+      />
 
-      </div>
-    </footer>
+      <SupportModal
+        isOpen={isSupportModalOpen}
+        onClose={() => setIsSupportModalOpen(false)}
+      />
+    </>
   );
 }

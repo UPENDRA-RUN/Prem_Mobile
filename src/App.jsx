@@ -18,6 +18,17 @@ import ProductDetails from './pages/ProductDetails';
 import Offers from './pages/Offers';
 import About from './pages/About';
 import Contact from './pages/Contact';
+import FAQ from './pages/FAQ';
+import Login from './pages/Login';
+import AccountSettings from './pages/AccountSettings';
+import DesignTokensGuide from './pages/DesignTokensGuide';
+import SkeletonGuide from './pages/SkeletonGuide';
+import LoadingGuide from './pages/LoadingGuide';
+import InputFieldGuide from './pages/InputFieldGuide';
+import ContextMenuGuide from './pages/ContextMenuGuide';
+import ButtonGuide from './pages/ButtonGuide';
+import TabsGuide from './pages/TabsGuide';
+import ToastGuide from './pages/ToastGuide';
 import Wishlist from './pages/Wishlist';
 import Cart from './pages/Cart';
 import NotFound from './pages/NotFound';
@@ -55,6 +66,18 @@ export default function App() {
           <Route path="/offers" element={<Offers />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/faq" element={<FAQ />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Login />} />
+          <Route path="/account" element={<AccountSettings />} />
+          <Route path="/design-tokens" element={<DesignTokensGuide />} />
+          <Route path="/skeleton-guide" element={<SkeletonGuide />} />
+          <Route path="/loading-guide" element={<LoadingGuide />} />
+          <Route path="/input-guide" element={<InputFieldGuide />} />
+          <Route path="/context-menu-guide" element={<ContextMenuGuide />} />
+          <Route path="/button-guide" element={<ButtonGuide />} />
+          <Route path="/tabs-guide" element={<TabsGuide />} />
+          <Route path="/toast-guide" element={<ToastGuide />} />
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="*" element={<NotFound />} />
