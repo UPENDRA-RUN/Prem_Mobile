@@ -545,6 +545,22 @@ export default function Login() {
               )}
             </div>
 
+            {/* SWITCH TO ADMIN PORTAL */}
+            <div className="pt-3 border-t border-slate-100 text-center">
+              <p className="text-xs text-slate-500">
+                Are you a store administrator?{' '}
+                <Link
+                  to="/admin/login"
+                  className="font-bold text-[#e51b23] hover:underline inline-flex items-center gap-1"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <span>Switch to Admin Login</span>
+                  <ArrowRight className="w-3 h-3" />
+                </Link>
+              </p>
+            </div>
+
+
           </div>
 
         </div>

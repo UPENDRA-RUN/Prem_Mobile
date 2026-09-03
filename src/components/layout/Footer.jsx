@@ -398,10 +398,19 @@ export default function Footer() {
             <p>
               © 2026 <strong className="text-[#FFD400]">Prem Mobile</strong>. All Rights Reserved.
             </p>
-            <p className="text-slate-500 text-center sm:text-right">
-              Pinto Park, Jaderua Gate Ke Samne, Gwalior (M.P.) • “{storeConfig.tagline}”
-            </p>
+            <div className="flex flex-wrap items-center justify-center sm:justify-end gap-3 text-slate-500 text-center sm:text-right">
+              <span>Pinto Park, Jaderua Gate Ke Samne, Gwalior (M.P.) • “{storeConfig.tagline}”</span>
+              <Link
+                to="/admin/login"
+                className="text-[11px] font-bold text-slate-500 hover:text-[#FFD400] transition-colors inline-flex items-center gap-1 sm:border-l sm:border-slate-800 sm:pl-3 whitespace-nowrap"
+                title="Switch to Store Admin Portal"
+              >
+                <ShieldCheck className="w-3.5 h-3.5" />
+                <span>Admin Portal</span>
+              </Link>
+            </div>
           </div>
+
 
         </div>
       </footer>

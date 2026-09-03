@@ -378,17 +378,17 @@ export default function Navbar() {
               )}
             </button>
 
-            {/* Admin Quick Badge (ONLY VISIBLE IF LOGGED IN AS ADMIN) */}
-            {isAdmin && (
-              <Link
-                to="/admin/dashboard"
-                className="hidden xl:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#050505] text-[#ffd000] border border-[#ffd000]/40 font-black text-xs uppercase tracking-wider hover:bg-black/90 shadow-sm"
-                title="Open Admin Dashboard"
-              >
-                <ShieldCheck className="w-3.5 h-3.5 text-[#ffd000]" />
-                <span>ADMIN</span>
-              </Link>
-            )}
+            {/* Switch to Admin Button */}
+            <Link
+              to={isAdmin ? "/admin/dashboard" : "/admin/login"}
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#050505] hover:bg-slate-800 text-[#ffd000] border border-[#ffd000]/40 font-black text-xs uppercase tracking-wider transition-all shadow-xs shrink-0"
+              title={isAdmin ? "Go to Admin Dashboard" : "Switch to Admin Login"}
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-[#ffd000]" />
+              <span className="hidden xl:inline">{isAdmin ? 'ADMIN DASHBOARD' : 'SWITCH TO ADMIN'}</span>
+              <span className="xl:hidden">{isAdmin ? 'ADMIN' : 'ADMIN'}</span>
+            </Link>
+
 
 
 
@@ -433,13 +433,15 @@ export default function Navbar() {
               <Link to="/contact" className="px-4 py-2.5 rounded-xl bg-slate-50 text-xs font-bold text-[#050505]">CONTACT</Link>
               <Link to="/account" className="px-4 py-2.5 rounded-xl bg-slate-50 text-xs font-bold text-[#050505]">MY ACCOUNT</Link>
               
-              {/* Admin Portal link only shown to logged-in admins */}
-              {isAdmin && (
-                <Link to="/admin/dashboard" className="col-span-2 px-4 py-2.5 rounded-xl bg-[#050505] text-xs font-bold text-[#ffd000] flex items-center justify-center gap-2 border border-[#ffd000]/40">
-                  <ShieldCheck className="w-3.5 h-3.5 text-[#ffd000]" />
-                  <span>ADMIN DASHBOARD</span>
-                </Link>
-              )}
+              {/* Switch to Admin option */}
+              <Link
+                to={isAdmin ? "/admin/dashboard" : "/admin/login"}
+                className="col-span-2 px-4 py-2.5 rounded-xl bg-[#050505] text-xs font-bold text-[#ffd000] flex items-center justify-center gap-2 border border-[#ffd000]/40 shadow-xs"
+              >
+                <ShieldCheck className="w-4 h-4 text-[#ffd000]" />
+                <span>{isAdmin ? 'ADMIN DASHBOARD' : 'SWITCH TO ADMIN'}</span>
+              </Link>
+
             </div>
 
             <Link
