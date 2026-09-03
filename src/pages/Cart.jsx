@@ -401,14 +401,15 @@ export default function Cart() {
 
               {/* PROMINENT CHECKOUT BUTTON & WHATSAPP BUTTON */}
               <div className="space-y-2.5 pt-2">
-                <button
-                  onClick={() => setIsCheckoutOpen(true)}
+                <Link
+                  to="/checkout"
                   className="w-full py-4 px-4 rounded-xl bg-[#FFD400] hover:bg-[#e6be00] text-[#050505] font-black text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 transition-transform hover:scale-102"
                 >
                   <ShoppingBag className="w-4 h-4 text-[#050505]" />
                   <span>PROCEED TO CHECKOUT</span>
                   <ArrowRight className="w-4 h-4" />
-                </button>
+                </Link>
+
 
                 <button
                   onClick={handleWhatsAppEnquiry}

@@ -40,12 +40,13 @@ export default function SundaySpecialSection() {
               {/* Action Buttons */}
               <div className="pt-3 flex flex-col sm:flex-row items-center gap-3 justify-center lg:justify-start">
                 <Link
-                  to="/shop"
+                  to="/sunday-sale"
                   className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-[#FFD400] hover:bg-[#e6be00] text-[#050505] font-black text-xs sm:text-sm uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 transition-transform hover:scale-105"
                 >
-                  <span>SHOP NOW</span>
+                  <span>EXPLORE SUNDAY SALE</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
+
 
                 <button
                   onClick={() => openGeneralWhatsApp('Sunday Special Sale Inquiry')}

@@ -169,12 +169,13 @@ export default function FeaturedSection({ products }) {
               {/* Red SHOP NOW Button */}
               <div className="relative z-10 pt-0.5">
                 <Link
-                  to="/offers"
+                  to="/sunday-sale"
                   className="w-full py-2 px-3 rounded-md bg-[#e51b23] hover:bg-[#cc141c] text-white font-black text-xs uppercase tracking-wider text-center block shadow-md transition-transform hover:scale-102"
                 >
                   SHOP NOW
                 </Link>
               </div>
+
 
             </div>
           </div>

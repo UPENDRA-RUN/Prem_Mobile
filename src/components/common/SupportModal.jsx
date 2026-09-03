@@ -91,7 +91,7 @@ export default function SupportModal({ isOpen, onClose }) {
   ];
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto p-4 flex items-center justify-center animate-fade-in">
+    <div className="fixed inset-0 z-[9999] overflow-y-auto p-4 flex items-center justify-center animate-fade-in">
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/80 backdrop-blur-xs transition-opacity"

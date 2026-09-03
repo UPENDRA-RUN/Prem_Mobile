@@ -40,8 +40,9 @@ export default function CartDrawer() {
 
   return (
     <>
-      <div className="fixed inset-0 z-50 overflow-hidden animate-fade-in">
+      <div className="fixed inset-0 z-[9999] overflow-hidden animate-fade-in">
         {/* Backdrop */}
+
         <div
           className="fixed inset-0 bg-black/80 backdrop-blur-xs transition-opacity"
           onClick={() => setIsCartDrawerOpen(false)}

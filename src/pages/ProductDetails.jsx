@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { products } from '../data/products';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
+import { useSundaySale } from '../context/SundaySaleContext';
 import { formatCurrency } from '../utils/formatters';
 import { openProductWhatsApp } from '../utils/whatsapp';
 import { storeConfig } from '../config/store';
@@ -36,8 +37,19 @@ export default function ProductDetails() {
   const navigate = useNavigate();
   const { addToCart, setIsCartDrawerOpen } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
+  const { isLive: isSundayLive, products: sundayProducts } = useSundaySale();
 
   const product = products.find((p) => p.id === Number(id));
+
+  // Check if product is in Sunday Sale
+  const sundaySaleItem = isSundayLive && sundayProducts
+    ? sundayProducts.find(sp => sp.productId === Number(id))
+    : null;
+  const isSundaySaleItem = Boolean(sundaySaleItem);
+
+  const effectivePrice = isSundaySaleItem ? sundaySaleItem.salePrice : (product?.price || 0);
+  const effectiveOriginalPrice = isSundaySaleItem ? sundaySaleItem.regularPrice : (product?.originalPrice || product?.price || 0);
+
 
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
@@ -119,8 +131,39 @@ export default function ProductDetails() {
       }
     }
 
-    addToCart(product, quantity, selectedVariants);
+    const cartProduct = {
+      ...product,
+      price: effectivePrice,
+      originalPrice: effectiveOriginalPrice,
+      regularPrice: effectiveOriginalPrice,
+      isSundaySale: isSundaySaleItem
+    };
+
+    addToCart(cartProduct, quantity, selectedVariants);
     setRecentlyAdded(true);
+    setIsCartDrawerOpen(true);
+  };
+
+  const handleBuyNowFlow = () => {
+    if (product.variants) {
+      const requiredKeys = Object.keys(product.variants);
+      const isMissing = requiredKeys.some((k) => !selectedVariants[k]);
+      if (isMissing) {
+        setVariantError(true);
+        return;
+      }
+    }
+
+    const cartProduct = {
+      ...product,
+      price: effectivePrice,
+      originalPrice: effectiveOriginalPrice,
+      regularPrice: effectiveOriginalPrice,
+      isSundaySale: isSundaySaleItem
+    };
+
+    addToCart(cartProduct, quantity, selectedVariants);
+    navigate('/checkout');
   };
 
   const variantNoteStr = Object.keys(selectedVariants).length > 0
@@ -238,29 +281,66 @@ export default function ProductDetails() {
               </div>
 
               {/* Price Banner */}
-              <div className="p-4 rounded-2xl bg-[#050505] text-white border-2 border-[#FFD400]/40 flex items-baseline justify-between">
-                <div>
-                  <div className="flex items-baseline gap-3">
-                    <span className="text-2xl sm:text-3xl font-black font-display text-[#FFD400]">
-                      {formatCurrency(product.price)}
+              {isSundaySaleItem ? (
+                <div className="p-5 rounded-3xl bg-gradient-to-r from-[#050505] via-[#1a1a1a] to-[#050505] text-white border-2 border-[#ffd000] shadow-xl space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#e51b23] text-white font-black text-xs uppercase tracking-wider animate-pulse">
+                      <Flame className="w-4 h-4 fill-white" />
+                      <span>🔥 SUNDAY SALE</span>
                     </span>
-                    {product.originalPrice > product.price && (
-                      <span className="text-sm sm:text-base text-slate-400 line-through">
-                        {formatCurrency(product.originalPrice)}
-                      </span>
-                    )}
+                    <span className="px-2.5 py-0.5 rounded-full bg-[#ffd000] text-[#050505] font-black text-xs uppercase">
+                      {sundaySaleItem.discountPercent}% OFF
+                    </span>
                   </div>
-                  <p className="text-[11px] text-slate-300 font-medium mt-0.5">
-                    *Store Offer Rate • “{storeConfig.tagline}”
-                  </p>
-                </div>
 
-                {product.discount > 0 && (
-                  <span className="px-3 py-1 rounded-xl bg-[#E31B23] text-white font-black text-xs shadow-xs">
-                    Save {formatCurrency(product.originalPrice - product.price)}
-                  </span>
-                )}
-              </div>
+                  <div className="flex items-baseline gap-3">
+                    <div>
+                      <span className="text-xs text-slate-400 font-bold block mb-0.5">Sunday price:</span>
+                      <span className="text-3xl sm:text-4xl font-black font-display text-[#ffd000]">
+                        {formatCurrency(effectivePrice)}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-xs text-slate-400 font-bold block mb-0.5">Regular price:</span>
+                      <span className="text-base text-slate-400 line-through">
+                        {formatCurrency(effectiveOriginalPrice)}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="pt-2 border-t border-white/10 flex items-center justify-between text-xs font-bold">
+                    <span className="text-emerald-400 bg-emerald-950/60 px-2.5 py-1 rounded-lg border border-emerald-500/30">
+                      Save {formatCurrency(effectiveOriginalPrice - effectivePrice)}
+                    </span>
+                    <span className="text-slate-300 text-[11px]">Valid Today Only</span>
+                  </div>
+                </div>
+              ) : (
+                <div className="p-4 rounded-2xl bg-[#050505] text-white border-2 border-[#FFD400]/40 flex items-baseline justify-between">
+                  <div>
+                    <div className="flex items-baseline gap-3">
+                      <span className="text-2xl sm:text-3xl font-black font-display text-[#FFD400]">
+                        {formatCurrency(product.price)}
+                      </span>
+                      {product.originalPrice > product.price && (
+                        <span className="text-sm sm:text-base text-slate-400 line-through">
+                          {formatCurrency(product.originalPrice)}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-[11px] text-slate-300 font-medium mt-0.5">
+                      *Store Offer Rate • “{storeConfig.tagline}”
+                    </p>
+                  </div>
+
+                  {product.discount > 0 && (
+                    <span className="px-3 py-1 rounded-xl bg-[#E31B23] text-white font-black text-xs shadow-xs">
+                      Save {formatCurrency(product.originalPrice - product.price)}
+                    </span>
+                  )}
+                </div>
+              )}
+
 
               {/* Description */}
               <p className="text-sm text-slate-600 leading-relaxed">
@@ -352,24 +432,33 @@ export default function ProductDetails() {
                   </div>
                 </div>
 
-                {/* HIGH-CONTRAST PRIMARY ADD TO CART CTA BUTTON */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* HIGH-CONTRAST PRIMARY CTA BUTTONS */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <button
                     onClick={handleAddToCartFlow}
-                    className="py-4 px-5 rounded-2xl bg-[#FFD400] hover:bg-[#e6be00] text-[#050505] font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-xl transition-transform hover:scale-103 ring-2 ring-[#FFD400]/40"
+                    className="py-4 px-4 rounded-2xl bg-[#FFD400] hover:bg-[#e6be00] text-[#050505] font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-xl transition-transform hover:scale-103 ring-2 ring-[#FFD400]/40"
                   >
-                    <ShoppingBag className="w-5 h-5 text-[#050505] stroke-[2.5]" />
-                    <span>ADD TO CART ({formatCurrency(product.price * quantity)})</span>
+                    <ShoppingBag className="w-4 h-4 text-[#050505] stroke-[2.5]" />
+                    <span>ADD TO CART</span>
+                  </button>
+
+                  <button
+                    onClick={handleBuyNowFlow}
+                    className="py-4 px-4 rounded-2xl bg-[#e51b23] hover:bg-[#c91219] text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-xl transition-transform hover:scale-103 ring-2 ring-red-400/40"
+                  >
+                    <Zap className="w-4 h-4 fill-white" />
+                    <span>BUY NOW</span>
                   </button>
 
                   <button
                     onClick={() => openProductWhatsApp(product, variantNoteStr)}
-                    className="py-4 px-5 rounded-2xl bg-[#25D366] hover:bg-[#20ba5a] text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg transition-transform hover:scale-102"
+                    className="py-4 px-4 rounded-2xl bg-[#25D366] hover:bg-[#20ba5a] text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-lg transition-transform hover:scale-102"
                   >
-                    <MessageCircle className="w-5 h-5 fill-white" />
-                    <span>ORDER ON WHATSAPP</span>
+                    <MessageCircle className="w-4 h-4 fill-white" />
+                    <span>WHATSAPP</span>
                   </button>
                 </div>
+
 
                 {/* FEEDBACK OPTION B: ACTIVE CONFIRMATION BANNER ON ADDITION */}
                 {recentlyAdded && (

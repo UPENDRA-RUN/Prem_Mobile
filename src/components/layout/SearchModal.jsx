@@ -180,8 +180,9 @@ export default function SearchModal({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto p-3 sm:p-6 md:p-12 animate-fade-in flex items-start justify-center pt-8 sm:pt-16">
+    <div className="fixed inset-0 z-[9999] overflow-y-auto p-3 sm:p-6 md:p-12 animate-fade-in flex items-start justify-center pt-8 sm:pt-16">
       {/* Backdrop */}
+
       <div
         className="fixed inset-0 bg-black/80 backdrop-blur-xs transition-opacity"
         onClick={onClose}

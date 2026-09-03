@@ -37,12 +37,13 @@ export default function PromoBanner() {
 
                 <div className="flex items-center gap-3">
                   <Link
-                    to="/shop"
+                    to="/sunday-sale"
                     className="px-6 py-3 rounded-xl bg-[#FFD400] hover:bg-[#e6be00] text-[#050505] font-black text-xs uppercase tracking-wider shadow-lg flex items-center gap-2 transition-transform hover:scale-105"
                   >
                     <span>SHOP NOW</span>
                     <ArrowRight className="w-4 h-4" />
                   </Link>
+
 
                   <button
                     onClick={() => openGeneralWhatsApp('Sunday Special Sale Inquiry')}

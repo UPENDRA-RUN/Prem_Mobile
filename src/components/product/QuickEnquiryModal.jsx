@@ -40,8 +40,9 @@ export default function QuickEnquiryModal({ product, isOpen, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto p-4 flex items-center justify-center">
+    <div className="fixed inset-0 z-[9999] overflow-y-auto p-4 flex items-center justify-center">
       {/* Backdrop */}
+
       <div
         className="fixed inset-0 bg-navy-950/70 backdrop-blur-sm transition-opacity"
         onClick={onClose}
