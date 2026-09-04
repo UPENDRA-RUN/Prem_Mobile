@@ -117,62 +117,23 @@ export default function AdminProductForm() {
     setUploadFeedback(null);
 
     try {
-      // 1. Fast parallel compression (shrink 15MB photos to ~150KB in milliseconds)
+      // 1. Fast parallel compression (resizes camera photos to HD compressed DataURLs in milliseconds)
       const compressedItems = await Promise.all(
         files.map(async (file) => {
           if (file.size > 15 * 1024 * 1024) {
             throw new Error(`"${file.name}" is too large. Select images under 15MB.`);
           }
-          return await compressImage(file, 1200, 1200, 0.82);
+          return await compressImage(file, 1200, 1200, 0.85);
         })
       );
 
-      // 2. Parallel upload processing
-      const uploadPromises = compressedItems.map(async ({ file, dataUrl }) => {
-        try {
-          const cloudRes = await uploadToCloudinary(file);
-          if (cloudRes && cloudRes.success && cloudRes.url) {
-            return cloudRes.url;
-          }
-        } catch (e) {
-          // ignore Cloudinary error
-        }
+      const newUrls = compressedItems.map(item => item.dataUrl).filter(Boolean);
 
-        try {
-          const res = await fetch('/api/upload', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${adminToken}`
-            },
-            body: JSON.stringify({ images: [{ dataUrl, filename: file.name }] })
-          });
-
-          const text = await res.text();
-          let data = {};
-          try { data = text ? JSON.parse(text) : {}; } catch (jsonErr) {}
-
-          if (res.ok && data.success) {
-            const url = data.url || (data.urls && data.urls[0]);
-            if (url) return url;
-          }
-        } catch (serverErr) {
-          // ignore server error
-        }
-
-        return dataUrl;
-      });
-
-      const uploadedResults = await Promise.all(uploadPromises);
-      const validUrls = uploadedResults.filter(Boolean);
-
-      // Merge & De-duplicate URLs
-      const baseList = imageList.length === 1 && imageList[0] === '/images/prem-main.jpg'
-        ? []
-        : imageList;
+      // Remove default prem-main.jpg placeholder if real photos are being uploaded
+      const baseList = imageList.filter(img => img !== '/images/prem-main.jpg');
 
       // Unique deduplication
-      const updatedList = Array.from(new Set([...baseList, ...validUrls]));
+      const updatedList = Array.from(new Set([...baseList, ...newUrls]));
 
       setFormData(prev => ({
         ...prev,
@@ -181,7 +142,7 @@ export default function AdminProductForm() {
 
       setUploadFeedback({
         type: 'success',
-        message: `Successfully processed ${validUrls.length} photo${validUrls.length > 1 ? 's' : ''}!`
+        message: `Successfully attached ${newUrls.length} photo${newUrls.length > 1 ? 's' : ''} to product gallery!`
       });
     } catch (err) {
       console.error('File upload error:', err);
@@ -560,10 +521,6 @@ export default function AdminProductForm() {
                     <img
                       src={imgUrl}
                       alt={`Product thumbnail ${idx + 1}`}
-                      onError={(e) => {
-                        e.currentTarget.onerror = null;
-                        e.currentTarget.src = '/images/prem-main.jpg';
-                      }}
                       className="max-h-full max-w-full object-contain"
                     />
 
