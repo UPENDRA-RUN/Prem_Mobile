@@ -40,3 +40,7 @@ server/data/*.sqlite*
 *.sln
 *.sw?
 .neon
+.env
+.env.*
+!.env.example
+
