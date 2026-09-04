@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { parseResponseJson } from '../utils/apiHelper';
 import { Link } from 'react-router-dom';
 import { useCustomerAuth } from '../context/CustomerAuthContext';
 import { formatCurrency } from '../utils/formatters';
@@ -29,7 +30,7 @@ export default function Orders() {
       const res = await fetch('/api/orders/my-orders', {
         headers: { Authorization: `Bearer ${customerToken}` }
       });
-      const data = await res.json();
+      const data = await parseResponseJson(res);
       if (!res.ok || !data.success) {
         throw new Error(data.error || 'Failed to fetch orders');
       }

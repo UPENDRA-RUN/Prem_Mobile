@@ -33,7 +33,8 @@ export function createApiRouter() {
     next();
   });
 
-  app.use(express.json({ limit: '30mb' }));
+  app.use(express.json({ limit: '50mb' }));
+  app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
   // SSE Real-time events stream
   app.get('/events', sseHandler);

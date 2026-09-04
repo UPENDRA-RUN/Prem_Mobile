@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAdminAuth } from '../../context/AdminAuthContext';
+import { parseResponseJson } from '../../utils/apiHelper';
 import { formatCurrency } from '../../utils/formatters';
 import {
   Flame,
@@ -39,7 +40,7 @@ export default function AdminSundaySale() {
       const res = await fetch('/api/sunday-sale/admin', {
         headers: { Authorization: `Bearer ${adminToken}` }
       });
-      const data = await res.json();
+      const data = await parseResponseJson(res);
       if (data.success) {
         setSaleState({
           dayInfo: data.dayInfo || {},
@@ -120,7 +121,7 @@ export default function AdminSundaySale() {
         body: JSON.stringify({ items: selectedItems })
       });
 
-      const data = await res.json();
+      const data = await parseResponseJson(res);
       if (data.success) {
         setFeedback({
           type: 'success',
@@ -148,7 +149,7 @@ export default function AdminSundaySale() {
         headers: { Authorization: `Bearer ${adminToken}` }
       });
 
-      const data = await res.json();
+      const data = await parseResponseJson(res);
       if (data.success) {
         setFeedback({ type: 'success', text: '🔥 Sunday Shopping Sale is now LIVE!' });
         fetchSundaySaleData();
@@ -171,7 +172,7 @@ export default function AdminSundaySale() {
         headers: { Authorization: `Bearer ${adminToken}` }
       });
 
-      const data = await res.json();
+      const data = await parseResponseJson(res);
       if (data.success) {
         setFeedback({ type: 'success', text: 'Sunday Sale has been ended.' });
         fetchSundaySaleData();

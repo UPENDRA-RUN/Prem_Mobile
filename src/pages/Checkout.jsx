@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { formatCurrency } from '../utils/formatters';
+import { parseResponseJson } from '../utils/apiHelper';
 import {
   ShoppingBag,
   ShieldCheck,
@@ -169,7 +170,7 @@ export default function Checkout() {
         })
       });
 
-      const createData = await createRes.json();
+      const createData = await parseResponseJson(createRes);
       if (!createRes.ok || !createData.success) {
         throw new Error(createData.error || 'Failed to initiate Razorpay transaction.');
       }
@@ -210,7 +211,7 @@ export default function Checkout() {
               })
             });
 
-            const verifyData = await verifyRes.json();
+            const verifyData = await parseResponseJson(verifyRes);
             if (!verifyRes.ok || !verifyData.success) {
               throw new Error(verifyData.error || 'Payment verification failed.');
             }
@@ -266,7 +267,7 @@ export default function Checkout() {
         body: JSON.stringify(payload)
       });
 
-      const data = await res.json();
+      const data = await parseResponseJson(res);
 
       if (!res.ok || !data.success) {
         throw new Error(data.error || 'Failed to place order. Please try again.');

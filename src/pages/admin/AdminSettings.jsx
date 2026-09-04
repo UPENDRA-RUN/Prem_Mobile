@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
 import { useAdminAuth } from '../../context/AdminAuthContext';
+import { parseResponseJson } from '../../utils/apiHelper';
 import { storeConfig } from '../../config/store';
 import { Settings, Calendar, ShieldCheck, CheckCircle2, AlertCircle, Save } from 'lucide-react';
 
@@ -15,7 +15,7 @@ export default function AdminSettings() {
       const res = await fetch('/api/settings', {
         headers: { Authorization: `Bearer ${adminToken}` }
       });
-      const data = await res.json();
+      const data = await parseResponseJson(res);
       if (data.success) {
         setSimulatedDay(data.settings?.simulated_day || 'REAL');
         setDayInfo(data.dayInfo || {});
@@ -44,7 +44,7 @@ export default function AdminSettings() {
         body: JSON.stringify({ simulated_day: simulatedDay })
       });
 
-      const data = await res.json();
+      const data = await parseResponseJson(res);
       if (data.success) {
         setDayInfo(data.dayInfo);
         setFeedback({

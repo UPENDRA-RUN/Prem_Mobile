@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import { parseResponseJson } from '../utils/apiHelper';
 import { storeConfig } from '../config/store';
 import { useCart } from '../context/CartContext';
 import { useRealtimeSync } from '../hooks/useRealtimeSync';
@@ -85,7 +86,7 @@ export default function AccountSettings() {
     setIsLoadingOrders(true);
     try {
       const res = await fetch(`/api/orders/my-orders?mobile=${encodeURIComponent(profile.phone || '')}&email=${encodeURIComponent(profile.email || '')}`);
-      const data = await res.json();
+      const data = await parseResponseJson(res);
       if (data.success) {
         setOrders(data.orders || []);
         if (data.orders && data.orders.length > 0) {

@@ -5,6 +5,7 @@
  */
 
 import { products as fallbackProducts } from '../data/products';
+import { parseResponseJson } from '../utils/apiHelper';
 
 const API_BASE_URL = '/api';
 
@@ -19,7 +20,7 @@ export async function fetchLaravelProducts(params = {}) {
     });
 
     if (res.ok) {
-      const data = await res.json();
+      const data = await parseResponseJson(res);
       return {
         success: true,
         source: 'api',
@@ -63,7 +64,7 @@ export async function fetchLaravelCategories() {
     });
 
     if (res.ok) {
-      const data = await res.json();
+      const data = await parseResponseJson(res);
       return { success: true, source: 'api', data: data.data || data };
     }
   } catch (err) {
@@ -88,7 +89,7 @@ export async function postLaravelOrder(orderData) {
     });
 
     if (res.ok) {
-      const data = await res.json();
+      const data = await parseResponseJson(res);
       return { success: true, source: 'api', order: data };
     }
   } catch (err) {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import { parseResponseJson } from '../utils/apiHelper';
 import { fetchLaravelProducts } from '../api/laravel';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
@@ -45,7 +46,7 @@ export default function ProductDetails() {
 
   useEffect(() => {
     fetch(`/api/products/${id}`)
-      .then(res => res.json())
+      .then(res => parseResponseJson(res))
       .then(data => {
         if (data.success && data.product) {
           const p = data.product;

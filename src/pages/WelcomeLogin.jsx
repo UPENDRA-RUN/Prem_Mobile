@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { parseResponseJson } from '../utils/apiHelper';
 import { useCustomerAuth } from '../context/CustomerAuthContext';
 import { useAdminAuth } from '../context/AdminAuthContext';
 import {
@@ -102,7 +103,7 @@ export default function WelcomeLogin({ defaultMode = 'customer_login' }) {
         })
       });
 
-      const data = await res.json();
+      const data = await parseResponseJson(res);
       if (!res.ok || !data.success) {
         throw new Error(data.error || 'Incorrect email/mobile number or password.');
       }
@@ -161,7 +162,7 @@ export default function WelcomeLogin({ defaultMode = 'customer_login' }) {
         })
       });
 
-      const data = await res.json();
+      const data = await parseResponseJson(res);
       if (!res.ok || !data.success) {
         throw new Error(data.error || 'Registration failed. Please try again.');
       }
@@ -200,7 +201,7 @@ export default function WelcomeLogin({ defaultMode = 'customer_login' }) {
         })
       });
 
-      const data = await res.json();
+      const data = await parseResponseJson(res);
       if (!res.ok || !data.success) {
         throw new Error(data.error || 'Invalid administrator credentials.');
       }

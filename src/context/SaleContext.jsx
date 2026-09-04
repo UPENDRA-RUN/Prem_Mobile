@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { parseResponseJson } from '../utils/apiHelper';
 
 const SaleContext = createContext();
 
@@ -17,7 +18,7 @@ export function SaleProvider({ children }) {
     try {
       const res = await fetch('/api/sale');
       if (res.ok) {
-        const data = await res.json();
+        const data = await parseResponseJson(res);
         const items = data.items || [];
         setSaleData({
           isLive: Boolean(data.isLive),

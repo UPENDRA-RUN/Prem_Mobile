@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { parseResponseJson } from '../utils/apiHelper';
 
 const AdminAuthContext = createContext();
 
@@ -27,7 +28,7 @@ export function AdminAuthProvider({ children }) {
           headers: { Authorization: `Bearer ${adminToken}` }
         });
         if (res.ok) {
-          const data = await res.json();
+          const data = await parseResponseJson(res);
           if (data.success && data.admin) {
             setAdminUser(data.admin);
             localStorage.setItem('premmobile_admin_user', JSON.stringify(data.admin));

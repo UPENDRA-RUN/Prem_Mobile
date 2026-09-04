@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { formatCurrency } from '../../utils/formatters';
 import { uploadToCloudinary } from '../../utils/cloudinary';
+import { parseResponseJson } from '../../utils/apiHelper';
 import {
   Flame,
   Calendar,
@@ -149,8 +150,8 @@ export default function AdminSale() {
         fetch('/api/combos/admin', { headers: { Authorization: `Bearer ${adminToken}` } })
       ]);
 
-      const data = await res.json();
-      const combosData = await combosRes.json();
+      const data = await parseResponseJson(res);
+      const combosData = await parseResponseJson(combosRes);
 
       if (combosData.success) {
         setCandidateCombos(combosData.combos || []);
@@ -350,7 +351,7 @@ export default function AdminSale() {
         })
       });
 
-      const data = await res.json();
+      const data = await parseResponseJson(res);
       if (!res.ok || !data.success) {
         throw new Error(data.error || 'Failed to create sale combo.');
       }
@@ -365,7 +366,7 @@ export default function AdminSale() {
       const combosRes = await fetch('/api/combos/admin', {
         headers: { Authorization: `Bearer ${adminToken}` }
       });
-      const combosData = await combosRes.json();
+      const combosData = await parseResponseJson(combosRes);
       if (combosData.success) {
         setCandidateCombos(combosData.combos || []);
       }
@@ -473,7 +474,7 @@ export default function AdminSale() {
         })
       });
 
-      const data = await res.json();
+      const data = await parseResponseJson(res);
       if (!res.ok || !data.success) {
         throw new Error(data.error || 'Failed to save sale configuration.');
       }
@@ -537,7 +538,7 @@ export default function AdminSale() {
           items: itemsPayload
         })
       });
-      const saveData = await saveRes.json();
+      const saveData = await parseResponseJson(saveRes);
       const currentSaleId = saveData.sale?.id || sale?.id;
 
       // Request Go Live
@@ -550,7 +551,7 @@ export default function AdminSale() {
         body: JSON.stringify({ saleId: currentSaleId })
       });
 
-      const liveData = await liveRes.json();
+      const liveData = await parseResponseJson(liveRes);
       if (!liveRes.ok || !liveData.success) {
         if (liveData.liveSaleId) {
           // Conflict modal: Another sale is currently live
@@ -593,7 +594,7 @@ export default function AdminSale() {
         body: JSON.stringify({ saleId: sale?.id })
       });
 
-      const data = await res.json();
+      const data = await parseResponseJson(res);
       if (!res.ok || !data.success) {
         throw new Error(data.error || 'Failed to end sale.');
       }

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useRealtimeSync } from '../../hooks/useRealtimeSync';
 import { formatCurrency } from '../../utils/formatters';
+import { parseResponseJson } from '../../utils/apiHelper';
 import {
   Package,
   CheckCircle2,
@@ -50,7 +51,7 @@ export default function AdminDashboard() {
       const prodRes = await fetch('/api/products/admin/all', {
         headers: { Authorization: `Bearer ${adminToken}` }
       });
-      const prodData = await prodRes.json();
+      const prodData = await parseResponseJson(prodRes);
       const prods = prodData.products || [];
       setAllProducts(prods);
       const activeProds = prods.filter(p => p.isActive);
@@ -59,7 +60,7 @@ export default function AdminDashboard() {
       const orderRes = await fetch('/api/orders/admin', {
         headers: { Authorization: `Bearer ${adminToken}` }
       });
-      const orderData = await orderRes.json();
+      const orderData = await parseResponseJson(orderRes);
       const allOrders = orderData.orders || [];
       const todayStr = new Date().toISOString().slice(0, 10);
       const todayOrders = allOrders.filter(o => o.createdAt?.startsWith(todayStr));
@@ -68,7 +69,7 @@ export default function AdminDashboard() {
       const saleRes = await fetch('/api/sunday-sale/admin', {
         headers: { Authorization: `Bearer ${adminToken}` }
       });
-      const saleData = await saleRes.json();
+      const saleData = await parseResponseJson(saleRes);
 
       setStats({
         totalProducts: prods.length,
@@ -106,7 +107,7 @@ export default function AdminDashboard() {
         },
         body: JSON.stringify({ isActive: updatedActive })
       });
-      const data = await res.json();
+      const data = await parseResponseJson(res);
       if (data.success) {
         setActionMessage(`Product "${product.name}" is now ${updatedActive ? 'Active' : 'Disabled'}.`);
         fetchDashboardData();

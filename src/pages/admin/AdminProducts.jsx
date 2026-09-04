@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useRealtimeSync } from '../../hooks/useRealtimeSync';
 import { formatCurrency } from '../../utils/formatters';
+import { parseResponseJson } from '../../utils/apiHelper';
 import {
   Package,
   PlusCircle,
@@ -31,7 +32,7 @@ export default function AdminProducts() {
       const res = await fetch('/api/products/admin/all', {
         headers: { Authorization: `Bearer ${adminToken}` }
       });
-      const data = await res.json();
+      const data = await parseResponseJson(res);
       if (data.success) {
         setProducts(data.products || []);
       }
@@ -59,7 +60,7 @@ export default function AdminProducts() {
         },
         body: JSON.stringify({ isActive: updatedActive })
       });
-      const data = await res.json();
+      const data = await parseResponseJson(res);
       if (data.success) {
         setFeedback(`Product "${product.name}" ${updatedActive ? 'activated' : 'disabled'}.`);
         fetchProducts();
@@ -76,7 +77,7 @@ export default function AdminProducts() {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${adminToken}` }
       });
-      const data = await res.json();
+      const data = await parseResponseJson(res);
       if (data.success) {
         setFeedback(`Product "${product.name}" deleted successfully.`);
         fetchProducts();
@@ -94,7 +95,7 @@ export default function AdminProducts() {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${adminToken}` }
       });
-      const data = await res.json();
+      const data = await parseResponseJson(res);
       if (data.success) {
         setFeedback('All sample products purged successfully! Ready to upload your own custom products.');
         fetchProducts();

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useRealtimeSync } from '../../hooks/useRealtimeSync';
 import { formatCurrency } from '../../utils/formatters';
+import { parseResponseJson } from '../../utils/apiHelper';
 import {
   ShoppingCart,
   Phone,
@@ -29,7 +30,7 @@ export default function AdminOrders() {
       const res = await fetch('/api/orders/admin', {
         headers: { Authorization: `Bearer ${adminToken}` }
       });
-      const data = await res.json();
+      const data = await parseResponseJson(res);
       if (data.success) {
         setOrders(data.orders || []);
       }
@@ -56,7 +57,7 @@ export default function AdminOrders() {
         },
         body: JSON.stringify({ status: newStatus })
       });
-      const data = await res.json();
+      const data = await parseResponseJson(res);
       if (data.success) {
         setFeedback(`Order #${orderId} status updated to ${newStatus}.`);
         fetchOrders();
@@ -75,7 +76,7 @@ export default function AdminOrders() {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${adminToken}` }
       });
-      const data = await res.json();
+      const data = await parseResponseJson(res);
       if (data.success) {
         setFeedback('All store orders have been purged successfully.');
         fetchOrders();

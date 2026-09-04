@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { useAdminAuth } from '../../context/AdminAuthContext';
+import { parseResponseJson } from '../../utils/apiHelper';
 import { uploadToCloudinary } from '../../utils/cloudinary';
 import { compressImage } from '../../utils/imageCompressor';
 import {
@@ -68,7 +69,7 @@ export default function AdminProductForm() {
     if (isEdit) {
       setIsLoading(true);
       fetch(`/api/products/${id}`)
-        .then(r => r.json())
+        .then(r => parseResponseJson(r))
         .then(data => {
           if (data.success && data.product) {
             const p = data.product;
@@ -280,7 +281,7 @@ export default function AdminProductForm() {
         body: JSON.stringify(payload)
       });
 
-      const data = await res.json();
+      const data = await parseResponseJson(res);
       if (!res.ok || !data.success) {
         throw new Error(data.error || 'Failed to save product.');
       }

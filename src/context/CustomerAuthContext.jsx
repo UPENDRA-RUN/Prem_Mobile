@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { parseResponseJson } from '../utils/apiHelper';
 
 const CustomerAuthContext = createContext();
 
@@ -29,7 +30,7 @@ export function CustomerAuthProvider({ children }) {
           headers: { Authorization: `Bearer ${customerToken}` }
         });
         if (res.ok) {
-          const data = await res.json();
+          const data = await parseResponseJson(res);
           if (data.success && data.user) {
             setCustomerUser(data.user);
             localStorage.setItem('premmobile_customer_user', JSON.stringify(data.user));

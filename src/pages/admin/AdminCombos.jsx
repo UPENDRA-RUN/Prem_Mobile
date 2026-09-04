@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { formatCurrency } from '../../utils/formatters';
 import { uploadToCloudinary } from '../../utils/cloudinary';
+import { compressImage } from '../../utils/imageCompressor';
+import { parseResponseJson } from '../../utils/apiHelper';
 import {
   Layers,
   Plus,
@@ -55,8 +57,8 @@ export default function AdminCombos() {
         fetch('/api/products/admin/all', { headers: { Authorization: `Bearer ${adminToken}` } })
       ]);
 
-      const combosData = await combosRes.json();
-      const prodData = await prodRes.json();
+      const combosData = await parseResponseJson(combosRes);
+      const prodData = await parseResponseJson(prodRes);
 
       if (combosData.success) {
         setCombos(combosData.combos || []);
@@ -221,7 +223,7 @@ export default function AdminCombos() {
         },
         body: JSON.stringify(formData)
       });
-      const data = await res.json();
+      const data = await parseResponseJson(res);
       if (data.success) {
         setNotification({ type: 'success', message: data.message || 'Combo pack saved!' });
         setShowModal(false);
@@ -243,7 +245,7 @@ export default function AdminCombos() {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${adminToken}` }
       });
-      const data = await res.json();
+      const data = await parseResponseJson(res);
       if (data.success) {
         setNotification({ type: 'success', message: 'Combo pack deleted.' });
         fetchData();

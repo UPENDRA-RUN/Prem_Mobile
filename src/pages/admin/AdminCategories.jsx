@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAdminAuth } from '../../context/AdminAuthContext';
+import { parseResponseJson } from '../../utils/apiHelper';
 import {
   Tag,
   PlusCircle,
@@ -28,7 +29,7 @@ export default function AdminCategories() {
     setError(null);
     try {
       const res = await fetch('/api/categories');
-      const data = await res.json();
+      const data = await parseResponseJson(res);
       if (data.success) {
         setCategories(data.categories || []);
       } else {
@@ -66,7 +67,7 @@ export default function AdminCategories() {
         })
       });
 
-      const data = await res.json();
+      const data = await parseResponseJson(res);
       if (!res.ok || !data.success) {
         throw new Error(data.error || 'Failed to add category');
       }
@@ -91,7 +92,7 @@ export default function AdminCategories() {
         headers: { Authorization: `Bearer ${adminToken}` }
       });
 
-      const data = await res.json();
+      const data = await parseResponseJson(res);
       if (data.success) {
         setFeedback(`Category "${cat.name}" removed.`);
         fetchCategories();

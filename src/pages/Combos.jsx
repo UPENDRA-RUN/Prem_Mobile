@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { parseResponseJson } from '../utils/apiHelper';
 import { useCart } from '../context/CartContext';
 import { formatCurrency } from '../utils/formatters';
 import { openGeneralWhatsApp } from '../utils/whatsapp';
@@ -24,7 +25,7 @@ export default function Combos() {
     try {
       const res = await fetch('/api/combos');
       if (res.ok) {
-        const data = await res.json();
+        const data = await parseResponseJson(res);
         setCombos(data.combos || []);
       }
     } catch (err) {
