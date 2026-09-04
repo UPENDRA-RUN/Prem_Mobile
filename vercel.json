@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://prem-mobile-api.onrender.com/api/:path*"
+      "destination": "https://prem-mobile.onrender.com/api/:path*"
     },
     {
       "source": "/((?!api/).*)",
