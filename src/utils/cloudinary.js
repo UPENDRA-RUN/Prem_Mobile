@@ -5,7 +5,8 @@
 
 export const CLOUDINARY_CONFIG = {
   cloudName: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'iuuqceor',
-  apiKey: import.meta.env.VITE_CLOUDINARY_API_KEY || '546736928497622'
+  apiKey: import.meta.env.VITE_CLOUDINARY_API_KEY || '546736928497622',
+  uploadPreset: import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'prem_mobile_preset'
 };
 
 /**
@@ -48,12 +49,14 @@ export function getCloudinaryUrl(publicIdOrUrl, options = {}) {
  * @param {File|Blob} file 
  * @param {string} uploadPreset 
  */
-export async function uploadToCloudinary(file, uploadPreset = 'prem_mobile_preset') {
+export async function uploadToCloudinary(file, uploadPreset = CLOUDINARY_CONFIG.uploadPreset) {
   try {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('upload_preset', uploadPreset);
-    formData.append('api_key', CLOUDINARY_CONFIG.apiKey);
+    if (CLOUDINARY_CONFIG.apiKey) {
+      formData.append('api_key', CLOUDINARY_CONFIG.apiKey);
+    }
 
     const res = await fetch(
       `https://api.cloudinary.com/v1_1/${CLOUDINARY_CONFIG.cloudName}/image/upload`,
@@ -66,10 +69,16 @@ export async function uploadToCloudinary(file, uploadPreset = 'prem_mobile_prese
     if (res.ok) {
       const data = await res.json();
       return { success: true, url: data.secure_url, publicId: data.public_id };
+    } else {
+      const errData = await res.json().catch(() => ({}));
+      console.warn('Cloudinary upload response:', res.status, errData);
+      return {
+        success: false,
+        error: errData.error?.message || `Cloudinary returned HTTP status ${res.status}`
+      };
     }
   } catch (err) {
     console.error('Cloudinary upload error:', err);
+    return { success: false, error: err.message || 'Cloudinary network request failed' };
   }
-
-  return { success: false, error: 'Upload failed' };
 }

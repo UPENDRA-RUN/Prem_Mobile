@@ -127,13 +127,53 @@ export default function AdminProductForm() {
         })
       );
 
-      const newUrls = compressedItems.map(item => item.dataUrl).filter(Boolean);
+      // 2. Upload each compressed image to Cloudinary (fallback to server upload, fallback to DataURL)
+      const uploadPromises = compressedItems.map(async ({ file, dataUrl }) => {
+        // Try Cloudinary CDN upload first
+        try {
+          const cloudRes = await uploadToCloudinary(file);
+          if (cloudRes && cloudRes.success && cloudRes.url) {
+            return cloudRes.url;
+          }
+        } catch (e) {
+          // ignore Cloudinary error
+        }
+
+        // Try local server API upload
+        try {
+          const res = await fetch('/api/upload', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${adminToken}`
+            },
+            body: JSON.stringify({ images: [{ dataUrl, filename: file.name }] })
+          });
+
+          const text = await res.text();
+          let data = {};
+          try { data = text ? JSON.parse(text) : {}; } catch (jsonErr) {}
+
+          if (res.ok && data.success) {
+            const url = data.url || (data.urls && data.urls[0]);
+            if (url) return url;
+          }
+        } catch (serverErr) {
+          // ignore server error
+        }
+
+        // Fast client DataURL fallback
+        return dataUrl;
+      });
+
+      const uploadedResults = await Promise.all(uploadPromises);
+      const validUrls = uploadedResults.filter(Boolean);
 
       // Remove default prem-main.jpg placeholder if real photos are being uploaded
       const baseList = imageList.filter(img => img !== '/images/prem-main.jpg');
 
       // Unique deduplication
-      const updatedList = Array.from(new Set([...baseList, ...newUrls]));
+      const updatedList = Array.from(new Set([...baseList, ...validUrls]));
 
       setFormData(prev => ({
         ...prev,
@@ -142,7 +182,7 @@ export default function AdminProductForm() {
 
       setUploadFeedback({
         type: 'success',
-        message: `Successfully attached ${newUrls.length} photo${newUrls.length > 1 ? 's' : ''} to product gallery!`
+        message: `Successfully attached ${validUrls.length} photo${validUrls.length > 1 ? 's' : ''} to product gallery!`
       });
     } catch (err) {
       console.error('File upload error:', err);
