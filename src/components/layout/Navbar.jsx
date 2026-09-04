@@ -5,6 +5,7 @@ import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
 import { useSundaySale } from '../../context/SundaySaleContext';
 import { useAdminAuth } from '../../context/AdminAuthContext';
+import { useCustomerAuth } from '../../context/CustomerAuthContext';
 import { formatCurrency } from '../../utils/formatters';
 import {
   Search,
@@ -18,7 +19,8 @@ import {
   User,
   Settings,
   Flame,
-  ShieldCheck
+  ShieldCheck,
+  LogOut
 } from 'lucide-react';
 import SearchModal from './SearchModal';
 
@@ -28,11 +30,13 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   
   const { totalItems, subtotal, setIsCartDrawerOpen } = useCart();
   const { wishlistCount } = useWishlist();
   const { isLive: isSundaySaleLive } = useSundaySale();
   const { isAuthenticated: isAdmin } = useAdminAuth();
+  const { customerUser, isAuthenticated: isCustomer, logout: customerLogout } = useCustomerAuth();
   const location = useLocation();
 
 
@@ -340,17 +344,77 @@ export default function Navbar() {
               </span>
             </button>
 
-            {/* User Account Settings & Login */}
-            <Link
-              to="/account"
-              className="flex flex-col items-center justify-center text-[#050505] hover:text-[#e51b23] transition-colors p-1"
-              title="My Account Settings"
-            >
-              <User className="w-5 h-5 stroke-[2.2]" />
-              <span className="text-[10px] font-bold text-[#050505] mt-0.5 leading-none">
-                Account
-              </span>
-            </Link>
+            {/* User Account / Profile / Login */}
+            {isCustomer ? (
+              <div className="relative">
+                <button
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  className="flex items-center gap-2 py-1.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#050505] transition-colors cursor-pointer"
+                  title="My Account"
+                >
+                  <div className="w-6 h-6 rounded-full bg-[#ffd000] text-black font-black text-xs flex items-center justify-center flex-shrink-0 shadow-xs">
+                    {customerUser?.name ? customerUser.name[0].toUpperCase() : '👤'}
+                  </div>
+                  <div className="flex flex-col text-left">
+                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider leading-none">Customer</span>
+                    <span className="text-xs font-black max-w-[110px] truncate text-slate-900 leading-tight">
+                      {customerUser?.name || 'Customer'}
+                    </span>
+                  </div>
+                  <ChevronDown className="w-3.5 h-3.5 text-slate-500" />
+                </button>
+
+                {isUserMenuOpen && (
+                  <div
+                    className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-slate-200 py-2 z-50 animate-fade-in"
+                    onMouseLeave={() => setIsUserMenuOpen(false)}
+                  >
+                    <div className="px-4 py-2.5 border-b border-slate-100">
+                      <p className="text-xs font-black text-slate-900 truncate">{customerUser?.name}</p>
+                      <p className="text-[11px] text-slate-500 truncate">{customerUser?.email || customerUser?.mobile}</p>
+                    </div>
+                    <Link
+                      to="/account"
+                      onClick={() => setIsUserMenuOpen(false)}
+                      className="flex items-center gap-2.5 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-[#e51b23] transition-colors"
+                    >
+                      <User className="w-4 h-4" />
+                      <span>My Profile</span>
+                    </Link>
+                    <Link
+                      to="/orders"
+                      onClick={() => setIsUserMenuOpen(false)}
+                      className="flex items-center gap-2.5 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-[#e51b23] transition-colors"
+                    >
+                      <ShoppingBag className="w-4 h-4" />
+                      <span>My Orders</span>
+                    </Link>
+                    <div className="border-t border-slate-100 my-1" />
+                    <button
+                      onClick={() => {
+                        setIsUserMenuOpen(false);
+                        customerLogout();
+                      }}
+                      className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-bold text-red-600 hover:bg-red-50 transition-colors text-left cursor-pointer"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span>Logout</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                className="flex flex-col items-center justify-center text-[#050505] hover:text-[#e51b23] transition-colors p-1"
+                title="Customer Login"
+              >
+                <User className="w-5 h-5 stroke-[2.2]" />
+                <span className="text-[10px] font-bold text-[#050505] mt-0.5 leading-none">
+                  Login
+                </span>
+              </Link>
+            )}
 
             {/* Wishlist */}
             <Link
@@ -460,6 +524,28 @@ export default function Navbar() {
               <Link to="/about" className="px-4 py-2.5 rounded-xl bg-slate-50 text-xs font-bold text-[#050505]">ABOUT US</Link>
               <Link to="/contact" className="px-4 py-2.5 rounded-xl bg-slate-50 text-xs font-bold text-[#050505]">CONTACT</Link>
               <Link to="/account" className="px-4 py-2.5 rounded-xl bg-slate-50 text-xs font-bold text-[#050505]">MY ACCOUNT</Link>
+              
+              {isCustomer ? (
+                <>
+                  <Link to="/orders" className="px-4 py-2.5 rounded-xl bg-slate-50 text-xs font-bold text-[#050505]">MY ORDERS</Link>
+                  <button
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      customerLogout();
+                    }}
+                    className="px-4 py-2.5 rounded-xl bg-red-50 text-xs font-bold text-red-600 text-left"
+                  >
+                    LOGOUT
+                  </button>
+                </>
+              ) : (
+                <Link
+                  to="/login"
+                  className="col-span-2 px-4 py-2.5 rounded-xl bg-[#ffd000]/20 border border-[#ffd000]/40 text-xs font-black text-amber-900 text-center"
+                >
+                  CUSTOMER LOGIN / SIGN UP →
+                </Link>
+              )}
               
               {/* Switch to Admin option */}
               <Link
