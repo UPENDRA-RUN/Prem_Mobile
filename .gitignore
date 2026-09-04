@@ -24,10 +24,10 @@ dist-ssr
 !.env.example
 
 # Database files & local storage
-*.sqlite
-*.sqlite3
-*.db
-server/data/*.db
+*.sqlite*
+*.db*
+server/data/*.db*
+server/data/*.sqlite*
 
 # Editor directories and files
 .vscode/*
