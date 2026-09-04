@@ -9,7 +9,8 @@ app.use('/api', createApiRouter());
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static('dist'));
-  app.get('*', (req, res) => {
+  // Express 5 syntax for catch-all route wildcard
+  app.get('(.*)', (req, res) => {
     res.sendFile('dist/index.html', { root: '.' });
   });
 }
