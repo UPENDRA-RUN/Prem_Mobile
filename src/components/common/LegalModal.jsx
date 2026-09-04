@@ -119,23 +119,23 @@ export default function LegalModal({ isOpen, onClose, policyType = 'privacy' }) 
       />
 
       {/* Modal Dialog */}
-      <div className="relative bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl z-10 space-y-5 border border-slate-200">
+      <div className="relative bg-white rounded-3xl max-w-xl w-full p-4 sm:p-8 shadow-2xl z-10 space-y-5 border border-slate-200">
         <div className="flex items-center justify-between border-b border-slate-100 pb-4">
           <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-2xl bg-[#050505] text-[#FFD400] flex items-center justify-center">
-              <IconComp className="w-5 h-5 text-[#FFD400]" />
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-[#050505] text-[#FFD400] flex items-center justify-center flex-shrink-0">
+              <IconComp className="w-4 h-4 sm:w-5 sm:h-5 text-[#FFD400]" />
             </div>
             <div>
-              <h3 className="font-display font-black text-lg text-[#050505] uppercase tracking-wider">
+              <h3 className="font-display font-black text-base sm:text-lg text-[#050505] uppercase tracking-wider">
                 {currentPolicy.title}
               </h3>
-              <p className="text-xs text-slate-500 font-medium">Prem Mobile • Pinto Park, Gwalior</p>
+              <p className="text-[11px] sm:text-xs text-slate-500 font-medium">Prem Mobile • Pinto Park, Gwalior</p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="p-2 rounded-xl text-slate-400 hover:text-black hover:bg-slate-100 transition-colors"
+            className="p-1.5 sm:p-2 rounded-xl text-slate-400 hover:text-black hover:bg-slate-100 transition-colors flex-shrink-0"
           >
             <X className="w-5 h-5" />
           </button>
@@ -148,7 +148,7 @@ export default function LegalModal({ isOpen, onClose, policyType = 'privacy' }) 
         <div className="pt-2 border-t border-slate-100 flex justify-end">
           <button
             onClick={onClose}
-            className="px-6 py-2.5 rounded-xl bg-[#FFD400] text-[#050505] font-black text-xs uppercase tracking-wider shadow-sm hover:bg-[#e6be00]"
+            className="w-full min-[400px]:w-auto px-6 py-2.5 rounded-xl bg-[#FFD400] text-[#050505] font-black text-xs uppercase tracking-wider shadow-sm hover:bg-[#e6be00] text-center"
           >
             Close Window
           </button>

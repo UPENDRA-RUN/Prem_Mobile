@@ -69,12 +69,12 @@ export default function StoreLocationSection() {
               </div>
 
               {/* Three Yellow Buttons on Black Background */}
-              <div className="pt-4 flex flex-wrap gap-3">
+              <div className="pt-4 flex flex-col min-[480px]:flex-row flex-wrap gap-3">
                 
                 {/* 1. CALL NOW */}
                 <a
                   href={`tel:${storeConfig.phone}`}
-                  className="px-6 py-3.5 rounded-lg bg-[#ffd000] hover:bg-[#e6bd00] text-[#050505] font-black text-xs uppercase tracking-wider shadow-lg flex items-center gap-2 transition-transform hover:scale-105"
+                  className="px-6 py-3.5 rounded-lg bg-[#ffd000] hover:bg-[#e6bd00] text-[#050505] font-black text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 transition-transform hover:scale-105 w-full min-[480px]:w-auto"
                 >
                   <Phone className="w-4 h-4" />
                   <span>CALL NOW</span>
@@ -83,7 +83,7 @@ export default function StoreLocationSection() {
                 {/* 2. WHATSAPP */}
                 <button
                   onClick={() => openGeneralWhatsApp('Store Location & Enquiry')}
-                  className="px-6 py-3.5 rounded-lg bg-[#ffd000] hover:bg-[#e6bd00] text-[#050505] font-black text-xs uppercase tracking-wider shadow-lg flex items-center gap-2 transition-transform hover:scale-105"
+                  className="px-6 py-3.5 rounded-lg bg-[#ffd000] hover:bg-[#e6bd00] text-[#050505] font-black text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 transition-transform hover:scale-105 w-full min-[480px]:w-auto"
                 >
                   <MessageCircle className="w-4 h-4 fill-black text-[#ffd000]" />
                   <span>WHATSAPP</span>
@@ -94,7 +94,7 @@ export default function StoreLocationSection() {
                   href={storeConfig.mapsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-6 py-3.5 rounded-lg bg-[#ffd000] hover:bg-[#e6bd00] text-[#050505] font-black text-xs uppercase tracking-wider shadow-lg flex items-center gap-2 transition-transform hover:scale-105"
+                  className="px-6 py-3.5 rounded-lg bg-[#ffd000] hover:bg-[#e6bd00] text-[#050505] font-black text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 transition-transform hover:scale-105 w-full min-[480px]:w-auto"
                 >
                   <Navigation className="w-4 h-4 fill-black" />
                   <span>GET DIRECTIONS</span>

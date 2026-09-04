@@ -59,6 +59,14 @@ export default function AdminLayout() {
         </button>
       </div>
 
+      {/* MOBILE BACKDROP OVERLAY */}
+      {isMobileNavOpen && (
+        <div
+          className="fixed inset-0 bg-black/60 backdrop-blur-xs z-30 md:hidden animate-fade-in"
+          onClick={() => setIsMobileNavOpen(false)}
+        />
+      )}
+
       {/* SIDEBAR (Desktop & Mobile Drawer) */}
       <aside
         className={`fixed md:sticky top-0 left-0 h-screen w-72 bg-white text-slate-700 flex flex-col justify-between border-r border-slate-200 z-40 transition-transform duration-200 shadow-sm ${

@@ -235,7 +235,7 @@ export default function ProductDetails() {
         </div>
 
         {/* Product Details Grid */}
-        <div className="bg-white rounded-3xl sm:rounded-4xl border border-slate-200 p-6 sm:p-10 shadow-sm">
+        <div className="bg-white rounded-2xl sm:rounded-4xl border border-slate-200 p-4 sm:p-10 shadow-sm">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
             
             {/* Left: Gallery */}
@@ -522,10 +522,10 @@ export default function ProductDetails() {
                       <span className="text-xs font-black text-emerald-800">{formatCurrency(product.price * quantity)}</span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2 pt-1">
+                    <div className="grid grid-cols-1 min-[420px]:grid-cols-2 gap-2 pt-1">
                       <Link
                         to="/cart"
-                        className="py-2.5 px-3 rounded-xl bg-[#050505] text-[#FFD400] font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-sm"
+                        className="py-2.5 px-3 rounded-xl bg-[#050505] text-[#FFD400] font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-sm text-center"
                       >
                         <span>VIEW CART & CHECKOUT</span>
                         <ArrowRight className="w-3.5 h-3.5" />

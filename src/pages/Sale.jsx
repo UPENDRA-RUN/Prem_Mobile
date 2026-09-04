@@ -170,16 +170,16 @@ export default function Sale() {
     <div className="py-8 sm:py-12 bg-[#f8fafc] min-h-screen space-y-10">
       
       {/* 1. LIVE HERO BANNER */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative rounded-3xl sm:rounded-4xl overflow-hidden bg-gradient-to-r from-black via-[#1c0808] to-black border-2 border-[#ffd000] p-6 sm:p-12 text-white shadow-2xl">
+      <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8">
+        <div className="relative rounded-3xl sm:rounded-4xl overflow-hidden bg-gradient-to-r from-black via-[#1c0808] to-black border-2 border-[#ffd000] p-4 sm:p-12 text-white shadow-2xl">
           
           {/* Flame Glows */}
           <div className="absolute top-0 right-0 w-80 h-80 bg-[#e51b23]/30 rounded-full blur-3xl pointer-events-none" />
           <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#ffd000]/20 rounded-full blur-3xl pointer-events-none" />
 
-          <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+          <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 sm:gap-8">
             <div className="max-w-2xl space-y-4">
-              <div className="flex flex-wrap items-center gap-2.5">
+              <div className="flex flex-wrap items-center gap-2">
                 <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#e51b23] text-white font-black text-xs uppercase tracking-wider shadow-md animate-pulse">
                   <Flame className="w-4 h-4 fill-white" />
                   <span>🟢 SALE IS LIVE</span>
@@ -193,18 +193,18 @@ export default function Sale() {
                 )}
               </div>
 
-              <h1 className="font-display font-black text-3xl sm:text-5xl text-white tracking-tight">
+              <h1 className="font-display font-black text-2xl sm:text-5xl text-white tracking-tight">
                 🔥 {sale?.name || 'SPECIAL FLASH SALE'}
               </h1>
 
-              <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
+              <p className="text-xs sm:text-base text-slate-300 leading-relaxed">
                 Special promotional discounts available now! Verified authentic products with store warranty. Order online or reserve via WhatsApp.
               </p>
             </div>
 
             {/* Countdown Box */}
             {sale?.endDate && (
-              <div className="p-5 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md shrink-0">
+              <div className="p-3.5 sm:p-5 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md shrink-0 w-full sm:w-auto">
                 <CountdownTimer endDate={sale.endDate} endTime={sale.endTime} size="normal" />
               </div>
             )}
@@ -213,35 +213,35 @@ export default function Sale() {
       </div>
 
       {/* 2. LIVE PRODUCTS GRID */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 space-y-6">
         <div className="flex items-center justify-between border-b border-slate-200 pb-3">
           <div>
-            <h2 className="font-display font-black text-xl text-[#050505]">
+            <h2 className="font-display font-black text-lg sm:text-xl text-[#050505]">
               Featured Sale Products ({items.length})
             </h2>
             <p className="text-xs text-slate-500">
               Special prices applied automatically at checkout.
             </p>
           </div>
-          <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">
-            In Stock & Ready to Ship
+          <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 sm:px-3 py-1 rounded-full">
+            In Stock
           </span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
           {items.map((item) => (
             <div
               key={item.id}
-              className="bg-white rounded-3xl border-2 border-amber-200/80 p-5 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between relative group"
+              className="bg-white rounded-3xl border-2 border-amber-200/80 p-4 sm:p-5 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between relative group"
             >
               {/* Discount Flame Badge */}
-              <span className="absolute top-4 left-4 z-10 px-3 py-1 rounded-full bg-[#e51b23] text-white font-black text-xs flex items-center gap-1 shadow-md">
+              <span className="absolute top-3.5 left-3.5 z-10 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-[#e51b23] text-white font-black text-xs flex items-center gap-1 shadow-md">
                 <Flame className="w-3 h-3 fill-white" />
                 <span>{item.discountPercent}% OFF</span>
               </span>
 
               {/* Product Image */}
-              <Link to={`/product/${item.id}`} className="block relative aspect-square mb-4 overflow-hidden rounded-2xl bg-slate-50 flex items-center justify-center p-4">
+              <Link to={`/product/${item.id}`} className="block relative aspect-square mb-3 sm:mb-4 overflow-hidden rounded-2xl bg-slate-50 flex items-center justify-center p-3 sm:p-4">
                 <img
                   src={item.image}
                   alt={item.name}
@@ -250,27 +250,27 @@ export default function Sale() {
               </Link>
 
               {/* Product Info */}
-              <div className="space-y-2">
-                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+              <div className="space-y-1.5 sm:space-y-2">
+                <span className="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
                   {item.category} • {item.brand}
                 </span>
 
-                <Link to={`/product/${item.id}`} className="font-display font-black text-sm text-[#050505] hover:text-[#e51b23] transition-colors line-clamp-2 block leading-snug">
+                <Link to={`/product/${item.id}`} className="font-display font-black text-xs sm:text-sm text-[#050505] hover:text-[#e51b23] transition-colors line-clamp-2 block leading-snug">
                   {item.name}
                 </Link>
 
                 {/* PRICING BLOCK */}
                 <div className="pt-2 border-t border-slate-100">
                   <div className="flex items-baseline gap-2">
-                    <span className="text-2xl font-black font-display text-[#e51b23]">
+                    <span className="text-xl sm:text-2xl font-black font-display text-[#e51b23]">
                       {formatCurrency(item.salePrice)}
                     </span>
-                    <span className="text-sm text-slate-400 line-through">
+                    <span className="text-xs sm:text-sm text-slate-400 line-through">
                       {formatCurrency(item.regularPrice)}
                     </span>
                   </div>
 
-                  <span className="text-[11px] font-bold text-emerald-600 block mt-0.5">
+                  <span className="text-[10px] sm:text-[11px] font-bold text-emerald-600 block mt-0.5">
                     Save {formatCurrency(item.savings)} today
                   </span>
                 </div>
@@ -280,7 +280,7 @@ export default function Sale() {
               <div className="pt-4 grid grid-cols-2 gap-2">
                 <button
                   onClick={() => handleAddSaleItem(item)}
-                  className="py-2.5 px-3 rounded-xl bg-[#ffd000] hover:bg-yellow-400 text-[#050505] font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-sm transition-transform active:scale-95"
+                  className="py-2.5 px-2 rounded-xl bg-[#ffd000] hover:bg-yellow-400 text-[#050505] font-black text-[11px] sm:text-xs uppercase tracking-wider flex items-center justify-center gap-1 shadow-sm transition-transform active:scale-95"
                 >
                   <ShoppingBag className="w-3.5 h-3.5 text-[#050505]" />
                   <span>ADD TO CART</span>
@@ -288,7 +288,7 @@ export default function Sale() {
 
                 <Link
                   to={`/product/${item.id}`}
-                  className="py-2.5 px-3 rounded-xl bg-[#050505] hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1 transition-colors"
+                  className="py-2.5 px-2 rounded-xl bg-[#050505] hover:bg-slate-800 text-white font-bold text-[11px] sm:text-xs uppercase tracking-wider flex items-center justify-center gap-1 transition-colors text-center"
                 >
                   <span>VIEW DETAILS</span>
                   <ArrowRight className="w-3 h-3" />

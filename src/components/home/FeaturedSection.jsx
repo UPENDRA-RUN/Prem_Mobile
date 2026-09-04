@@ -9,7 +9,7 @@ export function ProductCardExact({ product }) {
   const isLiked = isInWishlist(product.id);
 
   return (
-    <div className="group relative bg-white rounded-2xl border border-[#dedede] p-3 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between hover:-translate-y-1 h-full min-h-[260px] max-h-[275px]">
+    <div className="group relative bg-white rounded-2xl border border-[#dedede] p-3 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between hover:-translate-y-1 h-full min-h-[260px]">
       <div>
         {/* Top Badges & Wishlist */}
         <div className="relative h-[135px] w-full rounded-xl bg-[#f8fafc] overflow-hidden mb-2.5 p-2 flex items-center justify-center">
@@ -118,7 +118,7 @@ export default function FeaturedSection({ products }) {
 
           {/* Sunday Special Sale Sidebar Banner Card */}
           <div className="sm:col-span-2 md:col-span-3 lg:col-span-4 xl:col-span-2 flex flex-col">
-            <div className="relative w-full h-full min-h-[260px] max-h-[275px] rounded-2xl overflow-hidden bg-gradient-to-b from-[#0a0a0a] via-[#111111] to-[#1a0808] border-2 border-[#ffd000]/60 p-4 shadow-md flex flex-col justify-between text-white group">
+            <div className="relative w-full h-full min-h-[260px] rounded-2xl overflow-hidden bg-gradient-to-b from-[#0a0a0a] via-[#111111] to-[#1a0808] border-2 border-[#ffd000]/60 p-4 shadow-md flex flex-col justify-between text-white group">
               
               {/* Fiery Background Glow */}
               <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#e51b23]/30 rounded-full blur-2xl pointer-events-none" />

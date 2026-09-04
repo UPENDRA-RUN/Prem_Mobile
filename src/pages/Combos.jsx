@@ -123,17 +123,17 @@ export default function Combos() {
             {combos.map((combo) => (
               <div
                 key={combo.id}
-                className="bg-white rounded-3xl border-2 border-amber-200/90 p-6 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between relative group"
+                className="bg-white rounded-3xl border-2 border-amber-200/90 p-4 sm:p-6 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between relative group"
               >
                 {/* Discount Badge */}
-                <span className="absolute top-4 left-4 z-10 px-3 py-1 rounded-full bg-[#e51b23] text-white font-black text-xs flex items-center gap-1 shadow-md">
+                <span className="absolute top-3.5 left-3.5 z-10 px-3 py-1 rounded-full bg-[#e51b23] text-white font-black text-xs flex items-center gap-1 shadow-md">
                   <Flame className="w-3.5 h-3.5 fill-white" />
                   <span>{combo.badgeText || `${combo.discountPercent}% OFF`}</span>
                 </span>
 
                 <div className="space-y-4">
                   {/* Combo Image */}
-                  <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-slate-50 flex items-center justify-center p-4 border border-slate-100">
+                  <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-slate-50 flex items-center justify-center p-3 sm:p-4 border border-slate-100">
                     <img
                       src={combo.image || '/images/placeholder.jpg'}
                       alt={combo.name}
@@ -146,7 +146,7 @@ export default function Combos() {
                     <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
                       COMBO PACKAGE
                     </span>
-                    <h3 className="font-display font-black text-lg text-[#050505] leading-snug">
+                    <h3 className="font-display font-black text-base sm:text-lg text-[#050505] leading-snug">
                       {combo.name}
                     </h3>
                     <p className="text-xs text-slate-500 mt-1 line-clamp-2">
@@ -155,20 +155,20 @@ export default function Combos() {
                   </div>
 
                   {/* PRICING */}
-                  <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                  <div className="p-3 sm:p-4 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between">
                     <div>
                       <span className="text-[10px] font-bold text-slate-400 uppercase block">Combo Offer Price</span>
                       <div className="flex items-baseline gap-2">
-                        <span className="text-2xl font-black font-display text-[#e51b23]">
+                        <span className="text-xl sm:text-2xl font-black font-display text-[#e51b23]">
                           {formatCurrency(combo.comboPrice)}
                         </span>
-                        <span className="text-sm text-slate-400 line-through">
+                        <span className="text-xs sm:text-sm text-slate-400 line-through">
                           {formatCurrency(combo.regularPrice)}
                         </span>
                       </div>
                     </div>
 
-                    <span className="text-xs font-black text-emerald-700 bg-emerald-100 px-3 py-1.5 rounded-xl">
+                    <span className="text-xs font-black text-emerald-700 bg-emerald-100 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl">
                       Save {formatCurrency(combo.savings)}
                     </span>
                   </div>
@@ -190,21 +190,21 @@ export default function Combos() {
                 </div>
 
                 {/* ACTION BUTTONS */}
-                <div className="pt-6 grid grid-cols-2 gap-3">
+                <div className="pt-5 grid grid-cols-1 min-[420px]:grid-cols-2 gap-2.5">
                   <button
                     onClick={() => handleAddComboToCart(combo)}
-                    className="py-3 px-4 rounded-xl bg-[#ffd000] hover:bg-yellow-400 text-[#050505] font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-sm transition-transform active:scale-95"
+                    className="py-3 px-3 rounded-xl bg-[#ffd000] hover:bg-yellow-400 text-[#050505] font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-sm transition-transform active:scale-95"
                   >
                     <ShoppingBag className="w-4 h-4 text-[#050505]" />
                     <span>ADD COMBO</span>
                   </button>
 
                   <button
-                    onClick={() => openGeneralWhatsApp(`I am interested in buying Combo Package: ${combo.name} at ${formatCurrency(combo.comboPrice)}`)}
-                    className="py-3 px-4 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors"
+                    onClick={() => openGeneralWhatsApp(`Enquiry for ${combo.name} - ₹${combo.comboPrice}`)}
+                    className="py-3 px-3 rounded-xl bg-[#050505] hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors"
                   >
-                    <MessageCircle className="w-4 h-4 fill-white" />
-                    <span>WHATSAPP</span>
+                    <MessageCircle className="w-4 h-4 text-[#ffd000]" />
+                    <span>ENQUIRE</span>
                   </button>
                 </div>
 

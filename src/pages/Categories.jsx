@@ -7,16 +7,16 @@ import { storeConfig } from '../config/store';
 export default function Categories() {
   return (
     <div className="py-8 sm:py-12 bg-[#f5f5f5] min-h-screen">
-      <div className="max-w-[1500px] mx-auto px-6 space-y-10">
+      <div className="max-w-[1500px] mx-auto px-3.5 sm:px-6 space-y-8 sm:space-y-10">
         
         {/* Banner Header */}
-        <div className="rounded-3xl bg-[#050505] text-white p-6 sm:p-10 shadow-xl border-2 border-[#ffd000]/40 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="rounded-3xl bg-[#050505] text-white p-4 sm:p-10 shadow-xl border-2 border-[#ffd000]/40 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="space-y-2 text-center md:text-left">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#e51b23] text-white text-xs font-black uppercase tracking-wider">
               <Flame className="w-3.5 h-3.5 fill-white" />
               <span>EXPLORE BY CATEGORY</span>
             </div>
-            <h1 className="font-display font-black text-3xl sm:text-4xl text-white">
+            <h1 className="font-display font-black text-2xl sm:text-4xl text-white">
               ALL PRODUCT CATEGORIES
             </h1>
             <p className="text-xs sm:text-sm text-[#ffd000] font-bold">
@@ -25,7 +25,7 @@ export default function Categories() {
           </div>
           <Link
             to="/shop"
-            className="px-6 py-3 rounded-lg bg-[#ffd000] hover:bg-[#e6bd00] text-[#050505] font-black text-xs uppercase tracking-wider shadow-lg flex items-center gap-2"
+            className="w-full sm:w-auto px-6 py-3 rounded-lg bg-[#ffd000] hover:bg-[#e6bd00] text-[#050505] font-black text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 text-center"
           >
             <span>VIEW ENTIRE STORE</span>
             <ArrowRight className="w-4 h-4" />
@@ -33,7 +33,7 @@ export default function Categories() {
         </div>
 
         {/* 12 Categories Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-6">
           {categories.map((cat) => (
             <Link
               key={cat.id}

@@ -13,7 +13,7 @@ export default function SundaySpecialSection() {
     <section className="py-12 sm:py-16 bg-[#050505] text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <div className="rounded-3xl sm:rounded-4xl bg-gradient-to-br from-[#111111] via-[#050505] to-[#1a1100] border-2 border-[#FFD400]/60 p-6 sm:p-10 lg:p-12 shadow-2xl relative overflow-hidden">
+        <div className="rounded-3xl sm:rounded-4xl bg-gradient-to-br from-[#111111] via-[#050505] to-[#1a1100] border-2 border-[#FFD400]/60 p-4 sm:p-10 lg:p-12 shadow-2xl relative overflow-hidden">
           
           {/* Subtle Flame Background Glow */}
           <div className="absolute top-0 right-0 w-96 h-96 bg-[#FFD400]/15 rounded-full blur-3xl pointer-events-none" />
@@ -30,7 +30,7 @@ export default function SundaySpecialSection() {
                 </span>
               </div>
 
-              <h2 className="font-display font-black text-3xl sm:text-4xl md:text-5xl text-white tracking-tight leading-tight">
+              <h2 className="font-display font-black text-2xl sm:text-4xl md:text-5xl text-white tracking-tight leading-tight">
                 {isLive && sale?.name ? (
                   <span>{sale.name.toUpperCase()}</span>
                 ) : (
@@ -59,19 +59,19 @@ export default function SundaySpecialSection() {
               <div className="pt-3 flex flex-col sm:flex-row items-center gap-3 justify-center lg:justify-start">
                 <Link
                   to="/sale"
-                  className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-[#FFD400] hover:bg-[#e6be00] text-[#050505] font-black text-xs sm:text-sm uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 transition-transform hover:scale-105"
+                  className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-[#FFD400] hover:bg-[#e6be00] text-[#050505] font-black text-xs sm:text-sm uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 transition-transform hover:scale-105 text-center"
                 >
-                  <span>{isLive ? 'SHOP LIVE DEALS NOW' : 'EXPLORE SUNDAY SALE'}</span>
+                  <span>{isLive ? 'SHOP LIVE DEALS' : 'EXPLORE SUNDAY SALE'}</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
 
 
                 <button
                   onClick={() => openGeneralWhatsApp('Sunday Special Sale Inquiry')}
-                  className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white font-black text-xs sm:text-sm uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 transition-transform hover:scale-105"
+                  className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white font-black text-xs sm:text-sm uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 transition-transform hover:scale-105 text-center"
                 >
                   <MessageCircle className="w-4 h-4 fill-white" />
-                  <span>ORDER ON WHATSAPP: {storeConfig.displayPhone}</span>
+                  <span>ORDER ON WHATSAPP</span>
                 </button>
               </div>
             </div>

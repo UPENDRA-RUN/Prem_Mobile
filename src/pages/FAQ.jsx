@@ -78,14 +78,14 @@ export default function FAQ() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         
         {/* HERO BANNER & SEARCH */}
-        <div className="rounded-3xl bg-[#050505] text-white p-8 sm:p-12 shadow-2xl border-2 border-[#FFD400]/40 relative overflow-hidden text-center space-y-6">
-          <div className="relative z-10 max-w-3xl mx-auto space-y-4">
+        <div className="rounded-3xl bg-[#050505] text-white p-4 sm:p-12 shadow-2xl border-2 border-[#FFD400]/40 relative overflow-hidden text-center space-y-5 sm:space-y-6">
+          <div className="relative z-10 max-w-3xl mx-auto space-y-3 sm:space-y-4">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E31B23] text-white text-xs font-black uppercase tracking-wider">
               <HelpCircle className="w-3.5 h-3.5 fill-white" />
               <span>PREM MOBILE HELP & FAQ CENTER</span>
             </div>
             
-            <h1 className="font-display font-black text-3xl sm:text-5xl text-white tracking-tight leading-tight">
+            <h1 className="font-display font-black text-2xl sm:text-5xl text-white tracking-tight leading-tight">
               How Can We Help You Today?
             </h1>
             

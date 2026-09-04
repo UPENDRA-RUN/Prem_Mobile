@@ -32,6 +32,7 @@ import OrderSuccess from './pages/OrderSuccess';
 import Sale from './pages/Sale';
 import SundaySale from './pages/SundaySale';
 import Combos from './pages/Combos';
+import Orders from './pages/Orders';
 import NotFound from './pages/NotFound';
 
 // Developer & Design Guides
@@ -166,6 +167,7 @@ export default function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Login />} />
               <Route path="/account" element={<AccountSettings />} />
+              <Route path="/orders" element={<Orders />} />
               <Route path="/wishlist" element={<Wishlist />} />
 
               {/* Component & Design Guides */}

@@ -3,6 +3,16 @@ import fs from 'fs';
 import path from 'path';
 import createApiRouter from './apiRouter.js';
 
+// Automatically load .env if running standalone under Node.js 20+
+const envPath = path.resolve(process.cwd(), '.env');
+if (typeof process.loadEnvFile === 'function' && fs.existsSync(envPath)) {
+  try {
+    process.loadEnvFile(envPath);
+  } catch (e) {
+    // Already loaded or parsed
+  }
+}
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
