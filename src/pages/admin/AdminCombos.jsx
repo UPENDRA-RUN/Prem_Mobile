@@ -85,15 +85,7 @@ export default function AdminCombos() {
     setNotification(null);
 
     try {
-      // 1. Try Cloudinary first
-      const cloudRes = await uploadToCloudinary(file);
-      if (cloudRes && cloudRes.success && cloudRes.url) {
-        setFormData(prev => ({ ...prev, image: cloudRes.url }));
-        setNotification({ type: 'success', message: 'Combo banner image uploaded successfully!' });
-        return;
-      }
-
-      // 2. Fallback to /api/upload
+      // Generate Data URL
       const reader = new FileReader();
       const dataUrl = await new Promise((resolve, reject) => {
         reader.onload = () => resolve(reader.result);
@@ -101,25 +93,46 @@ export default function AdminCombos() {
         reader.readAsDataURL(file);
       });
 
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${adminToken}`
-        },
-        body: JSON.stringify({ images: [{ dataUrl, filename: file.name }] })
-      });
+      // 1. Try Cloudinary first
+      try {
+        const cloudRes = await uploadToCloudinary(file);
+        if (cloudRes && cloudRes.success && cloudRes.url) {
+          setFormData(prev => ({ ...prev, image: cloudRes.url }));
+          setNotification({ type: 'success', message: 'Combo banner image uploaded successfully!' });
+          return;
+        }
+      } catch (e) {
+        // ignore cloudinary error
+      }
 
-      const data = await res.json();
-      if (res.ok && data.success) {
-        const url = data.url || (data.urls && data.urls[0]);
-        setFormData(prev => ({ ...prev, image: url }));
-        setNotification({ type: 'success', message: 'Combo banner image uploaded successfully!' });
-      } else {
-        throw new Error(data.error || 'Failed to upload image.');
+      // 2. Fallback to /api/upload or DataURL
+      try {
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${adminToken}`
+          },
+          body: JSON.stringify({ images: [{ dataUrl, filename: file.name }] })
+        });
+
+        const text = await res.text();
+        let data = {};
+        try {
+          data = text ? JSON.parse(text) : {};
+        } catch (jsonErr) {
+          data = {};
+        }
+
+        const url = (res.ok && data.success) ? (data.url || (data.urls && data.urls[0])) : dataUrl;
+        setFormData(prev => ({ ...prev, image: url || dataUrl }));
+        setNotification({ type: 'success', message: 'Combo banner image set successfully!' });
+      } catch (serverErr) {
+        setFormData(prev => ({ ...prev, image: dataUrl }));
+        setNotification({ type: 'success', message: 'Combo banner image set successfully!' });
       }
     } catch (err) {
-      setNotification({ type: 'error', message: err.message });
+      setNotification({ type: 'error', message: 'Failed to process image file.' });
     } finally {
       setIsUploading(false);
     }

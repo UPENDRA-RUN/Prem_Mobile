@@ -113,20 +113,31 @@ export default function AdminSale() {
       reader.readAsDataURL(file);
     });
 
-    const res = await fetch('/api/upload', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${adminToken}`
-      },
-      body: JSON.stringify({ images: [{ dataUrl, filename: file.name }] })
-    });
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${adminToken}`
+        },
+        body: JSON.stringify({ images: [{ dataUrl, filename: file.name }] })
+      });
 
-    const data = await res.json();
-    if (!res.ok || !data.success) {
-      throw new Error(data.error || 'Failed to upload image.');
+      const text = await res.text();
+      let data = {};
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch (jsonErr) {
+        data = {};
+      }
+
+      if (res.ok && data.success) {
+        return data.url || (data.urls && data.urls[0]) || dataUrl;
+      }
+    } catch (e) {
+      // ignore
     }
-    return data.url || (data.urls && data.urls[0]);
+    return dataUrl;
   };
 
   const fetchAdminSale = async () => {

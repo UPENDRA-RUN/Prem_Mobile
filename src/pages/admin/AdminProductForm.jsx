@@ -123,19 +123,27 @@ export default function AdminProductForm() {
           throw new Error(`"${file.name}" is too large. Select images under 15MB.`);
         }
 
-        // Try direct Cloudinary upload first
-        const cloudRes = await uploadToCloudinary(file);
-        if (cloudRes.success && cloudRes.url) {
-          uploadedUrls.push(cloudRes.url);
-        } else {
-          // Fallback to server API upload
-          const reader = new FileReader();
-          const dataUrl = await new Promise((resolve, reject) => {
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = reject;
-            reader.readAsDataURL(file);
-          });
+        // Generate base64 Data URL
+        const reader = new FileReader();
+        const dataUrl = await new Promise((resolve, reject) => {
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
 
+        // 1. Try direct Cloudinary upload first
+        try {
+          const cloudRes = await uploadToCloudinary(file);
+          if (cloudRes && cloudRes.success && cloudRes.url) {
+            uploadedUrls.push(cloudRes.url);
+            continue;
+          }
+        } catch (e) {
+          // ignore cloudinary error
+        }
+
+        // 2. Fallback to server API upload or local DataURL
+        try {
           const res = await fetch('/api/upload', {
             method: 'POST',
             headers: {
@@ -145,13 +153,26 @@ export default function AdminProductForm() {
             body: JSON.stringify({ images: [{ dataUrl, filename: file.name }] })
           });
 
-          const data = await res.json();
-          if (res.ok && data.success) {
-            const urls = data.urls || [data.url];
-            uploadedUrls.push(...urls);
-          } else {
-            throw new Error(data.error || `Failed to upload "${file.name}".`);
+          const text = await res.text();
+          let data = {};
+          try {
+            data = text ? JSON.parse(text) : {};
+          } catch (jsonErr) {
+            data = {};
           }
+
+          if (res.ok && data.success) {
+            const urls = data.urls || (data.url ? [data.url] : []);
+            if (urls.length > 0) {
+              uploadedUrls.push(...urls);
+            } else {
+              uploadedUrls.push(dataUrl);
+            }
+          } else {
+            uploadedUrls.push(dataUrl);
+          }
+        } catch (serverErr) {
+          uploadedUrls.push(dataUrl);
         }
       }
 
