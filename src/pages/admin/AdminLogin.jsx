@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAdminAuth } from '../../context/AdminAuthContext';
+import { parseResponseJson } from '../../utils/apiHelper';
 import { Smartphone, Lock, Mail, ArrowRight, ShieldCheck, AlertCircle } from 'lucide-react';
 
 export default function AdminLogin() {
@@ -12,7 +13,7 @@ export default function AdminLogin() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Safely redirect to dashboard when authenticated
+  // Redirect to dashboard when authenticated
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/admin/dashboard', { replace: true });
@@ -33,49 +34,20 @@ export default function AdminLogin() {
         body: JSON.stringify({ email: cleanEmail, password })
       });
 
-      const responseText = await res.text();
-      let data = {};
-      try {
-        data = responseText ? JSON.parse(responseText) : {};
-      } catch (parseErr) {
-        if (cleanEmail === 'admin@premmobile.com' && (password === 'admin123' || password === 'admin')) {
-          login('admin-demo-token-12345', {
-            id: 1,
-            name: 'Prem Mobile Admin',
-            email: 'admin@premmobile.com'
-          });
-          navigate('/admin/dashboard', { replace: true });
-          return;
-        }
-        throw new Error('API server returned an invalid response. Please try again.');
-      }
+      const data = await parseResponseJson(res);
 
       if (!res.ok || !data.success) {
-        if (cleanEmail === 'admin@premmobile.com' && (password === 'admin123' || password === 'admin')) {
-          login('admin-demo-token-12345', {
-            id: 1,
-            name: 'Prem Mobile Admin',
-            email: 'admin@premmobile.com'
-          });
-          navigate('/admin/dashboard', { replace: true });
-          return;
-        }
         throw new Error(data.error || 'Invalid email or password.');
+      }
+
+      if (!data.token || !data.admin) {
+        throw new Error('Login response missing token or admin data.');
       }
 
       login(data.token, data.admin);
       navigate('/admin/dashboard', { replace: true });
     } catch (err) {
-      if (cleanEmail === 'admin@premmobile.com' && (password === 'admin123' || password === 'admin')) {
-        login('admin-demo-token-12345', {
-          id: 1,
-          name: 'Prem Mobile Admin',
-          email: 'admin@premmobile.com'
-        });
-        navigate('/admin/dashboard', { replace: true });
-        return;
-      }
-      setError(err.message || 'Login failed. Please check credentials.');
+      setError(err.message || 'Login failed. Please check your credentials and try again.');
     } finally {
       setIsLoading(false);
     }
@@ -107,7 +79,7 @@ export default function AdminLogin() {
 
           {error && (
             <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 text-rose-600 flex-shrink-0" />
+              <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
               <span>{error}</span>
             </div>
           )}
@@ -164,7 +136,7 @@ export default function AdminLogin() {
             </button>
           </form>
 
-          {/* DEMO NOTICE */}
+          {/* DEFAULT CREDENTIALS */}
           <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-[11px] text-slate-600 space-y-1">
             <span className="font-bold text-[#E31B23] block">Default Admin Credentials:</span>
             <div>Email: <code className="text-slate-900 font-bold">admin@premmobile.com</code></div>
