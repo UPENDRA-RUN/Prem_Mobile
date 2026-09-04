@@ -31,6 +31,7 @@ import Checkout from './pages/Checkout';
 import OrderSuccess from './pages/OrderSuccess';
 import Sale from './pages/Sale';
 import SundaySale from './pages/SundaySale';
+import Combos from './pages/Combos';
 import NotFound from './pages/NotFound';
 
 // Developer & Design Guides
@@ -45,10 +46,12 @@ import ToastGuide from './pages/ToastGuide';
 import SplashScreenGuide from './pages/SplashScreenGuide';
 
 // Admin Portal Pages
+import AdminLayout from './pages/admin/AdminLayout';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminProducts from './pages/admin/AdminProducts';
 import AdminProductForm from './pages/admin/AdminProductForm';
+import AdminCombos from './pages/admin/AdminCombos';
 import AdminOrders from './pages/admin/AdminOrders';
 import AdminSundaySale from './pages/admin/AdminSundaySale';
 import AdminSale from './pages/admin/AdminSale';
@@ -56,9 +59,10 @@ import AdminSettings from './pages/admin/AdminSettings';
 
 // Protected Admin Route Wrapper
 function ProtectedAdminRoute({ children }) {
-  const { isAuthenticated, loading } = useAdminAuth();
+  const { isAuthenticated, isVerifying, loading } = useAdminAuth();
+  const isLoading = isVerifying || loading;
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-900 text-white font-sans">
         <div className="text-center space-y-3">
@@ -102,73 +106,29 @@ export default function App() {
 
       {/* ADMIN PORTAL SPECIAL LAYOUT */}
       {isAdminRoute ? (
-        <main className="flex-1 bg-slate-950 text-slate-100">
+        <main className="flex-1 bg-slate-50 text-slate-900">
           <Routes>
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route
               path="/admin"
               element={
                 <ProtectedAdminRoute>
-                  <AdminDashboard />
+                  <AdminLayout />
                 </ProtectedAdminRoute>
               }
-            />
-            <Route
-              path="/admin/products"
-              element={
-                <ProtectedAdminRoute>
-                  <AdminProducts />
-                </ProtectedAdminRoute>
-              }
-            />
-            <Route
-              path="/admin/products/new"
-              element={
-                <ProtectedAdminRoute>
-                  <AdminProductForm />
-                </ProtectedAdminRoute>
-              }
-            />
-            <Route
-              path="/admin/products/edit/:id"
-              element={
-                <ProtectedAdminRoute>
-                  <AdminProductForm />
-                </ProtectedAdminRoute>
-              }
-            />
-            <Route
-              path="/admin/orders"
-              element={
-                <ProtectedAdminRoute>
-                  <AdminOrders />
-                </ProtectedAdminRoute>
-              }
-            />
-            <Route
-              path="/admin/sunday-sale"
-              element={
-                <ProtectedAdminRoute>
-                  <AdminSundaySale />
-                </ProtectedAdminRoute>
-              }
-            />
-            <Route
-              path="/admin/sale"
-              element={
-                <ProtectedAdminRoute>
-                  <AdminSale />
-                </ProtectedAdminRoute>
-              }
-            />
-            <Route
-              path="/admin/settings"
-              element={
-                <ProtectedAdminRoute>
-                  <AdminSettings />
-                </ProtectedAdminRoute>
-              }
-            />
+            >
+              <Route index element={<AdminDashboard />} />
+              <Route path="dashboard" element={<AdminDashboard />} />
+              <Route path="products" element={<AdminProducts />} />
+              <Route path="products/new" element={<AdminProductForm />} />
+              <Route path="products/edit/:id" element={<AdminProductForm />} />
+              <Route path="combos" element={<AdminCombos />} />
+              <Route path="orders" element={<AdminOrders />} />
+              <Route path="sunday-sale" element={<AdminSundaySale />} />
+              <Route path="sale" element={<AdminSale />} />
+              <Route path="settings" element={<AdminSettings />} />
+            </Route>
+            <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
           </Routes>
         </main>
       ) : (
@@ -188,6 +148,7 @@ export default function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/shop" element={<Shop />} />
+              <Route path="/products" element={<Shop />} />
               <Route path="/categories" element={<Categories />} />
               <Route path="/categories/:category" element={<CategoryProducts />} />
               <Route path="/product/:id" element={<ProductDetails />} />
@@ -196,6 +157,7 @@ export default function App() {
               <Route path="/order-success" element={<OrderSuccess />} />
               <Route path="/sale" element={<Sale />} />
               <Route path="/sunday-sale" element={<SundaySale />} />
+              <Route path="/combos" element={<Combos />} />
               <Route path="/offers" element={<Offers />} />
 
               <Route path="/about" element={<About />} />

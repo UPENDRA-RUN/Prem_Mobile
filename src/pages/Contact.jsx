@@ -57,7 +57,7 @@ export default function Contact() {
   const handleWhatsAppForm = () => {
     const deptTitle =
       formData.department === 'fitting'
-        ? 'Store Pickup & Free Screen Guard Fitting'
+        ? 'Store Pickup & Live Testing'
         : formData.department === 'warranty'
         ? 'After-Sales & Warranty Support'
         : 'Sales & Product Enquiry';
@@ -90,8 +90,8 @@ Store Tagline: “${storeConfig.tagline}”`;
       a: `We are open all 7 days a week from ${storeConfig.timing}. You can walk in anytime for live headphone audio testing and instant purchase.`
     },
     {
-      q: "Do you offer free screen guard installation?",
-      a: "Yes! Whenever you purchase or pick up any 9D tempered glass or back cover at Prem Mobile, our technicians fit it with zero bubbles completely free of charge."
+      q: "Can I test products in-store before purchasing?",
+      a: "Yes! At Prem Mobile, you can try live audio testing for earbuds/neckbands and inspect physical products in person before purchasing."
     }
   ];
 
@@ -123,7 +123,7 @@ Store Tagline: “${storeConfig.tagline}”`;
           </p>
 
           <p className="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto leading-relaxed">
-            Have a question about smartphones, boAt bassheads, free screen guard fitting, or Sunday Sale offers? We're right here at Pinto Park, Gwalior to help you!
+            Have a question about smartphones, boAt bassheads, store pickup, or Sunday Sale offers? We're right here at Pinto Park, Gwalior to help you!
           </p>
         </div>
 
@@ -166,7 +166,7 @@ Store Tagline: “${storeConfig.tagline}”`;
               </button>
             </div>
 
-            {/* DEPARTMENT 2: STORE PICKUP & FREE FITTING */}
+            {/* DEPARTMENT 2: STORE PICKUP & LIVE DEMO */}
             <div className="p-5 rounded-3xl bg-[#111111] border-2 border-[#222222] hover:border-emerald-500 transition-all space-y-3">
               <div className="w-10 h-10 rounded-2xl bg-[#050505] text-emerald-400 border border-emerald-500/40 flex items-center justify-center">
                 <Wrench className="w-5 h-5" />
@@ -176,18 +176,18 @@ Store Tagline: “${storeConfig.tagline}”`;
                   DEPARTMENT 02
                 </span>
                 <h3 className="font-display font-black text-base text-white">
-                  Store Pickup & Free Fitting
+                  Store Pickup & Live Demo
                 </h3>
                 <p className="text-xs text-slate-400 mt-1">
-                  Coordinate Pinto Park store pickup, free bubble-free screen guard installation, or live audio testing.
+                  Coordinate Pinto Park store pickup, live audio testing, or physical product inspection.
                 </p>
               </div>
               <button
-                onClick={() => openGeneralWhatsApp('Store Pickup & Fitting Assistance')}
+                onClick={() => openGeneralWhatsApp('Store Pickup & Demo Assistance')}
                 className="w-full py-2.5 px-3 rounded-xl bg-[#222222] hover:bg-emerald-500 text-slate-200 hover:text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors"
               >
                 <MessageCircle className="w-3.5 h-3.5 fill-current" />
-                <span>Contact Fitting Desk</span>
+                <span>Contact Pickup Desk</span>
               </button>
             </div>
 
@@ -388,7 +388,7 @@ Store Tagline: “${storeConfig.tagline}”`;
                   <div className="grid grid-cols-3 gap-2">
                     {[
                       { id: 'sales', label: 'Sales & Products' },
-                      { id: 'fitting', label: 'Pickup & Fitting' },
+                      { id: 'fitting', label: 'Pickup & Demo' },
                       { id: 'warranty', label: 'Warranty & Claims' }
                     ].map((d) => (
                       <button
@@ -456,7 +456,7 @@ Store Tagline: “${storeConfig.tagline}”`;
                       type="text"
                       value={formData.requirement}
                       onChange={(e) => setFormData({ ...formData, requirement: e.target.value })}
-                      placeholder="e.g. boAt Airdopes 161, Realme 12 Pro 5G, 25W Charger, Screen Guard"
+                      placeholder="e.g. boAt Airdopes 161, Realme 12 Pro 5G, 25W Fast Charger"
                       className="w-full pl-9 pr-3 py-2.5 text-sm rounded-xl border border-[#333333] focus:border-[#FFD400] bg-[#050505] text-white placeholder-slate-500"
                     />
                   </div>

@@ -113,7 +113,7 @@ export default function InputFieldGuide() {
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
               error={errors.phone}
-              hint="We will send free screen guard fitting status updates here"
+              hint="We will send order updates and pickup alerts here"
               required
             />
 

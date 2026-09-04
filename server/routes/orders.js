@@ -2,6 +2,7 @@ import express from 'express';
 import { db } from '../db.js';
 import { requireAdmin } from '../auth.js';
 import { resolveServerProductPrice } from '../saleLogic.js';
+import { broadcastEvent } from '../events.js';
 
 const router = express.Router();
 
@@ -80,7 +81,7 @@ router.post('/', (req, res) => {
     const itemFinalSubtotal = finalPrice * qty;
     const itemDiscount = Math.max(0, itemRegularSubtotal - itemFinalSubtotal);
 
-    subtotal += itemRegularSubtotal;
+    subtotal += itemFinalSubtotal;
     totalDiscount += itemDiscount;
 
     verifiedItems.push({
@@ -94,7 +95,7 @@ router.post('/', (req, res) => {
     });
   }
 
-  const finalTotal = subtotal - totalDiscount;
+  const finalTotal = subtotal;
   const orderNumber = 'PM-' + Date.now().toString().slice(-6) + '-' + Math.floor(100 + Math.random() * 900);
   const now = new Date().toISOString();
 
@@ -143,6 +144,8 @@ router.post('/', (req, res) => {
       it.finalPrice
     );
   }
+
+  broadcastEvent('ORDERS_UPDATED');
 
   res.status(201).json({
     success: true,
@@ -201,9 +204,55 @@ router.put('/admin/:id/status', requireAdmin, (req, res) => {
 
   db.prepare('UPDATE orders SET status = ? WHERE id = ?').run(status, id);
 
+  broadcastEvent('ORDERS_UPDATED');
+
   res.json({
     success: true,
     message: 'Order status updated successfully'
+  });
+});
+
+// Admin: DELETE /api/admin/orders/purge-all (Purge all orders)
+router.delete('/admin/purge-all', requireAdmin, (req, res) => {
+  db.prepare('DELETE FROM order_items').run();
+  db.prepare('DELETE FROM orders').run();
+
+  broadcastEvent('ORDERS_UPDATED');
+
+  res.json({
+    success: true,
+    message: 'All store orders purged successfully'
+  });
+});
+
+// Customer: GET /api/orders/my-orders?mobile=xxx&email=xxx
+router.get('/my-orders', (req, res) => {
+  const { mobile, email } = req.query || {};
+  const cleanMobile = (mobile || '').replace(/\D/g, '');
+  const cleanEmail = (email || '').trim().toLowerCase();
+
+  if (!cleanMobile && !cleanEmail) {
+    return res.json({ success: true, orders: [] });
+  }
+
+  const orders = db.prepare(`
+    SELECT * FROM orders 
+    WHERE (length(?) > 0 AND replace(mobile, '-', '') LIKE ?) 
+       OR (length(?) > 0 AND lower(email) = ?) 
+    ORDER BY id DESC
+  `).all(cleanMobile, `%${cleanMobile}%`, cleanEmail, cleanEmail);
+
+  const fullOrders = orders.map(order => {
+    const items = db.prepare('SELECT * FROM order_items WHERE orderId = ?').all(order.id);
+    return {
+      ...order,
+      items
+    };
+  });
+
+  res.json({
+    success: true,
+    orders: fullOrders
   });
 });
 

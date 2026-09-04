@@ -2,8 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSale } from '../context/SaleContext';
 import { useCart } from '../context/CartContext';
-import { formatCurrency } from '../utils/formatters';
+import { formatCurrency, formatDateDDMMYYYY } from '../utils/formatters';
 import { openGeneralWhatsApp } from '../utils/whatsapp';
+import CountdownTimer from '../components/common/CountdownTimer';
 import {
   Flame,
   Clock,
@@ -66,6 +67,49 @@ export default function Sale() {
               </p>
             </div>
 
+            {/* UPCOMING SCHEDULE CARD */}
+            {sale && (
+              <div className="p-6 rounded-3xl bg-slate-900 text-white border-2 border-[#ffd000] text-left max-w-md mx-auto space-y-4 shadow-xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#ffd000]/10 rounded-full blur-2xl pointer-events-none" />
+                
+                <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                  <span className="text-xs font-black text-[#ffd000] uppercase tracking-wider flex items-center gap-1.5">
+                    <Calendar className="w-4 h-4 text-[#ffd000]" />
+                    <span>NEXT SCHEDULED SALE</span>
+                  </span>
+                  <span className="text-[10px] font-bold text-slate-400 uppercase bg-slate-800 px-2 py-0.5 rounded-full">
+                    OFFICIAL EVENT
+                  </span>
+                </div>
+
+                <h3 className="font-display font-black text-lg text-white">
+                  🔥 {sale.name || 'Sunday Shocking Sale'}
+                </h3>
+
+                <div className="grid grid-cols-2 gap-3 text-xs pt-1">
+                  <div className="p-3 rounded-2xl bg-black/40 border border-slate-800 space-y-1">
+                    <span className="text-[10px] text-slate-400 font-bold block uppercase">Sale Date</span>
+                    <span className="font-mono font-black text-[#ffd000] text-sm block">
+                      {formatDateDDMMYYYY(sale.startDate) || 'Upcoming'}
+                    </span>
+                    {sale.endDate && sale.endDate !== sale.startDate && (
+                      <span className="text-[10px] text-slate-400 block">to {formatDateDDMMYYYY(sale.endDate)}</span>
+                    )}
+                  </div>
+
+                  <div className="p-3 rounded-2xl bg-black/40 border border-slate-800 space-y-1">
+                    <span className="text-[10px] text-slate-400 font-bold block uppercase">Sale Timings</span>
+                    <span className="font-mono font-black text-emerald-400 text-xs block">
+                      {sale.startTime ? `${sale.startTime}` : '00:01'} – {sale.endTime ? `${sale.endTime}` : '23:59'}
+                    </span>
+                    <span className="text-[10px] text-slate-400 block">
+                      {sale.startTime ? 'Scheduled Window' : 'Full Day Event'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* ACTION BUTTONS */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
               <Link
@@ -77,7 +121,7 @@ export default function Sale() {
               </Link>
 
               <button
-                onClick={() => openGeneralWhatsApp('I want alerts for upcoming flash sales')}
+                onClick={() => openGeneralWhatsApp(`I want alerts for next sale on ${formatDateDDMMYYYY(sale?.startDate) || 'upcoming Sunday'}`)}
                 className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white font-black text-xs uppercase tracking-wider shadow-md flex items-center justify-center gap-2 transition-transform hover:scale-102"
               >
                 <MessageCircle className="w-4 h-4 fill-white" />
@@ -133,28 +177,37 @@ export default function Sale() {
           <div className="absolute top-0 right-0 w-80 h-80 bg-[#e51b23]/30 rounded-full blur-3xl pointer-events-none" />
           <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#ffd000]/20 rounded-full blur-3xl pointer-events-none" />
 
-          <div className="relative z-10 max-w-3xl space-y-4">
-            <div className="flex flex-wrap items-center gap-2.5">
-              <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#e51b23] text-white font-black text-xs uppercase tracking-wider shadow-md animate-pulse">
-                <Flame className="w-4 h-4 fill-white" />
-                <span>🟢 SALE IS LIVE</span>
-              </span>
-
-              {sale?.startDate && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-[#ffd000] text-xs font-bold border border-[#ffd000]/30">
-                  <Calendar className="w-3.5 h-3.5" />
-                  <span>Limited Time Event</span>
+          <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+            <div className="max-w-2xl space-y-4">
+              <div className="flex flex-wrap items-center gap-2.5">
+                <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#e51b23] text-white font-black text-xs uppercase tracking-wider shadow-md animate-pulse">
+                  <Flame className="w-4 h-4 fill-white" />
+                  <span>🟢 SALE IS LIVE</span>
                 </span>
-              )}
+
+                {sale?.startDate && (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-[#ffd000] text-xs font-bold border border-[#ffd000]/30">
+                    <Calendar className="w-3.5 h-3.5" />
+                    <span>Limited Time Event</span>
+                  </span>
+                )}
+              </div>
+
+              <h1 className="font-display font-black text-3xl sm:text-5xl text-white tracking-tight">
+                🔥 {sale?.name || 'SPECIAL FLASH SALE'}
+              </h1>
+
+              <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
+                Special promotional discounts available now! Verified authentic products with store warranty. Order online or reserve via WhatsApp.
+              </p>
             </div>
 
-            <h1 className="font-display font-black text-3xl sm:text-5xl text-white tracking-tight">
-              🔥 {sale?.name || 'SPECIAL FLASH SALE'}
-            </h1>
-
-            <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-2xl">
-              Special promotional discounts available now! Verified authentic products with store warranty. Order online or reserve via WhatsApp.
-            </p>
+            {/* Countdown Box */}
+            {sale?.endDate && (
+              <div className="p-5 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md shrink-0">
+                <CountdownTimer endDate={sale.endDate} endTime={sale.endTime} size="normal" />
+              </div>
+            )}
           </div>
         </div>
       </div>

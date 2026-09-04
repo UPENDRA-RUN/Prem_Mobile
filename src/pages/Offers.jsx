@@ -1,14 +1,22 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { promotionalBanners } from '../data/promotions';
-import { products } from '../data/products';
+import { fetchLaravelProducts } from '../api/laravel';
 import { storeConfig } from '../config/store';
 import ProductGrid from '../components/product/ProductGrid';
 import { openGeneralWhatsApp } from '../utils/whatsapp';
 import { Flame, MessageCircle, ArrowRight, Sparkles } from 'lucide-react';
 
 export default function Offers() {
-  const hotDeals = products.filter((p) => p.discount >= 40);
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    fetchLaravelProducts().then(res => {
+      if (res.success) setProducts(res.data || []);
+    });
+  }, []);
+
+  const hotDeals = products.filter((p) => p.discount >= 40 || p.isSundaySale);
 
   return (
     <div className="py-8 sm:py-12 bg-[#050505] text-white min-h-screen">

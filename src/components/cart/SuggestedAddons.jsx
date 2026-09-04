@@ -1,11 +1,18 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Sparkles, Plus, Check, ShieldCheck, Zap } from 'lucide-react';
-import { products } from '../../data/products';
+import { fetchLaravelProducts } from '../../api/laravel';
 import { useCart } from '../../context/CartContext';
 import { formatCurrency } from '../../utils/formatters';
 
 export default function SuggestedAddons({ compact = false }) {
   const { cart, addToCart } = useCart();
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    fetchLaravelProducts().then(res => {
+      if (res.success) setProducts(res.data || []);
+    });
+  }, []);
 
   // Get add-on items or accessory items not yet in cart
   const addonItems = products.filter((p) => p.isAddon || p.categorySlug === 'accessories');

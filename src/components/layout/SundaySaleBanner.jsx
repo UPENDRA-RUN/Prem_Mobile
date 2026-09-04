@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSundaySale } from '../../context/SundaySaleContext';
-import { Flame, ArrowRight, Sparkles } from 'lucide-react';
+import { Flame, ArrowRight } from 'lucide-react';
+import CountdownTimer from '../common/CountdownTimer';
 
 export default function SundaySaleBanner() {
   const { isLive, sale } = useSundaySale();
@@ -15,13 +16,14 @@ export default function SundaySaleBanner() {
           <span className="flex h-7 w-7 rounded-full bg-[#ffd000] text-[#050505] items-center justify-center font-black animate-pulse flex-shrink-0">
             <Flame className="w-4 h-4 fill-amber-500 text-amber-500" />
           </span>
-          <div className="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 justify-center sm:justify-start">
+          <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 justify-center sm:justify-start">
             <span className="font-display font-black text-xs sm:text-sm tracking-wide uppercase text-white drop-shadow-sm">
               🔥 {sale?.name ? `${sale.name.toUpperCase()} IS LIVE` : 'SPECIAL SALE IS LIVE'} 🔥
             </span>
-            <span className="hidden md:inline text-white/80 text-xs font-medium">
-              — Special discounted prices available for a limited time!
-            </span>
+
+            {sale?.endDate && (
+              <CountdownTimer endDate={sale.endDate} endTime={sale.endTime} size="compact" />
+            )}
           </div>
         </div>
 

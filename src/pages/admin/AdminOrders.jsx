@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAdminAuth } from '../../context/AdminAuthContext';
+import { useRealtimeSync } from '../../hooks/useRealtimeSync';
 import { formatCurrency } from '../../utils/formatters';
 import {
   ShoppingCart,
@@ -11,7 +12,8 @@ import {
   Truck,
   Flame,
   Search,
-  RefreshCw
+  RefreshCw,
+  Trash2
 } from 'lucide-react';
 
 export default function AdminOrders() {
@@ -21,7 +23,7 @@ export default function AdminOrders() {
   const [search, setSearch] = useState('');
   const [feedback, setFeedback] = useState(null);
 
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     setIsLoading(true);
     try {
       const res = await fetch('/api/orders/admin', {
@@ -36,11 +38,13 @@ export default function AdminOrders() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [adminToken]);
 
   useEffect(() => {
     fetchOrders();
-  }, [adminToken]);
+  }, [fetchOrders]);
+
+  useRealtimeSync(fetchOrders, ['ORDERS_UPDATED'], 3000);
 
   const handleUpdateStatus = async (orderId, newStatus) => {
     try {
@@ -59,6 +63,25 @@ export default function AdminOrders() {
       }
     } catch (e) {
       alert('Error updating order: ' + e.message);
+    }
+  };
+
+  const handlePurgeAllOrders = async () => {
+    if (!window.confirm('Are you sure you want to purge all store orders? This action cannot be undone.')) {
+      return;
+    }
+    try {
+      const res = await fetch('/api/orders/admin/purge-all', {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${adminToken}` }
+      });
+      const data = await res.json();
+      if (data.success) {
+        setFeedback('All store orders have been purged successfully.');
+        fetchOrders();
+      }
+    } catch (e) {
+      alert('Error purging orders: ' + e.message);
     }
   };
 
@@ -89,13 +112,26 @@ export default function AdminOrders() {
           </p>
         </div>
 
-        <button
-          onClick={fetchOrders}
-          className="p-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-slate-900 shadow-sm self-start sm:self-auto"
-          title="Refresh"
-        >
-          <RefreshCw className="w-4 h-4" />
-        </button>
+        <div className="flex items-center gap-2 self-start sm:self-auto">
+          {orders.length > 0 && (
+            <button
+              onClick={handlePurgeAllOrders}
+              className="px-3.5 py-2.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 text-xs font-bold border border-red-200 shadow-sm flex items-center gap-1.5 transition-all cursor-pointer"
+              title="Purge All Orders"
+            >
+              <Trash2 className="w-4 h-4" />
+              <span>Purge All Orders</span>
+            </button>
+          )}
+
+          <button
+            onClick={fetchOrders}
+            className="p-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-slate-900 shadow-sm transition-all cursor-pointer"
+            title="Refresh Orders"
+          >
+            <RefreshCw className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       {feedback && (
@@ -209,20 +245,25 @@ export default function AdminOrders() {
                 </div>
               </div>
 
-              {/* TOTALS */}
-              <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-sm">
-                <div className="text-xs text-slate-500">
-                  Subtotal: <span className="font-bold text-slate-700">{formatCurrency(order.subtotal)}</span>
-                  {order.discount > 0 && (
-                    <span className="text-emerald-600 font-bold ml-2">
-                      (Discount: -{formatCurrency(order.discount)})
-                    </span>
-                  )}
-                </div>
-                <div className="font-display font-black text-lg text-slate-900">
-                  Total: <span className="text-[#e51b23]">{formatCurrency(order.total)}</span>
-                </div>
-              </div>
+              {/* TOTALS BREAKDOWN */}
+              {(() => {
+                const itemsSubtotal = order.items?.reduce((acc, it) => acc + ((it.finalPrice || 0) * (it.quantity || 1)), 0) || order.subtotal || order.total;
+                return (
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between pt-3 border-t border-slate-100 text-xs sm:text-sm gap-2">
+                    <div className="space-x-2 text-slate-600 font-medium">
+                      <span>Items Subtotal: <strong className="text-slate-900 font-black">{formatCurrency(itemsSubtotal)}</strong></span>
+                      {order.discount > 0 && (
+                        <span className="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md font-bold text-xs inline-block">
+                          🎉 Savings: -{formatCurrency(order.discount)}
+                        </span>
+                      )}
+                    </div>
+                    <div className="font-display font-black text-base sm:text-lg text-slate-900">
+                      Total Payable: <span className="text-[#e51b23]">{formatCurrency(order.total || itemsSubtotal)}</span>
+                    </div>
+                  </div>
+                );
+              })()}
 
             </div>
           ))

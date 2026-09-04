@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import HeroSlider from '../components/home/HeroSlider';
 import CategoryBar from '../components/home/CategoryBar';
@@ -9,21 +9,46 @@ import SundaySpecialSection from '../components/home/SundaySpecialSection';
 import WhyChooseUs from '../components/home/WhyChooseUs';
 import StoreLocationSection from '../components/home/StoreLocationSection';
 import ProductGrid from '../components/product/ProductGrid';
-import { products } from '../data/products';
+import { fetchLaravelProducts } from '../api/laravel';
+import { useRealtimeSync } from '../hooks/useRealtimeSync';
 import { storeConfig } from '../config/store';
 import { openGeneralWhatsApp } from '../utils/whatsapp';
 import { Flame, ArrowRight, Sparkles, Smartphone, ShieldCheck, Headphones, Watch, BatteryCharging } from 'lucide-react';
 
 export default function Home() {
-  // New Arrivals
-  const newArrivals = products.filter((p) => p.isNew || p.id <= 8).slice(0, 8);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Mobile Accessories (Earbuds, Chargers, Power Banks, Cables, Covers)
+  const loadProducts = useCallback(() => {
+    fetchLaravelProducts().then(res => {
+      if (res.success) {
+        setProducts(res.data || []);
+      }
+      setLoading(false);
+    });
+  }, []);
+
+  useEffect(() => {
+    loadProducts();
+  }, [loadProducts]);
+
+  useRealtimeSync(loadProducts, ['PRODUCTS_UPDATED'], 3000);
+
+  // 1. On Sale & Hot Deals Products
+  const onSaleProducts = products.filter((p) => p.isOnSale || p.discount > 0 || p.isSundaySale).slice(0, 8);
+
+  // 2. Best Sellers
+  const bestSellers = products.filter((p) => p.isBestSeller || p.rating >= 4.7).slice(0, 8);
+
+  // 3. New Arrivals
+  const newArrivals = products.filter((p) => p.isNew || (p.isNew === undefined && p.id <= 8)).slice(0, 8);
+
+  // 4. Mobile Accessories (Earbuds, Chargers, Power Banks, Cables, Covers)
   const mobileAccessories = products.filter(
     (p) => ['Earbuds', 'Chargers', 'Power Banks', 'Cables', 'Mobile Covers', 'Headphones'].includes(p.category)
   ).slice(0, 8);
 
-  // Popular Gadgets (Smartwatches, Speakers, Gadgets)
+  // 5. Popular Gadgets (Smartwatches, Speakers, Gadgets)
   const popularGadgets = products.filter(
     (p) => ['Smartwatches', 'Speakers', 'Gadgets'].includes(p.category) || p.rating >= 4.6
   ).slice(0, 8);
@@ -39,6 +64,62 @@ export default function Home() {
 
       {/* 3. FEATURED PRODUCTS + SUNDAY SALE SIDEBAR */}
       <FeaturedSection products={products} />
+
+      {/* 4. ON SALE & HOT DEALS (If products are marked on sale) */}
+      {onSaleProducts.length > 0 && (
+        <section className="py-10 bg-gradient-to-r from-red-50 via-amber-50 to-red-50 border-y border-red-200">
+          <div className="max-w-[1500px] mx-auto px-6 space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E31B23] text-white text-[11px] font-black uppercase tracking-wider mb-1 shadow-sm">
+                  <Flame className="w-3.5 h-3.5 fill-white" />
+                  <span>SPECIAL OFFER DEALS</span>
+                </div>
+                <h2 className="font-display font-black text-2xl sm:text-[26px] text-slate-900 tracking-tight">
+                  🔥 ON SALE & HOT DEALS
+                </h2>
+              </div>
+
+              <Link
+                to="/shop?sort=discount"
+                className="px-4 py-2 rounded-lg bg-[#E31B23] hover:bg-[#c9141b] text-white font-black text-xs uppercase tracking-wider transition-colors shadow-sm"
+              >
+                View All Deals
+              </Link>
+            </div>
+
+            <ProductGrid products={onSaleProducts} columns="grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4" />
+          </div>
+        </section>
+      )}
+
+      {/* 5. BEST SELLING PRODUCTS */}
+      {bestSellers.length > 0 && (
+        <section className="py-10 bg-white border-b border-[#dedede]">
+          <div className="max-w-[1500px] mx-auto px-6 space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#FFD400]/20 text-[#050505] text-[11px] font-black uppercase tracking-wider mb-1">
+                  <Sparkles className="w-3 h-3 text-amber-600" />
+                  <span>CUSTOMER FAVORITES</span>
+                </div>
+                <h2 className="font-display font-black text-2xl sm:text-[26px] text-[#050505] tracking-tight">
+                  🏆 BEST SELLING PRODUCTS
+                </h2>
+              </div>
+
+              <Link
+                to="/shop?sort=bestsellers"
+                className="px-4 py-2 rounded-lg bg-[#050505] hover:bg-[#1a1a1a] text-[#FFD400] font-black text-xs uppercase tracking-wider transition-colors"
+              >
+                Explore Best Sellers
+              </Link>
+            </div>
+
+            <ProductGrid products={bestSellers} columns="grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4" />
+          </div>
+        </section>
+      )}
 
       {/* 4. NEW ARRIVALS */}
       <section className="py-10 bg-white border-y border-[#dedede]">

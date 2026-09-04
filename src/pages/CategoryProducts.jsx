@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { products } from '../data/products';
+import { fetchLaravelProducts } from '../api/laravel';
 import { categories } from '../data/categories';
 import ProductGrid from '../components/product/ProductGrid';
 import { ArrowLeft, ArrowRight, Flame } from 'lucide-react';
@@ -8,6 +8,13 @@ import { storeConfig } from '../config/store';
 
 export default function CategoryProducts() {
   const { category: categoryParam } = useParams();
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    fetchLaravelProducts({ category: categoryParam }).then(res => {
+      if (res.success) setProducts(res.data || []);
+    });
+  }, [categoryParam]);
 
   const normalizedParam = categoryParam ? categoryParam.toLowerCase().replace(/-/g, ' ') : '';
 

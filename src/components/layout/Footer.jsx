@@ -19,7 +19,6 @@ import {
   Lock,
   FileCheck,
   Sparkles,
-  Download,
   CreditCard,
   CheckCircle2,
   HelpCircle,
@@ -114,7 +113,7 @@ export default function Footer() {
               </div>
 
               <p className="text-xs sm:text-sm text-slate-400 leading-relaxed pr-4">
-                Your trusted local mobile & electronics destination at Pinto Park, Gwalior. Explore original 5G smartphones, TWS earbuds, neckbands, smartwatches, power banks, fast chargers, and egg boilers with free screen guard fitting.
+                Your trusted local mobile & electronics destination at Pinto Park, Gwalior. Explore original 5G smartphones, TWS earbuds, neckbands, smartwatches, power banks, fast chargers, and egg boilers with live in-store testing.
               </p>
 
               {/* Direct Action Buttons */}
@@ -134,22 +133,6 @@ export default function Footer() {
                   <HelpCircle className="w-4 h-4 text-[#050505]" />
                   <span>Open Support Desk</span>
                 </button>
-              </div>
-
-              {/* Mobile App Download Badges */}
-              <div className="pt-3 space-y-2">
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">
-                  Get The Prem Mobile App (Coming Soon)
-                </span>
-                <div className="flex flex-wrap gap-2">
-                  <div className="px-3 py-1.5 rounded-xl bg-[#111111] border border-[#333333] flex items-center gap-2 text-[11px] text-slate-300">
-                    <Download className="w-3.5 h-3.5 text-[#FFD400]" />
-                    <span>Android APK / Play Store</span>
-                  </div>
-                  <div className="px-3 py-1.5 rounded-xl bg-[#111111] border border-[#333333] flex items-center gap-2 text-[11px] text-slate-300">
-                    <span> Apple iOS App</span>
-                  </div>
-                </div>
               </div>
             </div>
 
@@ -175,58 +158,10 @@ export default function Footer() {
                   <Link to="/faq" className="hover:text-[#FFD400] text-[#FFD400] font-bold transition-colors">FAQ & Help Center</Link>
                 </li>
                 <li>
-                  <Link to="/design-tokens" className="hover:text-[#FFD400] text-emerald-400 font-bold transition-colors flex items-center gap-1">
-                    <Layers className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>Design Tokens</span>
-                  </Link>
+                  <Link to="/about" className="hover:text-[#FFD400] transition-colors">About Prem Mobile</Link>
                 </li>
                 <li>
-                  <Link to="/skeleton-guide" className="hover:text-[#FFD400] text-amber-400 font-bold transition-colors flex items-center gap-1">
-                    <Layout className="w-3.5 h-3.5 text-amber-400" />
-                    <span>Skeleton System</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/loading-guide" className="hover:text-[#FFD400] text-sky-400 font-bold transition-colors flex items-center gap-1">
-                    <Loader2 className="w-3.5 h-3.5 text-sky-400 animate-spin" />
-                    <span>Loading System</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/input-guide" className="hover:text-[#FFD400] text-indigo-400 font-bold transition-colors flex items-center gap-1">
-                    <Edit3 className="w-3.5 h-3.5 text-indigo-400" />
-                    <span>Input Field System</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/context-menu-guide" className="hover:text-[#FFD400] text-purple-400 font-bold transition-colors flex items-center gap-1">
-                    <Sliders className="w-3.5 h-3.5 text-purple-400" />
-                    <span>Context Menu System</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/button-guide" className="hover:text-[#FFD400] text-[#FFD400] font-bold transition-colors flex items-center gap-1">
-                    <MousePointer className="w-3.5 h-3.5 text-[#FFD400]" />
-                    <span>Button System</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/tabs-guide" className="hover:text-[#FFD400] text-teal-400 font-bold transition-colors flex items-center gap-1">
-                    <Layers className="w-3.5 h-3.5 text-teal-400" />
-                    <span>Tabs System</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/toast-guide" className="hover:text-[#FFD400] text-rose-400 font-bold transition-colors flex items-center gap-1">
-                    <Bell className="w-3.5 h-3.5 text-rose-400" />
-                    <span>Toast System</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/splash-guide" className="hover:text-[#FFD400] text-yellow-400 font-bold transition-colors flex items-center gap-1">
-                    <Zap className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400" />
-                    <span>Splash System</span>
-                  </Link>
+                  <Link to="/contact" className="hover:text-[#FFD400] transition-colors">Contact Store</Link>
                 </li>
               </ul>
             </div>
@@ -257,7 +192,7 @@ export default function Footer() {
                 </li>
                 <li className="pt-2 text-emerald-400 font-bold text-xs flex items-center gap-1">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Free Screen Guard Fitting</span>
+                  <span>100% Original Warranty</span>
                 </li>
               </ul>
             </div>

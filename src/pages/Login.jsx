@@ -24,6 +24,9 @@ import {
 } from 'lucide-react';
 
 export default function Login() {
+  const [searchParams] = useSearchParams();
+  const redirectTarget = searchParams.get('redirect') || '/account';
+
   const [authMode, setAuthMode] = useState('login'); // 'login' | 'signup' | 'forgot'
   const [resetStep, setResetStep] = useState(1); // 1: Request Email/Phone -> 2: Enter Code -> 3: Set New Password -> 4: Reset Success
   
@@ -46,6 +49,13 @@ export default function Login() {
   const isMinLength = newPassword.length >= 6;
   const hasLetterAndNumber = /[a-zA-Z]/.test(newPassword) && /\d/.test(newPassword);
 
+  const saveUserProfile = (userObj) => {
+    try {
+      localStorage.setItem('premmobile_user_profile', JSON.stringify(userObj));
+      localStorage.setItem('premmobile_customer_token', 'cust_' + Date.now().toString(36));
+    } catch (e) {}
+  };
+
   const handleLoginSubmit = (e) => {
     e.preventDefault();
     setErrorMsg('');
@@ -61,9 +71,21 @@ export default function Login() {
         return;
       }
 
-      setSuccessMsg(`Welcome back, ${identifier}! Successfully signed in.`);
-      showToast(`Welcome back, ${identifier}!`);
-      setTimeout(() => navigate('/shop'), 1500);
+      const isMobile = /^\d{10}$/.test(identifier.replace(/\D/g, ''));
+      const userProfile = {
+        fullName: identifier.split('@')[0] || 'Prem Mobile Customer',
+        phone: isMobile ? identifier.replace(/\D/g, '') : '9876543210',
+        email: identifier.includes('@') ? identifier : 'customer@premmobile.com',
+        address: 'Pinto Park, Gwalior',
+        city: 'Gwalior',
+        state: 'Madhya Pradesh',
+        pincode: '474005'
+      };
+      saveUserProfile(userProfile);
+
+      setSuccessMsg(`Welcome back! Successfully signed in.`);
+      showToast(`Welcome back, ${userProfile.fullName}!`);
+      setTimeout(() => navigate(redirectTarget), 800);
 
     } else if (authMode === 'signup') {
       if (!name.trim()) {
@@ -75,9 +97,21 @@ export default function Login() {
         return;
       }
 
+      const isMobile = /^\d{10}$/.test(identifier.replace(/\D/g, ''));
+      const userProfile = {
+        fullName: name.trim(),
+        phone: isMobile ? identifier.replace(/\D/g, '') : '9876543210',
+        email: identifier.includes('@') ? identifier : 'customer@premmobile.com',
+        address: 'Pinto Park, Gwalior',
+        city: 'Gwalior',
+        state: 'Madhya Pradesh',
+        pincode: '474005'
+      };
+      saveUserProfile(userProfile);
+
       setSuccessMsg(`Account created successfully for ${name}! You are now logged in.`);
       showToast('Account created successfully!');
-      setTimeout(() => navigate('/shop'), 1500);
+      setTimeout(() => navigate(redirectTarget), 800);
 
     } else if (authMode === 'forgot') {
       handleForgotStepSubmit();
@@ -172,7 +206,7 @@ export default function Login() {
                 VIP Sunday Sale Early Access & 1-Click WhatsApp Reservations Now Active!
               </h3>
               <p className="text-[11px] text-slate-300 leading-relaxed">
-                Log in to get priority stock reservations, exclusive promo discounts, and free screen guard fitting passes.
+                Log in to get priority stock reservations, exclusive promo discounts, and VIP store passes.
               </p>
             </div>
 
@@ -180,7 +214,7 @@ export default function Login() {
             <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2 relative z-10">
               <Quote className="w-5 h-5 text-[#FFD400] opacity-80" />
               <p className="text-xs text-slate-300 italic leading-relaxed">
-                “Prem Mobile is the best mobile shop in Pinto Park, Gwalior! Bought my boAt earbuds here and got free screen guard fitting and live testing before taking it home.”
+                “Prem Mobile is the best mobile shop in Pinto Park, Gwalior! Bought my boAt earbuds here and got 100% genuine warranty and live testing before taking it home.”
               </p>
               <div className="flex items-center justify-between pt-1 border-t border-white/10 text-[11px]">
                 <strong className="text-white font-bold">— Rahul S., Gwalior Customer</strong>

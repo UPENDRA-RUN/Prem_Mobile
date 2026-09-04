@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { products } from '../../data/products';
+import { fetchLaravelProducts } from '../../api/laravel';
 import { categories } from '../../data/categories';
 import { formatCurrency } from '../../utils/formatters';
 import HighlightText from '../common/HighlightText';
@@ -34,7 +34,16 @@ const TRENDING_SEARCHES = [
 ];
 
 export default function SearchModal({ isOpen, onClose }) {
+  const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    if (isOpen) {
+      fetchLaravelProducts().then(res => {
+        if (res.success) setProducts(res.data || []);
+      });
+    }
+  }, [isOpen]);
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -126,11 +135,11 @@ export default function SearchModal({ isOpen, onClose }) {
     let list = products.filter((p) => {
       // Search term matching
       if (query) {
-        const matchName = p.name.toLowerCase().includes(query);
-        const matchBrand = p.brand.toLowerCase().includes(query);
-        const matchCat = p.category.toLowerCase().includes(query);
-        const matchDesc = p.description && p.description.toLowerCase().includes(query);
-        const matchTag = p.tag && p.tag.toLowerCase().includes(query);
+        const matchName = p.name?.toLowerCase().includes(query);
+        const matchBrand = p.brand?.toLowerCase().includes(query);
+        const matchCat = p.category?.toLowerCase().includes(query);
+        const matchDesc = p.description?.toLowerCase().includes(query);
+        const matchTag = p.tag?.toLowerCase().includes(query);
 
         if (!matchName && !matchBrand && !matchCat && !matchDesc && !matchTag) {
           return false;

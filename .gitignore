@@ -7,10 +7,27 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies & Build Outputs
 node_modules
 dist
 dist-ssr
-*.local
+
+# Environment Variables & Secrets (CRITICAL: Never commit to GitHub)
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.staging
+.env.test
+*.env
+!.env.example
+
+# Database files & local storage
+*.sqlite
+*.sqlite3
+*.db
+server/data/*.db
 
 # Editor directories and files
 .vscode/*

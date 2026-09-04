@@ -1,9 +1,9 @@
 export const faqCategories = [
   {
     id: "pickup-services",
-    title: "Store Pickup & Free Services",
+    title: "Store Pickup & In-Store Services",
     icon: "MapPin",
-    description: "Questions about visiting our Pinto Park store, free screen guard fitting, and live product testing."
+    description: "Questions about visiting our Pinto Park store and live product testing."
   },
   {
     id: "products-warranty",
@@ -32,7 +32,7 @@ export const faqCategories = [
 ];
 
 export const faqQuestions = [
-  // --- Category: Store Pickup & Free Services ---
+  // --- Category: Store Pickup & In-Store Services ---
   {
     id: 1,
     categoryId: "pickup-services",
@@ -44,9 +44,9 @@ export const faqQuestions = [
   {
     id: 2,
     categoryId: "pickup-services",
-    question: "Do you offer free screen guard fitting and live product testing in store?",
-    answer: "Yes! Every tempered glass, UV screen protector, or phone purchased or picked up at our Pinto Park store includes 100% free bubble-free professional application. Additionally, we provide live audio testing for all earbuds, neckbands, and Bluetooth speakers before you take them home.",
-    keywords: ["screen guard", "tempered glass", "fitting", "testing", "free service", "bubble free", "audio test"],
+    question: "Do you offer live product testing in store?",
+    answer: "Yes! We provide live audio testing for all earbuds, neckbands, and Bluetooth speakers, as well as full device inspection before you take them home.",
+    keywords: ["testing", "audio test", "product inspection", "in store", "gwalior"],
     isPopular: true
   },
   {

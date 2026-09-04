@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { products } from '../../data/products';
+import { fetchLaravelProducts } from '../../api/laravel';
 import ProductGrid from '../product/ProductGrid';
 import { Shield, Zap, Cable, BatteryCharging, ArrowRight } from 'lucide-react';
 
@@ -15,6 +15,13 @@ export default function AccessoriesSection() {
   ];
 
   const [activeFilter, setActiveFilter] = useState('all');
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    fetchLaravelProducts().then(res => {
+      if (res.success) setProducts(res.data || []);
+    });
+  }, []);
 
   const accessoryProducts = products.filter((p) =>
     ['Chargers', 'Power Banks', 'Mobile Covers', 'Data Cables', 'Mobile Accessories', 'Mobile Holders'].includes(p.category)

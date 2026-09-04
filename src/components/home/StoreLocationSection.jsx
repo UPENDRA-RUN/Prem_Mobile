@@ -55,8 +55,13 @@ export default function StoreLocationSection() {
                     <div className="w-9 h-9 rounded-xl bg-[#111111] text-[#ffd000] border border-[#ffd000]/40 flex items-center justify-center flex-shrink-0">
                       <Clock className="w-4 h-4" />
                     </div>
-                    <div>
-                      <strong className="text-white block font-bold">Timings:</strong>
+                    <div className="space-y-0.5">
+                      <div className="flex items-center gap-2">
+                        <strong className="text-white block font-bold">Timings:</strong>
+                        <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[10px] font-black uppercase">
+                          🟢 Open 7 Days A Week
+                        </span>
+                      </div>
                       <span>{storeConfig.timing}</span>
                     </div>
                   </div>

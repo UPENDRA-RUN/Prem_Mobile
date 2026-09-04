@@ -34,8 +34,8 @@ export default function About() {
     },
     {
       icon: ShieldCheck,
-      title: "Free Screen Guard Fitting",
-      desc: "Buy any tempered glass or case at Prem Mobile and get expert bubble-free precision fitting free of cost on the spot."
+      title: "100% Genuine Brand Warranty",
+      desc: "Every product at Prem Mobile comes with authentic brand warranty, original tax invoice, and live store verification."
     }
   ];
 

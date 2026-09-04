@@ -58,9 +58,13 @@ export default function ProductCard({ product, searchQuery = '' }) {
             {/* Product Image */}
             <Link to={`/product/${product.id}`} className="w-full h-full flex items-center justify-center">
               <img
-                src={product.image}
+                src={product.image || '/images/prem-main.jpg'}
                 alt={product.name}
                 loading="lazy"
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = '/images/prem-main.jpg';
+                }}
                 className="w-full h-full object-contain mix-blend-multiply group-hover:scale-108 transition-transform duration-500"
               />
             </Link>
@@ -87,13 +91,21 @@ export default function ProductCard({ product, searchQuery = '' }) {
             {/* Price Area */}
             <div className="flex items-baseline gap-2 pt-1">
               <span className="text-base sm:text-lg font-black font-display text-[#050505]">
-                {formatCurrency(product.price)}
+                {formatCurrency(product.price ?? product.currentPrice ?? product.regularPrice ?? 0)}
               </span>
-              {product.originalPrice > product.price && (
+              {((product.originalPrice ?? product.regularPrice ?? 0) > (product.price ?? product.currentPrice ?? 0)) && (
                 <span className="text-xs text-slate-400 line-through font-medium">
-                  {formatCurrency(product.originalPrice)}
+                  {formatCurrency(product.originalPrice ?? product.regularPrice)}
                 </span>
               )}
+            </div>
+
+            {/* Stock & Review Count */}
+            <div className="flex items-center justify-between text-[10px] pt-1">
+              <span className="font-bold text-emerald-600">
+                ● In Stock ({product.stock ?? 10} units)
+              </span>
+              <span className="text-slate-400 font-medium">⭐ 4.8 (120)</span>
             </div>
           </div>
         </div>

@@ -53,9 +53,9 @@ export default function SupportModal({ isOpen, onClose }) {
     {
       id: 'faq',
       title: 'Interactive FAQ & Help Hub',
-      benefit: 'Best for standard self-service questions on screen guard fitting, warranty terms & return policies',
+      benefit: 'Best for standard self-service questions on store pickup, warranty terms & return policies',
       responseTime: '0 Mins (Instant Self-Service)',
-      whatToProvide: 'Search by keyword (e.g., screen guard, warranty, payment)',
+      whatToProvide: 'Search by keyword (e.g., pickup, warranty, payment)',
       icon: HelpCircle,
       iconBg: 'bg-[#050505] text-[#FFD400]',
       badgeBg: 'bg-amber-100 text-amber-900 border-amber-300',
@@ -65,7 +65,7 @@ export default function SupportModal({ isOpen, onClose }) {
     {
       id: 'walkin',
       title: 'Pinto Park Store Walk-In',
-      benefit: 'Best for live audio testing, free bubble-free screen guard fitting & physical product inspection',
+      benefit: 'Best for live audio testing, original brand warranty & physical product inspection',
       responseTime: 'Open Daily 9:30 AM – 9:30 PM',
       whatToProvide: 'Your device & GST store invoice for warranty services',
       icon: MapPin,

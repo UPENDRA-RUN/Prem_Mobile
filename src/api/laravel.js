@@ -1,16 +1,15 @@
 /**
- * Prem Mobile - Laravel API Client Connector
- * Base URL: http://127.0.0.1:8000/api
- * Features: Automatic fallback to local store data when Laravel API server is offline.
+ * Prem Mobile - Real-Time API Connector
+ * Base URL: /api
+ * Connects storefront components dynamically to database inventory.
  */
 
-import { products } from '../data/products';
-import { categories } from '../data/categories';
+import { products as fallbackProducts } from '../data/products';
 
-const API_BASE_URL = 'http://127.0.0.1:8000/api';
+const API_BASE_URL = '/api';
 
 /**
- * Fetch products from Laravel API or fallback to local dataset
+ * Fetch products from database API (/api/products)
  */
 export async function fetchLaravelProducts(params = {}) {
   try {
@@ -21,29 +20,33 @@ export async function fetchLaravelProducts(params = {}) {
 
     if (res.ok) {
       const data = await res.json();
-      return { success: true, source: 'laravel-api', data: data.data || data };
+      return {
+        success: true,
+        source: 'api',
+        data: data.products || data.data || []
+      };
     }
   } catch (err) {
-    // API server offline fallback
+    console.warn('API fetch warning:', err);
   }
 
   // Fallback to local products dataset
-  let result = [...products];
+  let result = [...fallbackProducts];
 
   if (params.category && params.category !== 'all') {
-    result = result.filter(p => p.category.toLowerCase() === params.category.toLowerCase());
+    result = result.filter(p => p.category?.toLowerCase() === params.category.toLowerCase());
   }
 
   if (params.brand && params.brand !== 'all') {
-    result = result.filter(p => p.brand.toLowerCase() === params.brand.toLowerCase());
+    result = result.filter(p => p.brand?.toLowerCase() === params.brand.toLowerCase());
   }
 
   if (params.q) {
     const q = params.q.toLowerCase();
     result = result.filter(p =>
-      p.name.toLowerCase().includes(q) ||
-      p.brand.toLowerCase().includes(q) ||
-      p.category.toLowerCase().includes(q)
+      p.name?.toLowerCase().includes(q) ||
+      p.brand?.toLowerCase().includes(q) ||
+      p.category?.toLowerCase().includes(q)
     );
   }
 
@@ -51,7 +54,7 @@ export async function fetchLaravelProducts(params = {}) {
 }
 
 /**
- * Fetch categories from Laravel API or fallback
+ * Fetch categories from API or fallback
  */
 export async function fetchLaravelCategories() {
   try {
@@ -61,17 +64,17 @@ export async function fetchLaravelCategories() {
 
     if (res.ok) {
       const data = await res.json();
-      return { success: true, source: 'laravel-api', data: data.data || data };
+      return { success: true, source: 'api', data: data.data || data };
     }
   } catch (err) {
     // API server offline fallback
   }
 
-  return { success: true, source: 'local-fallback', data: categories };
+  return { success: true, source: 'local-fallback', data: [] };
 }
 
 /**
- * Post order to Laravel API or fallback
+ * Post order to API or fallback
  */
 export async function postLaravelOrder(orderData) {
   try {
@@ -86,7 +89,7 @@ export async function postLaravelOrder(orderData) {
 
     if (res.ok) {
       const data = await res.json();
-      return { success: true, source: 'laravel-api', order: data };
+      return { success: true, source: 'api', order: data };
     }
   } catch (err) {
     // API server offline fallback

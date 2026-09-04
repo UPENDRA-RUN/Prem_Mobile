@@ -49,63 +49,120 @@ export function getSalePublicState() {
   const liveSale = getActiveLiveSale();
 
   if (!liveSale) {
+    const nextSale = db.prepare(`
+      SELECT * FROM sales 
+      WHERE status IN ('READY', 'DRAFT') 
+      ORDER BY startDate ASC, id DESC LIMIT 1
+    `).get() || db.prepare(`
+      SELECT * FROM sales ORDER BY id DESC LIMIT 1
+    `).get();
+
     return {
       isLive: false,
       status: 'OFFLINE',
-      sale: null,
+      sale: nextSale ? {
+        id: nextSale.id,
+        name: nextSale.name || 'Sunday Shocking Sale',
+        startDate: nextSale.startDate,
+        endDate: nextSale.endDate,
+        startTime: nextSale.startTime,
+        endTime: nextSale.endTime
+      } : null,
       items: [],
       message: 'Special flash sales and exclusive deals are announced regularly. Check back soon for exciting offers!'
     };
   }
 
-  // Fetch sale items with full product details
+  // Fetch sale items with full product details (LEFT JOIN to include direct custom items and combos)
   const items = db.prepare(`
     SELECT 
       si.id as saleItemId,
       si.productId,
+      si.isCustom,
+      si.customTitle,
+      si.customCategory,
+      si.customBrand,
+      si.customImage,
+      si.comboId,
       si.salePrice,
       si.regularPriceSnapshot,
-      p.name,
-      p.slug,
-      p.category,
-      p.brand,
-      p.images,
-      p.stock,
-      p.regularPrice
+      p.name as productName,
+      p.slug as productSlug,
+      p.category as productCategory,
+      p.brand as productBrand,
+      p.images as productImages,
+      p.stock as productStock,
+      p.regularPrice as productRegularPrice,
+      c.title as comboTitle,
+      c.description as comboDescription,
+      c.image as comboImage,
+      c.regularPrice as comboRegularPrice,
+      c.comboPrice as comboPrice
     FROM sale_items si
-    JOIN products p ON si.productId = p.id
-    WHERE si.saleId = ? AND p.isActive = 1
+    LEFT JOIN products p ON si.productId = p.id
+    LEFT JOIN combos c ON si.comboId = c.id
+    WHERE si.saleId = ?
   `).all(liveSale.id);
 
   const formattedItems = items.map(item => {
     let parsedImages = [];
-    try {
-      parsedImages = JSON.parse(item.images);
-    } catch (e) {
-      parsedImages = ['/images/placeholder.jpg'];
+    if (item.productImages) {
+      try { parsedImages = JSON.parse(item.productImages); } catch (e) {}
     }
 
-    const regular = item.regularPrice || item.regularPriceSnapshot;
+    const isCustom = Boolean(item.isCustom);
+    const isCombo = Boolean(item.comboId);
+    
+    let name = 'Sale Item';
+    let category = 'Special Deals';
+    let brand = 'Prem Mobile';
+    let image = '/images/placeholder.jpg';
+    let regular = item.salePrice;
+
+    if (isCombo) {
+      name = item.comboTitle || item.customTitle || 'Combo Pack';
+      category = 'Combo Pack';
+      brand = 'Prem Mobile Combo';
+      image = item.comboImage || item.customImage || '/images/placeholder.jpg';
+      regular = item.comboRegularPrice || item.regularPriceSnapshot || item.salePrice;
+    } else if (isCustom) {
+      name = item.customTitle;
+      category = item.customCategory || 'Special Deals';
+      brand = item.customBrand || 'Prem Mobile';
+      image = item.customImage || '/images/placeholder.jpg';
+      regular = item.regularPriceSnapshot || item.salePrice;
+    } else {
+      name = item.productName || 'Catalog Item';
+      category = item.productCategory || 'Catalog Item';
+      brand = item.productBrand || 'Prem Mobile';
+      image = parsedImages[0] || '/images/placeholder.jpg';
+      regular = item.productRegularPrice || item.regularPriceSnapshot || item.salePrice;
+    }
+
     const sale = item.salePrice;
     const savings = Math.max(0, regular - sale);
     const discountPercent = regular > 0 ? Math.round((savings / regular) * 100) : 0;
+    const id = isCombo ? `combo-${item.comboId}` : (isCustom ? `custom-${item.saleItemId}` : (item.productId || `item-${item.saleItemId}`));
 
     return {
-      id: item.productId,
+      id,
       productId: item.productId,
-      name: item.name,
-      slug: item.slug,
-      category: item.category,
-      brand: item.brand,
-      image: parsedImages[0] || '/images/placeholder.jpg',
-      images: parsedImages,
+      comboId: item.comboId,
+      isCustom,
+      isCombo,
+      name,
+      slug: item.productSlug || name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      category,
+      brand,
+      image,
+      images: parsedImages.length > 0 ? parsedImages : [image],
       regularPrice: regular,
       salePrice: sale,
       price: sale,
       originalPrice: regular,
       savings,
       discountPercent,
-      stock: item.stock
+      stock: item.productStock || 15
     };
   });
 
@@ -114,14 +171,14 @@ export function getSalePublicState() {
     status: 'LIVE',
     sale: {
       id: liveSale.id,
-      name: liveSale.name || 'Special Sale',
+      name: liveSale.name || 'Sunday Shocking Sale',
       startDate: liveSale.startDate,
       endDate: liveSale.endDate,
       startTime: liveSale.startTime,
       endTime: liveSale.endTime
     },
     items: formattedItems,
-    message: `🔥 ${liveSale.name || 'SPECIAL SALE'} IS LIVE! Special prices available now.`
+    message: `🔥 ${liveSale.name || 'SUNDAY SHOCKING SALE'} IS LIVE! Special prices available now.`
   };
 }
 
@@ -148,7 +205,7 @@ export function getSaleAdminState() {
       INSERT INTO sales (name, startDate, endDate, startTime, endTime, status, createdAt, updatedAt)
       VALUES (?, ?, ?, ?, ?, 'DRAFT', ?, ?)
     `).run(
-      'Special Dhamaka Sale',
+      'Sunday Shocking Sale',
       today,
       today,
       '10:00',
@@ -200,11 +257,33 @@ export function getSaleAdminState() {
     };
   });
 
+  // Get custom items for this sale
+  const configuredCustomItems = existingItems.filter(it => it.isCustom).map(it => ({
+    saleItemId: it.id,
+    customTitle: it.customTitle,
+    customCategory: it.customCategory,
+    customBrand: it.customBrand,
+    customImage: it.customImage,
+    regularPrice: it.regularPriceSnapshot,
+    salePrice: it.salePrice
+  }));
+
+  // Get combo items for this sale
+  const configuredComboItems = existingItems.filter(it => it.comboId).map(it => ({
+    saleItemId: it.id,
+    comboId: it.comboId,
+    name: it.customTitle,
+    regularPrice: it.regularPriceSnapshot,
+    salePrice: it.salePrice
+  }));
+
   return {
     sale: currentSale,
     isLive: currentSale.status === 'LIVE',
     status: currentSale.status, // 'DRAFT', 'READY', 'LIVE', 'ENDED'
     candidateProducts,
+    configuredCustomItems,
+    configuredComboItems,
     hasLiveSale: Boolean(liveSale),
     liveSaleId: liveSale ? liveSale.id : null
   };

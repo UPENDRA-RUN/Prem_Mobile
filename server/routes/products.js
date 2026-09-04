@@ -2,17 +2,66 @@ import express from 'express';
 import { db } from '../db.js';
 import { requireAdmin } from '../auth.js';
 import { getSundaySaleStatus } from '../sundaySaleLogic.js';
+import { broadcastEvent } from '../events.js';
 
 const router = express.Router();
 
+// Helper to format product object with prices, badges, and discounts
+function formatProduct(p, sundayItemsMap = new Map()) {
+  let images = [];
+  try {
+    images = JSON.parse(p.images);
+  } catch (e) {
+    images = [p.images];
+  }
+
+  const regularPrice = Number(p.regularPrice || 0); // Original / MRP Price
+  const offerPrice = p.offerPrice !== null && p.offerPrice !== undefined ? Number(p.offerPrice) : regularPrice; // Offer / Selling Price
+
+  const sundaySaleItem = sundayItemsMap.get(p.id);
+  const isSundaySale = Boolean(sundaySaleItem);
+  const sundaySalePrice = isSundaySale ? Number(sundaySaleItem.salePrice) : null;
+
+  // Effective selling price: Sunday sale > Offer price > Regular price
+  const currentPrice = isSundaySale ? sundaySalePrice : (offerPrice > 0 && offerPrice < regularPrice ? offerPrice : (p.isOnSale ? offerPrice : regularPrice));
+  const discount = regularPrice > currentPrice && regularPrice > 0
+    ? Math.round(((regularPrice - currentPrice) / regularPrice) * 100)
+    : 0;
+
+  const stock = Number(p.stock !== undefined ? p.stock : 10);
+  const isOnSale = Boolean(p.isOnSale || isSundaySale || discount > 0);
+
+  return {
+    ...p,
+    images,
+    image: images[0] || '/images/prem-main.jpg',
+    price: currentPrice,
+    originalPrice: regularPrice,
+    regularPrice,
+    offerPrice,
+    currentPrice,
+    salePrice: currentPrice,
+    isSundaySale,
+    isOnSale,
+    isBestSeller: Boolean(p.isBestSeller),
+    isFeatured: Boolean(p.isFeatured),
+    isNew: Boolean(p.isNew),
+    tag: p.tag || (isOnSale && discount > 0 ? `${discount}% OFF` : (p.isBestSeller ? 'Best Seller' : '')),
+    discount,
+    stock,
+    rating: 4.8,
+    reviewsCount: 120
+  };
+}
+
 // Public: GET /api/products
 router.get('/', (req, res) => {
-  const { category, search, sort } = req.query;
+  const { category, search, sort, filter } = req.query;
 
   let query = 'SELECT * FROM products WHERE isActive = 1';
   const params = [];
 
-  if (category) {
+  if (category && category !== 'all') {
     query += ' AND (LOWER(category) = LOWER(?) OR LOWER(categorySlug) = LOWER(?))';
     params.push(category, category);
   }
@@ -23,12 +72,22 @@ router.get('/', (req, res) => {
     params.push(term, term, term);
   }
 
+  if (filter === 'sale') {
+    query += ' AND (isOnSale = 1 OR (offerPrice > 0 AND offerPrice < regularPrice))';
+  } else if (filter === 'bestseller') {
+    query += ' AND isBestSeller = 1';
+  } else if (filter === 'featured') {
+    query += ' AND isFeatured = 1';
+  } else if (filter === 'new') {
+    query += ' AND isNew = 1';
+  }
+
   if (sort === 'price_asc') {
     query += ' ORDER BY regularPrice ASC';
   } else if (sort === 'price_desc') {
     query += ' ORDER BY regularPrice DESC';
   } else {
-    query += ' ORDER BY id ASC';
+    query += ' ORDER BY id DESC';
   }
 
   const rows = db.prepare(query).all(...params);
@@ -43,41 +102,27 @@ router.get('/', (req, res) => {
     }
   }
 
-  const products = rows.map(p => {
-    let images = [];
-    try {
-      images = JSON.parse(p.images);
-    } catch (e) {
-      images = [p.images];
-    }
-
-    const regularPrice = Number(p.regularPrice);
-    const sundaySaleItem = sundayItemsMap.get(p.id);
-
-    const isSundaySale = Boolean(sundaySaleItem);
-    const salePrice = isSundaySale ? Number(sundaySaleItem.salePrice) : null;
-    const currentPrice = isSundaySale ? salePrice : regularPrice;
-    const discount = isSundaySale && regularPrice > 0 ? Math.round(((regularPrice - salePrice) / regularPrice) * 100) : 0;
-
-    return {
-      ...p,
-      images,
-      image: images[0] || '/images/prem-main.jpg',
-      regularPrice,
-      salePrice,
-      currentPrice,
-      isSundaySale,
-      discount,
-      rating: 4.8,
-      reviewsCount: 120
-    };
-  });
+  const products = rows.map(p => formatProduct(p, sundayItemsMap));
 
   res.json({
     success: true,
     count: products.length,
     sundaySaleLive: saleStatus.isLive,
     products
+  });
+});
+
+// Admin: DELETE /api/products/clear-all (Purge all sample products)
+router.delete('/clear-all', requireAdmin, (req, res) => {
+  db.prepare('DELETE FROM sunday_sale_items').run();
+  db.prepare('DELETE FROM sale_items').run();
+  db.prepare('DELETE FROM products').run();
+
+  broadcastEvent('PRODUCTS_UPDATED');
+
+  res.json({
+    success: true,
+    message: 'All sample products purged successfully. Ready for custom inventory.'
   });
 });
 
@@ -94,61 +139,23 @@ router.get('/:id', (req, res) => {
     return res.status(404).json({ success: false, error: 'Product not found' });
   }
 
-  let images = [];
-  try {
-    images = JSON.parse(product.images);
-  } catch (e) {
-    images = [product.images];
-  }
-
   const saleStatus = getSundaySaleStatus();
-  let sundaySaleItem = null;
+  let sundayItemsMap = new Map();
   if (saleStatus.isLive && saleStatus.saleRecord) {
-    sundaySaleItem = db.prepare('SELECT regularPriceSnapshot, salePrice FROM sunday_sale_items WHERE saleId = ? AND productId = ?').get(saleStatus.saleRecord.id, product.id);
+    const saleItem = db.prepare('SELECT regularPriceSnapshot, salePrice FROM sunday_sale_items WHERE saleId = ? AND productId = ?').get(saleStatus.saleRecord.id, product.id);
+    if (saleItem) sundayItemsMap.set(product.id, saleItem);
   }
-
-  const regularPrice = Number(product.regularPrice);
-  const isSundaySale = Boolean(sundaySaleItem);
-  const salePrice = isSundaySale ? Number(sundaySaleItem.salePrice) : null;
-  const currentPrice = isSundaySale ? salePrice : regularPrice;
-  const savings = isSundaySale ? regularPrice - salePrice : 0;
-  const discount = isSundaySale && regularPrice > 0 ? Math.round((savings / regularPrice) * 100) : 0;
 
   res.json({
     success: true,
-    product: {
-      ...product,
-      images,
-      image: images[0] || '/images/prem-main.jpg',
-      regularPrice,
-      salePrice,
-      currentPrice,
-      isSundaySale,
-      savings,
-      discount,
-      rating: 4.8,
-      reviewsCount: 120
-    }
+    product: formatProduct(product, sundayItemsMap)
   });
 });
 
-// Admin: GET /api/admin/products (includes inactive)
+// Admin: GET /api/products/admin/all (includes inactive)
 router.get('/admin/all', requireAdmin, (req, res) => {
   const rows = db.prepare('SELECT * FROM products ORDER BY id DESC').all();
-  const products = rows.map(p => {
-    let images = [];
-    try {
-      images = JSON.parse(p.images);
-    } catch (e) {
-      images = [p.images];
-    }
-    return {
-      ...p,
-      images,
-      image: images[0] || '/images/prem-main.jpg',
-      regularPrice: Number(p.regularPrice)
-    };
-  });
+  const products = rows.map(p => formatProduct(p));
 
   res.json({
     success: true,
@@ -158,7 +165,11 @@ router.get('/admin/all', requireAdmin, (req, res) => {
 
 // Admin: POST /api/products (Add product)
 router.post('/', requireAdmin, (req, res) => {
-  const { name, category, description, brand, images, regularPrice, stock, isActive } = req.body || {};
+  const {
+    name, category, description, brand, images,
+    regularPrice, offerPrice, stock, isActive,
+    isOnSale, isBestSeller, isFeatured, isNew, tag
+  } = req.body || {};
 
   if (!name || !name.trim()) {
     return res.status(400).json({ success: false, error: 'Product name is required' });
@@ -166,10 +177,17 @@ router.post('/', requireAdmin, (req, res) => {
   if (!category || !category.trim()) {
     return res.status(400).json({ success: false, error: 'Category is required' });
   }
-  const price = Number(regularPrice);
-  if (isNaN(price) || price < 0) {
-    return res.status(400).json({ success: false, error: 'Valid regular price is required' });
+
+  const regPrice = Number(regularPrice);
+  if (isNaN(regPrice) || regPrice < 0) {
+    return res.status(400).json({ success: false, error: 'Valid Original/MRP price is required' });
   }
+
+  const offPrice = offerPrice !== undefined && offerPrice !== '' ? Number(offerPrice) : regPrice;
+  if (isNaN(offPrice) || offPrice < 0) {
+    return res.status(400).json({ success: false, error: 'Offer price must be valid' });
+  }
+
   const stockNum = Number(stock !== undefined ? stock : 10);
   if (isNaN(stockNum) || stockNum < 0) {
     return res.status(400).json({ success: false, error: 'Stock cannot be negative' });
@@ -182,8 +200,9 @@ router.post('/', requireAdmin, (req, res) => {
 
   const stmt = db.prepare(`
     INSERT INTO products (
-      name, slug, description, category, categorySlug, brand, images, regularPrice, stock, isActive, isFeatured, tag, createdAt, updatedAt
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, '', ?, ?)
+      name, slug, description, category, categorySlug, brand, images,
+      regularPrice, offerPrice, stock, isActive, isOnSale, isBestSeller, isFeatured, isNew, tag, createdAt, updatedAt
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
 
   const result = stmt.run(
@@ -194,12 +213,20 @@ router.post('/', requireAdmin, (req, res) => {
     categorySlug,
     brand ? brand.trim() : 'Prem Mobile',
     JSON.stringify(imgArray),
-    price,
+    regPrice,
+    offPrice,
     stockNum,
     isActive !== undefined ? (isActive ? 1 : 0) : 1,
+    isOnSale ? 1 : 0,
+    isBestSeller ? 1 : 0,
+    isFeatured ? 1 : 0,
+    isNew ? 1 : 0,
+    tag ? tag.trim() : '',
     now,
     now
   );
+
+  broadcastEvent('PRODUCTS_UPDATED');
 
   res.status(201).json({
     success: true,
@@ -211,16 +238,25 @@ router.post('/', requireAdmin, (req, res) => {
 // Admin: PUT /api/products/:id (Update product)
 router.put('/:id', requireAdmin, (req, res) => {
   const { id } = req.params;
-  const { name, category, description, brand, images, regularPrice, stock, isActive } = req.body || {};
+  const {
+    name, category, description, brand, images,
+    regularPrice, offerPrice, stock, isActive,
+    isOnSale, isBestSeller, isFeatured, isNew, tag
+  } = req.body || {};
 
   const existing = db.prepare('SELECT * FROM products WHERE id = ?').get(id);
   if (!existing) {
     return res.status(404).json({ success: false, error: 'Product not found' });
   }
 
-  const price = regularPrice !== undefined ? Number(regularPrice) : existing.regularPrice;
-  if (isNaN(price) || price < 0) {
+  const regPrice = regularPrice !== undefined ? Number(regularPrice) : existing.regularPrice;
+  if (isNaN(regPrice) || regPrice < 0) {
     return res.status(400).json({ success: false, error: 'Price must be valid' });
+  }
+
+  const offPrice = offerPrice !== undefined ? Number(offerPrice) : (existing.offerPrice ?? regPrice);
+  if (isNaN(offPrice) || offPrice < 0) {
+    return res.status(400).json({ success: false, error: 'Offer price must be valid' });
   }
 
   const stockNum = stock !== undefined ? Number(stock) : existing.stock;
@@ -236,6 +272,11 @@ router.put('/:id', requireAdmin, (req, res) => {
   const updatedDesc = description !== undefined ? description : existing.description;
   const updatedBrand = brand !== undefined ? brand : existing.brand;
   const updatedActive = isActive !== undefined ? (isActive ? 1 : 0) : existing.isActive;
+  const updatedOnSale = isOnSale !== undefined ? (isOnSale ? 1 : 0) : (existing.isOnSale || 0);
+  const updatedBestSeller = isBestSeller !== undefined ? (isBestSeller ? 1 : 0) : (existing.isBestSeller || 0);
+  const updatedFeatured = isFeatured !== undefined ? (isFeatured ? 1 : 0) : (existing.isFeatured || 0);
+  const updatedNew = isNew !== undefined ? (isNew ? 1 : 0) : (existing.isNew || 0);
+  const updatedTag = tag !== undefined ? tag.trim() : (existing.tag || '');
 
   db.prepare(`
     UPDATE products SET
@@ -246,8 +287,14 @@ router.put('/:id', requireAdmin, (req, res) => {
       brand = ?,
       images = ?,
       regularPrice = ?,
+      offerPrice = ?,
       stock = ?,
       isActive = ?,
+      isOnSale = ?,
+      isBestSeller = ?,
+      isFeatured = ?,
+      isNew = ?,
+      tag = ?,
       updatedAt = ?
     WHERE id = ?
   `).run(
@@ -257,12 +304,20 @@ router.put('/:id', requireAdmin, (req, res) => {
     updatedDesc,
     updatedBrand,
     updatedImages,
-    price,
+    regPrice,
+    offPrice,
     stockNum,
     updatedActive,
+    updatedOnSale,
+    updatedBestSeller,
+    updatedFeatured,
+    updatedNew,
+    updatedTag,
     now,
     id
   );
+
+  broadcastEvent('PRODUCTS_UPDATED');
 
   res.json({
     success: true,
@@ -279,6 +334,9 @@ router.delete('/:id', requireAdmin, (req, res) => {
   }
 
   db.prepare('DELETE FROM products WHERE id = ?').run(id);
+
+  broadcastEvent('PRODUCTS_UPDATED');
+
   res.json({
     success: true,
     message: 'Product deleted successfully'

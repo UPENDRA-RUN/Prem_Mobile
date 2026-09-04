@@ -54,7 +54,7 @@ export default function LegalModal({ isOpen, onClose, policyType = 'privacy' }) 
 
           <h4 className="font-bold text-sm text-[#050505]">3. Free In-Store Services</h4>
           <p>
-            Free screen guard fitting and live audio testing are complimentary in-store services provided upon store pickup at Pinto Park, Gwalior.
+            Live audio testing and product inspection are complimentary in-store services provided upon store pickup at Pinto Park, Gwalior.
           </p>
         </div>
       )

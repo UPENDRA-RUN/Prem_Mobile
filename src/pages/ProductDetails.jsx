@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { products } from '../data/products';
+import { fetchLaravelProducts } from '../api/laravel';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
 import { useSundaySale } from '../context/SundaySaleContext';
@@ -39,7 +39,36 @@ export default function ProductDetails() {
   const { isInWishlist, toggleWishlist } = useWishlist();
   const { isLive: isSundayLive, products: sundayProducts } = useSundaySale();
 
-  const product = products.find((p) => p.id === Number(id));
+  const [product, setProduct] = useState(null);
+  const [allProducts, setAllProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`/api/products/${id}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.product) {
+          const p = data.product;
+          setProduct({
+            ...p,
+            price: p.currentPrice || p.regularPrice,
+            originalPrice: p.regularPrice,
+            image: p.image || (p.images && p.images[0]) || '/images/prem-main.jpg',
+            images: Array.isArray(p.images) && p.images.length > 0 ? p.images : [p.image || '/images/prem-main.jpg'],
+            features: p.description ? p.description.split('. ').filter(Boolean) : ['Original product with official warranty.'],
+            availability: p.stock > 0 ? 'In Stock at Store' : 'Out of Stock'
+          });
+        } else {
+          setProduct(null);
+        }
+      })
+      .catch(err => console.error(err))
+      .finally(() => setLoading(false));
+
+    fetchLaravelProducts().then(res => {
+      if (res.success) setAllProducts(res.data || []);
+    });
+  }, [id]);
 
   // Check if product is in Sunday Sale
   const sundaySaleItem = isSundayLive && sundayProducts
@@ -74,6 +103,15 @@ export default function ProductDetails() {
     setRecentlyAdded(false);
   }, [product]);
 
+  if (loading) {
+    return (
+      <div className="py-24 text-center max-w-md mx-auto px-4 space-y-4 flex flex-col items-center justify-center min-h-[60vh]">
+        <div className="w-12 h-12 border-4 border-[#FFD400] border-t-transparent rounded-full animate-spin" />
+        <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">Loading Product Specs & Details...</p>
+      </div>
+    );
+  }
+
   if (!product) {
     return (
       <div className="py-20 text-center max-w-md mx-auto px-4 space-y-4">
@@ -94,7 +132,7 @@ export default function ProductDetails() {
   const isLiked = isInWishlist(product.id);
   const galleryImages = product.images && product.images.length > 0 ? product.images : [product.image];
 
-  const relatedProducts = products
+  const relatedProducts = allProducts
     .filter((p) => p.category === product.category && p.id !== product.id && !p.isAddon)
     .slice(0, 4);
 
@@ -221,8 +259,12 @@ export default function ProductDetails() {
                 </button>
 
                 <img
-                  src={galleryImages[selectedImage] || product.image}
+                  src={galleryImages[selectedImage] || product.image || '/images/prem-main.jpg'}
                   alt={product.name}
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = '/images/prem-main.jpg';
+                  }}
                   className="w-full h-full object-contain mix-blend-multiply transition-all duration-300 hover:scale-105"
                 />
               </div>
@@ -240,7 +282,15 @@ export default function ProductDetails() {
                           : 'border-slate-200 hover:border-slate-300 opacity-70 hover:opacity-100'
                       }`}
                     >
-                      <img src={img} alt="thumbnail" className="w-full h-full object-cover rounded-xl" />
+                      <img
+                        src={img || '/images/prem-main.jpg'}
+                        alt="thumbnail"
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = '/images/prem-main.jpg';
+                        }}
+                        className="w-full h-full object-cover rounded-xl"
+                      />
                     </button>
                   ))}
                 </div>
@@ -519,7 +569,7 @@ export default function ProductDetails() {
                 </p>
                 <div className="flex items-center gap-2 pl-6 text-[#E31B23] font-bold text-[11px]">
                   <ShieldCheck className="w-3.5 h-3.5" />
-                  <span>Free screen guard fitting and live audio test on pickup</span>
+                  <span>100% genuine warranty and live audio test on pickup</span>
                 </div>
               </div>
 

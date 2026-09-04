@@ -46,7 +46,7 @@ router.post('/admin/save', requireAdmin, (req, res) => {
   try {
     const {
       saleId,
-      name = 'Special Sale',
+      name = 'Sunday Shocking Sale',
       startDate,
       endDate,
       startTime = '',
@@ -89,15 +89,66 @@ router.post('/admin/save', requireAdmin, (req, res) => {
     db.prepare('DELETE FROM sale_items WHERE saleId = ?').run(currentSaleId);
 
     const insertItemStmt = db.prepare(`
-      INSERT INTO sale_items (saleId, productId, regularPriceSnapshot, salePrice, createdAt)
-      VALUES (?, ?, ?, ?, ?)
+      INSERT INTO sale_items (saleId, productId, isCustom, customTitle, customCategory, customBrand, customImage, comboId, regularPriceSnapshot, salePrice, createdAt)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
 
     for (const item of items) {
-      const product = db.prepare('SELECT * FROM products WHERE id = ?').get(item.productId);
-      if (product) {
-        const salePrice = Number(item.salePrice) || product.regularPrice;
-        insertItemStmt.run(currentSaleId, product.id, product.regularPrice, salePrice, now);
+      if (item.isCustom) {
+        // Direct custom sale product
+        const regPrice = Number(item.regularPrice) || Number(item.salePrice) || 0;
+        const salePrice = Number(item.salePrice) || regPrice;
+        insertItemStmt.run(
+          currentSaleId,
+          null,
+          1,
+          item.customTitle || 'Custom Sale Item',
+          item.customCategory || 'Special Deals',
+          item.customBrand || 'Prem Mobile',
+          item.customImage || '/images/placeholder.jpg',
+          null,
+          regPrice,
+          salePrice,
+          now
+        );
+      } else if (item.comboId) {
+        // Sale Combo item
+        const combo = db.prepare('SELECT * FROM combos WHERE id = ?').get(item.comboId);
+        if (combo) {
+          const salePrice = Number(item.salePrice) || combo.comboPrice;
+          insertItemStmt.run(
+            currentSaleId,
+            null,
+            0,
+            combo.name,
+            'Combo Pack',
+            'Prem Mobile Combo',
+            combo.image || '/images/placeholder.jpg',
+            combo.id,
+            combo.regularPrice,
+            salePrice,
+            now
+          );
+        }
+      } else if (item.productId) {
+        // Catalog Gallery product
+        const product = db.prepare('SELECT * FROM products WHERE id = ?').get(item.productId);
+        if (product) {
+          const salePrice = Number(item.salePrice) || product.regularPrice;
+          insertItemStmt.run(
+            currentSaleId,
+            product.id,
+            0,
+            null,
+            null,
+            null,
+            null,
+            null,
+            product.regularPrice,
+            salePrice,
+            now
+          );
+        }
       }
     }
 

@@ -90,7 +90,7 @@ export default function FAQ() {
             </h1>
             
             <p className="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto">
-              Find answers about store pickup at Pinto Park, free screen guard fitting, live audio tests, payment options, and Sunday Sale deals.
+              Find answers about store pickup at Pinto Park, live audio tests, payment options, original warranty, and Sunday Sale deals.
             </p>
 
             {/* KEYWORD SEARCH INPUT BAR */}
@@ -99,7 +99,7 @@ export default function FAQ() {
                 <Search className="w-5 h-5 text-slate-400 absolute left-4 pointer-events-none" />
                 <input
                   type="text"
-                  placeholder="Search questions by keyword (e.g. 'screen guard', 'pickup', 'payment', 'warranty')..."
+                  placeholder="Search questions by keyword (e.g. 'pickup', 'payment', 'warranty', 'return')..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-12 pr-10 py-4 rounded-2xl bg-white text-[#050505] placeholder-slate-400 text-xs sm:text-sm font-bold shadow-lg focus:outline-none focus:ring-4 focus:ring-[#FFD400]/50"
@@ -224,7 +224,7 @@ export default function FAQ() {
                   No Questions Found Matching Your Criteria
                 </h3>
                 <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
-                  Try searching for keywords like "pickup", "screen guard", "delivery", "payment", or "warranty".
+                  Try searching for keywords like "pickup", "delivery", "payment", or "warranty".
                 </p>
               </div>
               <button
@@ -421,7 +421,7 @@ export default function FAQ() {
                     Visit Store in Gwalior
                   </h3>
                   <p className="text-xs text-slate-600 mt-1">
-                    Pinto Park, Jaderua Gate Ke Samne, Gwalior. Free screen guard fitting & live demo.
+                    Pinto Park, Jaderua Gate Ke Samne, Gwalior. Genuine products & live demo.
                   </p>
                 </div>
               </div>

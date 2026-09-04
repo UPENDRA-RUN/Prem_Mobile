@@ -4,7 +4,7 @@ import { MapPin, Instagram, Facebook } from 'lucide-react';
 
 export default function AnnouncementBar() {
   return (
-    <div className="bg-[#050505] text-white text-xs h-[38px] border-b border-[#ffd000]/40 flex items-center">
+    <div className="text-white text-xs h-[38px] flex items-center bg-[#050505] border-b border-[#ffd000]/40">
       <div className="max-w-[1500px] w-full mx-auto px-6 flex items-center justify-between">
         
         {/* LEFT: Address */}

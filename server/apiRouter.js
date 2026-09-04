@@ -6,6 +6,10 @@ import sundaySaleRoutes from './routes/sundaySale.js';
 import orderRoutes from './routes/orders.js';
 import settingRoutes from './routes/settings.js';
 import uploadRoutes from './routes/upload.js';
+import paymentRoutes from './routes/payment.js';
+import { sseHandler } from './events.js';
+
+import combosRoutes from './routes/combos.js';
 
 export function createApiRouter() {
   const app = express();
@@ -30,14 +34,19 @@ export function createApiRouter() {
 
   app.use(express.json({ limit: '30mb' }));
 
+  // SSE Real-time events stream
+  app.get('/events', sseHandler);
+
   // Mount API modules
   app.use('/auth', authRoutes);
   app.use('/products', productRoutes);
   app.use('/upload', uploadRoutes);
   app.use('/sale', saleRoutes);
   app.use('/sunday-sale', saleRoutes); // Alias for seamless backward compatibility
+  app.use('/combos', combosRoutes);
   app.use('/orders', orderRoutes);
   app.use('/settings', settingRoutes);
+  app.use('/payment', paymentRoutes);
 
   // Health check endpoint for UptimeRobot keep-alive ping
   app.get('/health', (req, res) => {

@@ -135,7 +135,51 @@ export function initDatabase() {
       key TEXT PRIMARY KEY,
       value TEXT NOT NULL
     );
+
+    CREATE TABLE IF NOT EXISTS combos (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      slug TEXT UNIQUE NOT NULL,
+      description TEXT,
+      image TEXT,
+      regularPrice REAL NOT NULL,
+      comboPrice REAL NOT NULL,
+      badgeText TEXT DEFAULT 'COMBO SAVINGS',
+      isActive INTEGER NOT NULL DEFAULT 1,
+      isFeatured INTEGER NOT NULL DEFAULT 0,
+      createdAt TEXT NOT NULL,
+      updatedAt TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS combo_items (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      comboId INTEGER NOT NULL,
+      productId INTEGER,
+      customItemName TEXT,
+      quantity INTEGER NOT NULL DEFAULT 1,
+      FOREIGN KEY (comboId) REFERENCES combos (id) ON DELETE CASCADE,
+      FOREIGN KEY (productId) REFERENCES products (id) ON DELETE CASCADE
+    );
   `);
+
+  // Migration: Add new columns if upgrading existing database
+  try {
+    const columns = db.prepare("PRAGMA table_info(products)").all().map(c => c.name);
+    if (!columns.includes('offerPrice')) db.exec('ALTER TABLE products ADD COLUMN offerPrice REAL;');
+    if (!columns.includes('isOnSale')) db.exec('ALTER TABLE products ADD COLUMN isOnSale INTEGER NOT NULL DEFAULT 0;');
+    if (!columns.includes('isBestSeller')) db.exec('ALTER TABLE products ADD COLUMN isBestSeller INTEGER NOT NULL DEFAULT 0;');
+    if (!columns.includes('isNew')) db.exec('ALTER TABLE products ADD COLUMN isNew INTEGER NOT NULL DEFAULT 0;');
+
+    const saleItemCols = db.prepare("PRAGMA table_info(sale_items)").all().map(c => c.name);
+    if (!saleItemCols.includes('isCustom')) db.exec('ALTER TABLE sale_items ADD COLUMN isCustom INTEGER NOT NULL DEFAULT 0;');
+    if (!saleItemCols.includes('customTitle')) db.exec('ALTER TABLE sale_items ADD COLUMN customTitle TEXT;');
+    if (!saleItemCols.includes('customCategory')) db.exec('ALTER TABLE sale_items ADD COLUMN customCategory TEXT;');
+    if (!saleItemCols.includes('customBrand')) db.exec('ALTER TABLE sale_items ADD COLUMN customBrand TEXT;');
+    if (!saleItemCols.includes('customImage')) db.exec('ALTER TABLE sale_items ADD COLUMN customImage TEXT;');
+    if (!saleItemCols.includes('comboId')) db.exec('ALTER TABLE sale_items ADD COLUMN comboId INTEGER;');
+  } catch (e) {
+    console.warn('[DB] Migration warning:', e.message);
+  }
 
   // Seed default admin if none exists
   const adminCheck = db.prepare('SELECT COUNT(*) as count FROM admins').get();

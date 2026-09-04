@@ -103,7 +103,7 @@ export default function Navbar() {
               to="/products"
               className={({ isActive }) =>
                 `relative text-[14px] font-extrabold tracking-wide uppercase transition-colors py-2 flex flex-col items-center ${
-                  isActive || location.pathname === '/shop'
+                  isActive || location.pathname === '/shop' || location.pathname === '/products'
                     ? 'text-[#e51b23]'
                     : 'text-[#050505] hover:text-[#e51b23]'
                 }`
@@ -112,7 +112,7 @@ export default function Navbar() {
               {({ isActive }) => (
                 <>
                   <span>PRODUCTS</span>
-                  {(isActive || location.pathname === '/shop') && (
+                  {(isActive || location.pathname === '/shop' || location.pathname === '/products') && (
                     <span className="absolute -bottom-2 w-full h-[3px] bg-[#e51b23] rounded-full" />
                   )}
                 </>
@@ -234,6 +234,30 @@ export default function Navbar() {
               )}
             </NavLink>
 
+
+            {/* COMBOS */}
+            <NavLink
+              to="/combos"
+              className={({ isActive }) =>
+                `relative text-[14px] font-extrabold tracking-wide uppercase transition-colors py-2 flex flex-col items-center ${
+                  isActive
+                    ? 'text-[#e51b23]'
+                    : 'text-[#050505] hover:text-[#e51b23]'
+                }`
+              }
+            >
+              {({ isActive }) => (
+                <>
+                  <div className="flex items-center gap-1">
+                    <span>COMBOS</span>
+                    <span className="text-xs">🎁</span>
+                  </div>
+                  {isActive && (
+                    <span className="absolute -bottom-2 w-full h-[3px] bg-[#e51b23] rounded-full" />
+                  )}
+                </>
+              )}
+            </NavLink>
 
             {/* OFFERS */}
             <NavLink
@@ -428,6 +452,10 @@ export default function Navbar() {
                 <Flame className="w-3.5 h-3.5 fill-current" />
               </Link>
 
+              <Link to="/combos" className="px-4 py-2.5 rounded-xl bg-purple-50 text-xs font-bold text-purple-900 flex items-center justify-between">
+                <span>COMBOS</span>
+                <span>🎁</span>
+              </Link>
               <Link to="/offers" className="px-4 py-2.5 rounded-xl bg-amber-50 text-xs font-bold text-amber-900">OFFERS</Link>
               <Link to="/about" className="px-4 py-2.5 rounded-xl bg-slate-50 text-xs font-bold text-[#050505]">ABOUT US</Link>
               <Link to="/contact" className="px-4 py-2.5 rounded-xl bg-slate-50 text-xs font-bold text-[#050505]">CONTACT</Link>

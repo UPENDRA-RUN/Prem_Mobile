@@ -1,6 +1,7 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { products } from '../data/products';
+import { fetchLaravelProducts } from '../api/laravel';
+import { useRealtimeSync } from '../hooks/useRealtimeSync';
 import { categories } from '../data/categories';
 import ProductGrid from '../components/product/ProductGrid';
 import FilterSidebar from '../components/product/FilterSidebar';
@@ -35,6 +36,19 @@ const TRENDING_TAGS = [
 
 export default function Shop() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [products, setProducts] = useState([]);
+
+  const loadProducts = useCallback(() => {
+    fetchLaravelProducts().then(res => {
+      if (res.success) setProducts(res.data || []);
+    });
+  }, []);
+
+  useEffect(() => {
+    loadProducts();
+  }, [loadProducts]);
+
+  useRealtimeSync(loadProducts, ['PRODUCTS_UPDATED'], 3000);
 
   // URL state sync
   const initialCategory = searchParams.get('category') || 'all';

@@ -2,9 +2,13 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { storeConfig } from '../../config/store';
 import { openGeneralWhatsApp } from '../../utils/whatsapp';
+import { useSundaySale } from '../../context/SundaySaleContext';
+import CountdownTimer from '../common/CountdownTimer';
 import { Flame, MessageCircle, ArrowRight, Sparkles, Clock } from 'lucide-react';
 
 export default function SundaySpecialSection() {
+  const { isLive, sale } = useSundaySale();
+
   return (
     <section className="py-12 sm:py-16 bg-[#050505] text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -19,31 +23,45 @@ export default function SundaySpecialSection() {
             
             {/* Left Content */}
             <div className="lg:col-span-6 space-y-5 text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#E31B23] text-white font-black text-xs uppercase tracking-wider shadow-md">
-                <Flame className="w-4 h-4 fill-white" />
-                <span>LIMITED TIME OFFERS</span>
+              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2">
+                <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#E31B23] text-white font-black text-xs uppercase tracking-wider shadow-md">
+                  <Flame className="w-4 h-4 fill-white" />
+                  <span>{isLive ? '🟢 SALE IS LIVE' : 'LIMITED TIME OFFERS'}</span>
+                </span>
               </div>
 
               <h2 className="font-display font-black text-3xl sm:text-4xl md:text-5xl text-white tracking-tight leading-tight">
-                SUNDAY SPECIAL <br />
-                <span className="text-[#FFD400]">SALE DHAMAKA</span>
+                {isLive && sale?.name ? (
+                  <span>{sale.name.toUpperCase()}</span>
+                ) : (
+                  <>
+                    SUNDAY SPECIAL <br />
+                    <span className="text-[#FFD400]">SALE DHAMAKA</span>
+                  </>
+                )}
               </h2>
+
+              {isLive && sale?.endDate && (
+                <div className="pt-1 flex justify-center lg:justify-start">
+                  <CountdownTimer endDate={sale.endDate} endTime={sale.endTime} size="normal" dark />
+                </div>
+              )}
 
               <p className="text-base sm:text-lg font-black text-[#FFD400]">
                 “{storeConfig.tagline}”
               </p>
 
               <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-lg mx-auto lg:mx-0">
-                Get unbelievable discounts on smartphones, high-bass boAt earbuds, heavy-duty 20000mAh power banks, GaN fast chargers, and tempered glass accessories every Sunday at Prem Mobile Pinto Park, Gwalior!
+                Get unbelievable discounts on smartphones, high-bass boAt earbuds, heavy-duty 20000mAh power banks, GaN fast chargers, and accessories at Prem Mobile Pinto Park, Gwalior!
               </p>
 
               {/* Action Buttons */}
               <div className="pt-3 flex flex-col sm:flex-row items-center gap-3 justify-center lg:justify-start">
                 <Link
-                  to="/sunday-sale"
+                  to="/sale"
                   className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-[#FFD400] hover:bg-[#e6be00] text-[#050505] font-black text-xs sm:text-sm uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 transition-transform hover:scale-105"
                 >
-                  <span>EXPLORE SUNDAY SALE</span>
+                  <span>{isLive ? 'SHOP LIVE DEALS NOW' : 'EXPLORE SUNDAY SALE'}</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
 

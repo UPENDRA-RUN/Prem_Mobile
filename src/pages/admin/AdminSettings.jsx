@@ -73,7 +73,7 @@ export default function AdminSettings() {
           Store Settings
         </h1>
         <p className="text-xs text-slate-500 mt-1">
-          Manage day simulation for testing, store details, and administrator settings.
+          Manage store details and administrator settings.
         </p>
       </div>
 
@@ -96,83 +96,6 @@ export default function AdminSettings() {
           <button onClick={() => setFeedback(null)} className="text-slate-400 hover:text-slate-600 font-bold">✕</button>
         </div>
       )}
-
-      {/* DAY SIMULATION SETTING (FOR TESTING ACCEPTANCE CRITERIA) */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
-        <div className="flex items-start gap-3 border-b border-slate-100 pb-4">
-          <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center flex-shrink-0">
-            <Calendar className="w-5 h-5" />
-          </div>
-          <div>
-            <h2 className="font-display font-black text-lg text-slate-900">
-              Day Mode & Sunday Sale Testing Simulation
-            </h2>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Prem Mobile Sunday Sale rules strictly enforce that Sunday Sale is only active on Sundays. Use this setting to simulate any day of the week for evaluation and automated acceptance tests.
-            </p>
-          </div>
-        </div>
-
-        <form onSubmit={handleSaveDaySimulation} className="space-y-4">
-          <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-              Select Day Mode:
-            </label>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              {[
-                { id: 'REAL', label: 'Real Time (IST)' },
-                { id: 'SUNDAY', label: 'Simulate Sunday' },
-                { id: 'MONDAY', label: 'Simulate Monday' },
-                { id: 'TUESDAY', label: 'Simulate Tuesday' },
-                { id: 'WEDNESDAY', label: 'Simulate Wednesday' },
-                { id: 'THURSDAY', label: 'Simulate Thursday' },
-                { id: 'FRIDAY', label: 'Simulate Friday' },
-                { id: 'SATURDAY', label: 'Simulate Saturday' }
-              ].map((opt) => (
-                <label
-                  key={opt.id}
-                  className={`flex items-center gap-2.5 p-3 rounded-xl border text-xs font-bold cursor-pointer transition-colors ${
-                    simulatedDay === opt.id
-                      ? 'border-[#e51b23] bg-red-50/50 text-[#e51b23]'
-                      : 'border-slate-200 hover:bg-slate-50 text-slate-700'
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="simulatedDay"
-                    value={opt.id}
-                    checked={simulatedDay === opt.id}
-                    onChange={(e) => setSimulatedDay(e.target.value)}
-                    className="w-3.5 h-3.5 text-[#e51b23] focus:ring-0"
-                  />
-                  <span>{opt.label}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-
-          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-600 flex items-center justify-between">
-            <div>
-              <span className="font-bold text-slate-700">Currently Effective Day: </span>
-              <span className="font-black text-[#050505]">{dayInfo.dayName || 'Friday'}</span>
-              {dayInfo.isSunday && (
-                <span className="ml-2 px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-black">
-                  Sunday Sale Allowed
-                </span>
-              )}
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="px-6 py-3 rounded-xl bg-[#ffd000] hover:bg-[#e6bd00] text-[#050505] font-black text-xs uppercase tracking-wider shadow-sm flex items-center gap-2"
-          >
-            <Save className="w-4 h-4" />
-            <span>{isLoading ? 'Saving...' : 'APPLY DAY SETTING'}</span>
-          </button>
-        </form>
-      </div>
 
       {/* STORE PROFILE */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-4">
