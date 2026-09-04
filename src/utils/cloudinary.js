@@ -54,9 +54,6 @@ export async function uploadToCloudinary(file, uploadPreset = CLOUDINARY_CONFIG.
     const formData = new FormData();
     formData.append('file', file);
     formData.append('upload_preset', uploadPreset);
-    if (CLOUDINARY_CONFIG.apiKey) {
-      formData.append('api_key', CLOUDINARY_CONFIG.apiKey);
-    }
 
     const res = await fetch(
       `https://api.cloudinary.com/v1_1/${CLOUDINARY_CONFIG.cloudName}/image/upload`,
