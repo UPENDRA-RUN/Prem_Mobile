@@ -85,17 +85,12 @@ export default function AdminCombos() {
     setNotification(null);
 
     try {
-      // Generate Data URL
-      const reader = new FileReader();
-      const dataUrl = await new Promise((resolve, reject) => {
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
+      // Fast compression
+      const { file: compressedFile, dataUrl } = await compressImage(file, 1200, 1200, 0.82);
 
       // 1. Try Cloudinary first
       try {
-        const cloudRes = await uploadToCloudinary(file);
+        const cloudRes = await uploadToCloudinary(compressedFile);
         if (cloudRes && cloudRes.success && cloudRes.url) {
           setFormData(prev => ({ ...prev, image: cloudRes.url }));
           setNotification({ type: 'success', message: 'Combo banner image uploaded successfully!' });

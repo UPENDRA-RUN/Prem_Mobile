@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { uploadToCloudinary } from '../../utils/cloudinary';
+import { compressImage } from '../../utils/imageCompressor';
 import {
   Package,
   ArrowLeft,
@@ -107,7 +108,7 @@ export default function AdminProductForm() {
     ? formData.images.split(',').map(s => s.trim()).filter(Boolean)
     : [];
 
-  // 1. UPLOAD IMAGE(S) DIRECTLY TO CLOUDINARY (iuuqceor) OR API BACKEND
+  // 1. FAST COMPRESSED PARALLEL UPLOAD TO CLOUDINARY OR BACKEND WITH DE-DUPLICATION
   const handleDeviceUpload = async (e) => {
     const files = Array.from(e.target.files || []);
     if (files.length === 0) return;
@@ -116,33 +117,27 @@ export default function AdminProductForm() {
     setUploadFeedback(null);
 
     try {
-      const uploadedUrls = [];
+      // 1. Fast parallel compression (shrink 15MB photos to ~150KB in milliseconds)
+      const compressedItems = await Promise.all(
+        files.map(async (file) => {
+          if (file.size > 15 * 1024 * 1024) {
+            throw new Error(`"${file.name}" is too large. Select images under 15MB.`);
+          }
+          return await compressImage(file, 1200, 1200, 0.82);
+        })
+      );
 
-      for (const file of files) {
-        if (file.size > 15 * 1024 * 1024) {
-          throw new Error(`"${file.name}" is too large. Select images under 15MB.`);
-        }
-
-        // Generate base64 Data URL
-        const reader = new FileReader();
-        const dataUrl = await new Promise((resolve, reject) => {
-          reader.onload = () => resolve(reader.result);
-          reader.onerror = reject;
-          reader.readAsDataURL(file);
-        });
-
-        // 1. Try direct Cloudinary upload first
+      // 2. Parallel upload processing
+      const uploadPromises = compressedItems.map(async ({ file, dataUrl }) => {
         try {
           const cloudRes = await uploadToCloudinary(file);
           if (cloudRes && cloudRes.success && cloudRes.url) {
-            uploadedUrls.push(cloudRes.url);
-            continue;
+            return cloudRes.url;
           }
         } catch (e) {
-          // ignore cloudinary error
+          // ignore Cloudinary error
         }
 
-        // 2. Fallback to server API upload or local DataURL
         try {
           const res = await fetch('/api/upload', {
             method: 'POST',
@@ -155,33 +150,29 @@ export default function AdminProductForm() {
 
           const text = await res.text();
           let data = {};
-          try {
-            data = text ? JSON.parse(text) : {};
-          } catch (jsonErr) {
-            data = {};
-          }
+          try { data = text ? JSON.parse(text) : {}; } catch (jsonErr) {}
 
           if (res.ok && data.success) {
-            const urls = data.urls || (data.url ? [data.url] : []);
-            if (urls.length > 0) {
-              uploadedUrls.push(...urls);
-            } else {
-              uploadedUrls.push(dataUrl);
-            }
-          } else {
-            uploadedUrls.push(dataUrl);
+            const url = data.url || (data.urls && data.urls[0]);
+            if (url) return url;
           }
         } catch (serverErr) {
-          uploadedUrls.push(dataUrl);
+          // ignore server error
         }
-      }
 
-      // Merge into current image list
+        return dataUrl;
+      });
+
+      const uploadedResults = await Promise.all(uploadPromises);
+      const validUrls = uploadedResults.filter(Boolean);
+
+      // Merge & De-duplicate URLs
       const baseList = imageList.length === 1 && imageList[0] === '/images/prem-main.jpg'
         ? []
         : imageList;
 
-      const updatedList = [...baseList, ...uploadedUrls];
+      // Unique deduplication
+      const updatedList = Array.from(new Set([...baseList, ...validUrls]));
 
       setFormData(prev => ({
         ...prev,
@@ -190,7 +181,7 @@ export default function AdminProductForm() {
 
       setUploadFeedback({
         type: 'success',
-        message: `Successfully uploaded ${uploadedUrls.length} image${uploadedUrls.length > 1 ? 's' : ''} to Cloudinary!`
+        message: `Successfully processed ${validUrls.length} photo${validUrls.length > 1 ? 's' : ''}!`
       });
     } catch (err) {
       console.error('File upload error:', err);
@@ -199,6 +190,10 @@ export default function AdminProductForm() {
       setIsUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
     }
+  };
+
+  const handleClearAllImages = () => {
+    setFormData(prev => ({ ...prev, images: '' }));
   };
 
   const handleRemoveImage = (indexToRemove) => {
@@ -541,9 +536,20 @@ export default function AdminProductForm() {
           {/* Uploaded Images Gallery Previews */}
           {imageList.length > 0 && (
             <div className="space-y-2 pt-2">
-              <span className="text-xs font-bold text-slate-500 block">
-                Attached Product Gallery ({imageList.length}) — First photo is used as primary thumbnail:
-              </span>
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-xs font-bold text-slate-500 block">
+                  Attached Product Gallery ({imageList.length}) — First photo is used as primary thumbnail:
+                </span>
+                <button
+                  type="button"
+                  onClick={handleClearAllImages}
+                  className="text-xs font-bold text-rose-600 hover:text-rose-700 flex items-center gap-1 hover:underline flex-shrink-0"
+                  title="Remove all photos from gallery"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Clear All Photos</span>
+                </button>
+              </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-3">
                 {imageList.map((imgUrl, idx) => (
