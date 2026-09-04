@@ -6,8 +6,8 @@ import { broadcastEvent } from '../events.js';
 
 const router = express.Router();
 
-const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || 'rzp_test_TY1sq2rCUuSbfs';
-const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || 'unMtcT3JuoKZ9g2znjQVXYpL';
+const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || '';
+const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || '';
 
 // 1. POST /api/payment/create-razorpay-order
 router.post('/create-razorpay-order', async (req, res) => {

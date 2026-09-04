@@ -66,7 +66,7 @@ export default function Footer() {
           </button>
         </div>
 
-        <div className="max-w-[1500px] mx-auto px-6 space-y-12">
+        <div className="max-w-[1500px] mx-auto px-3.5 sm:px-6 space-y-10 sm:space-y-12">
           
           {/* OFFICIAL BRAND PARTNERS STRIP */}
           <div className="pb-8 border-b border-[#222222] space-y-3">
@@ -112,15 +112,15 @@ export default function Footer() {
                 “{storeConfig.tagline}”
               </div>
 
-              <p className="text-xs sm:text-sm text-slate-400 leading-relaxed pr-4">
+              <p className="text-xs sm:text-sm text-slate-400 leading-relaxed pr-0 sm:pr-4">
                 Your trusted local mobile & electronics destination at Pinto Park, Gwalior. Explore original 5G smartphones, TWS earbuds, neckbands, smartwatches, power banks, fast chargers, and egg boilers with live in-store testing.
               </p>
 
               {/* Direct Action Buttons */}
-              <div className="flex flex-wrap gap-2.5 pt-1">
+              <div className="flex flex-col min-[420px]:flex-row flex-wrap gap-2.5 pt-1">
                 <button
                   onClick={() => openGeneralWhatsApp('Footer Contact')}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white text-xs font-black uppercase tracking-wider shadow-md transition-transform hover:scale-102"
+                  className="w-full min-[420px]:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white text-xs font-black uppercase tracking-wider shadow-md transition-transform hover:scale-102 text-center"
                 >
                   <MessageCircle className="w-4 h-4 fill-white" />
                   <span>WhatsApp Store Desk</span>
@@ -128,7 +128,7 @@ export default function Footer() {
 
                 <button
                   onClick={() => setIsSupportModalOpen(true)}
-                  className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#FFD400] hover:bg-[#e6be00] text-[#050505] text-xs font-black uppercase tracking-wider shadow-md transition-transform hover:scale-102"
+                  className="w-full min-[420px]:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#FFD400] hover:bg-[#e6be00] text-[#050505] text-xs font-black uppercase tracking-wider shadow-md transition-transform hover:scale-102 text-center"
                 >
                   <HelpCircle className="w-4 h-4 text-[#050505]" />
                   <span>Open Support Desk</span>

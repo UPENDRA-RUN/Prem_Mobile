@@ -1,6 +1,5 @@
 /**
  * Cloudinary Utility Helper for Prem Mobile
- * Cloud Name: iuuqceor
  */
 
 const env = (typeof import.meta !== 'undefined' && import.meta.env) ? import.meta.env : {};

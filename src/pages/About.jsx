@@ -63,16 +63,16 @@ export default function About() {
               Prem Mobile is a local mobile and electronics store in Gwalior, offering a wide range of mobiles, accessories, gadgets and everyday electronics. Located at Pinto Park, Jaderua Gate Ke Samne, Gwalior (M.P.), we bring you genuine tech products at unbeatable store prices.
             </p>
 
-            <div className="pt-2 flex flex-wrap gap-3">
+            <div className="pt-2 flex flex-col min-[460px]:flex-row flex-wrap gap-3">
               <button
                 onClick={() => openGeneralWhatsApp('About Page Inquiry')}
-                className="px-6 py-3 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white font-black text-xs uppercase tracking-wider shadow-lg"
+                className="w-full min-[460px]:w-auto px-5 py-3 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white font-black text-xs uppercase tracking-wider shadow-lg text-center"
               >
-                ORDER ON WHATSAPP: {storeConfig.displayPhone}
+                ORDER ON WHATSAPP
               </button>
               <Link
                 to="/shop"
-                className="px-6 py-3 rounded-xl bg-[#FFD400] hover:bg-[#e6be00] text-[#050505] font-black text-xs uppercase tracking-wider shadow-lg"
+                className="w-full min-[460px]:w-auto px-6 py-3 rounded-xl bg-[#FFD400] hover:bg-[#e6be00] text-[#050505] font-black text-xs uppercase tracking-wider shadow-lg text-center"
               >
                 EXPLORE SHOP
               </Link>
@@ -85,9 +85,9 @@ export default function About() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           
           <div className="lg:col-span-5 flex justify-center">
-            <div className="relative group">
+            <div className="relative group max-w-full">
               <div className="absolute -inset-1.5 bg-gradient-to-tr from-[#FFD400] to-[#E31B23] rounded-full blur-md opacity-75" />
-              <div className="relative w-64 h-64 sm:w-80 sm:h-80 rounded-full border-4 border-[#FFD400] overflow-hidden shadow-2xl bg-black flex items-center justify-center">
+              <div className="relative w-52 h-52 min-[380px]:w-64 min-[380px]:h-64 sm:w-80 sm:h-80 rounded-full border-4 border-[#FFD400] overflow-hidden shadow-2xl bg-black flex items-center justify-center flex-shrink-0">
                 <img
                   src="/images/prem-main.jpg"
                   alt="Prem Mobile Store Representative"

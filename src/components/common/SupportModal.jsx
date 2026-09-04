@@ -99,27 +99,27 @@ export default function SupportModal({ isOpen, onClose }) {
       />
 
       {/* Dialog */}
-      <div className="relative bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl z-10 border border-slate-200 space-y-6">
+      <div className="relative bg-white rounded-3xl max-w-2xl w-full p-4 sm:p-8 shadow-2xl z-10 border border-slate-200 space-y-6">
         
         {/* Header */}
         <div className="flex items-center justify-between border-b border-slate-100 pb-4">
           <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-2xl bg-[#050505] text-[#FFD400] flex items-center justify-center flex-shrink-0">
-              <Sparkles className="w-5 h-5 text-[#FFD400]" />
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-[#050505] text-[#FFD400] flex items-center justify-center flex-shrink-0">
+              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-[#FFD400]" />
             </div>
             <div>
-              <h3 className="font-display font-black text-lg text-[#050505] uppercase tracking-wider">
+              <h3 className="font-display font-black text-base sm:text-lg text-[#050505] uppercase tracking-wider">
                 PREM MOBILE SUPPORT DESK
               </h3>
-              <p className="text-xs text-slate-500 font-medium">
-                Pinto Park, Gwalior • Choose the best support channel for your issue
+              <p className="text-[11px] sm:text-xs text-slate-500 font-medium">
+                Pinto Park, Gwalior • Choose the best channel
               </p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="p-2 rounded-xl text-slate-400 hover:text-black hover:bg-slate-100 transition-colors"
+            className="p-1.5 sm:p-2 rounded-xl text-slate-400 hover:text-black hover:bg-slate-100 transition-colors flex-shrink-0"
           >
             <X className="w-5 h-5" />
           </button>
@@ -132,18 +132,18 @@ export default function SupportModal({ isOpen, onClose }) {
             return (
               <div
                 key={channel.id}
-                className="p-4 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-white hover:border-[#FFD400] transition-all space-y-3 shadow-2xs"
+                className="p-3.5 sm:p-4 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-white hover:border-[#FFD400] transition-all space-y-3 shadow-2xs"
               >
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-xl ${channel.iconBg} flex items-center justify-center flex-shrink-0 shadow-xs`}>
-                      <IconComp className="w-5 h-5" />
+                    <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl ${channel.iconBg} flex items-center justify-center flex-shrink-0 shadow-xs`}>
+                      <IconComp className="w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
                     <div>
-                      <h4 className="font-display font-black text-sm text-[#050505]">
+                      <h4 className="font-display font-black text-xs sm:text-sm text-[#050505]">
                         {channel.title}
                       </h4>
-                      <p className="text-xs text-slate-600 font-medium leading-snug">
+                      <p className="text-[11px] sm:text-xs text-slate-600 font-medium leading-snug">
                         {channel.benefit}
                       </p>
                     </div>
@@ -156,8 +156,8 @@ export default function SupportModal({ isOpen, onClose }) {
                 </div>
 
                 {/* What to provide guidance */}
-                <div className="p-2.5 rounded-xl bg-white border border-slate-200 text-xs text-slate-600 space-y-0.5">
-                  <span className="font-bold text-[#050505] text-[10.5px] uppercase tracking-wider block">
+                <div className="p-2.5 rounded-xl bg-white border border-slate-200 text-[11px] sm:text-xs text-slate-600 space-y-0.5">
+                  <span className="font-bold text-[#050505] text-[10px] sm:text-[10.5px] uppercase tracking-wider block">
                     What to provide for this channel:
                   </span>
                   <p className="text-slate-700 font-medium">
@@ -171,14 +171,14 @@ export default function SupportModal({ isOpen, onClose }) {
                     <Link
                       to={channel.linkTo}
                       onClick={onClose}
-                      className="py-2 px-4 rounded-xl bg-[#050505] hover:bg-[#1a1a1a] text-[#FFD400] font-black text-xs uppercase tracking-wider inline-flex items-center gap-1.5 shadow-xs"
+                      className="py-2 px-4 rounded-xl bg-[#050505] hover:bg-[#1a1a1a] text-[#FFD400] font-black text-xs uppercase tracking-wider inline-flex items-center gap-1.5 shadow-xs w-full sm:w-auto justify-center"
                     >
                       <span>{channel.actionText}</span>
                     </Link>
                   ) : (
                     <button
                       onClick={channel.action}
-                      className="py-2 px-4 rounded-xl bg-[#FFD400] hover:bg-[#e6be00] text-[#050505] font-black text-xs uppercase tracking-wider inline-flex items-center gap-1.5 shadow-xs"
+                      className="py-2 px-4 rounded-xl bg-[#FFD400] hover:bg-[#e6be00] text-[#050505] font-black text-xs uppercase tracking-wider inline-flex items-center gap-1.5 shadow-xs w-full sm:w-auto justify-center"
                     >
                       <span>{channel.actionText}</span>
                     </button>
@@ -190,15 +190,15 @@ export default function SupportModal({ isOpen, onClose }) {
         </div>
 
         {/* Footer Guarantee */}
-        <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 font-medium">
-          <span className="flex items-center gap-1 text-emerald-700 font-bold">
-            <ShieldCheck className="w-4 h-4 text-emerald-600" />
+        <div className="pt-3 border-t border-slate-100 flex flex-col min-[420px]:flex-row items-start min-[420px]:items-center justify-between gap-2 text-xs text-slate-500 font-medium">
+          <span className="flex items-center gap-1 text-emerald-700 font-bold text-[11px] sm:text-xs">
+            <ShieldCheck className="w-4 h-4 text-emerald-600 flex-shrink-0" />
             <span>100% Customer Satisfaction Guarantee</span>
           </span>
 
           <button
             onClick={onClose}
-            className="text-xs font-bold text-slate-700 hover:underline"
+            className="text-xs font-bold text-slate-700 hover:underline self-end min-[420px]:self-auto"
           >
             Close Window
           </button>

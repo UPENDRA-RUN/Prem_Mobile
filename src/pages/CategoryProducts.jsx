@@ -36,7 +36,7 @@ export default function CategoryProducts() {
 
   return (
     <div className="py-8 sm:py-12 bg-[#f5f5f5] min-h-screen">
-      <div className="max-w-[1500px] mx-auto px-6">
+      <div className="max-w-[1500px] mx-auto px-3.5 sm:px-6">
         
         {/* Back Link */}
         <div className="mb-6">
@@ -50,7 +50,7 @@ export default function CategoryProducts() {
         </div>
 
         {/* Category Header Banner */}
-        <div className="rounded-3xl bg-[#050505] text-white p-6 sm:p-8 mb-8 shadow-xl border-2 border-[#ffd000]/40 relative overflow-hidden">
+        <div className="rounded-3xl bg-[#050505] text-white p-4 sm:p-8 mb-8 shadow-xl border-2 border-[#ffd000]/40 relative overflow-hidden">
           <div className="relative z-10 max-w-2xl space-y-2">
             <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#e51b23] text-white text-xs font-black uppercase tracking-wider">
               <Flame className="w-3.5 h-3.5 fill-white" />

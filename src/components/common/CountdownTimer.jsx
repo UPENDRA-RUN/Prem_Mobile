@@ -73,42 +73,42 @@ export default function CountdownTimer({ endDate, endTime, size = 'normal', dark
         <span>OFFER ENDS IN:</span>
       </span>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1 min-[380px]:gap-2">
         {timeLeft.days > 0 && (
           <>
             <div className="flex flex-col items-center">
-              <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-black/80 border-2 border-[#ffd000]/60 text-white font-mono font-black text-lg sm:text-xl flex items-center justify-center shadow-lg">
+              <div className="w-9 h-9 min-[380px]:w-11 min-[380px]:h-11 sm:w-13 sm:h-13 rounded-xl min-[380px]:rounded-2xl bg-black/80 border-2 border-[#ffd000]/60 text-white font-mono font-black text-base min-[380px]:text-lg sm:text-xl flex items-center justify-center shadow-lg">
                 {String(timeLeft.days).padStart(2, '0')}
               </div>
-              <span className="text-[9px] font-bold text-slate-400 uppercase mt-1">Days</span>
+              <span className="text-[8px] min-[380px]:text-[9px] font-bold text-slate-400 uppercase mt-1">Days</span>
             </div>
-            <span className="text-[#ffd000] font-black text-lg pb-4">:</span>
+            <span className="text-[#ffd000] font-black text-base min-[380px]:text-lg pb-3 sm:pb-4">:</span>
           </>
         )}
 
         <div className="flex flex-col items-center">
-          <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-black/80 border-2 border-[#ffd000]/60 text-[#ffd000] font-mono font-black text-lg sm:text-xl flex items-center justify-center shadow-lg">
+          <div className="w-9 h-9 min-[380px]:w-11 min-[380px]:h-11 sm:w-13 sm:h-13 rounded-xl min-[380px]:rounded-2xl bg-black/80 border-2 border-[#ffd000]/60 text-[#ffd000] font-mono font-black text-base min-[380px]:text-lg sm:text-xl flex items-center justify-center shadow-lg">
             {String(timeLeft.hours).padStart(2, '0')}
           </div>
-          <span className="text-[9px] font-bold text-slate-300 uppercase mt-1">Hours</span>
+          <span className="text-[8px] min-[380px]:text-[9px] font-bold text-slate-300 uppercase mt-1">Hours</span>
         </div>
 
-        <span className="text-[#ffd000] font-black text-lg pb-4">:</span>
+        <span className="text-[#ffd000] font-black text-base min-[380px]:text-lg pb-3 sm:pb-4">:</span>
 
         <div className="flex flex-col items-center">
-          <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-black/80 border-2 border-[#ffd000]/60 text-[#ffd000] font-mono font-black text-lg sm:text-xl flex items-center justify-center shadow-lg">
+          <div className="w-9 h-9 min-[380px]:w-11 min-[380px]:h-11 sm:w-13 sm:h-13 rounded-xl min-[380px]:rounded-2xl bg-black/80 border-2 border-[#ffd000]/60 text-[#ffd000] font-mono font-black text-base min-[380px]:text-lg sm:text-xl flex items-center justify-center shadow-lg">
             {String(timeLeft.minutes).padStart(2, '0')}
           </div>
-          <span className="text-[9px] font-bold text-slate-300 uppercase mt-1">Mins</span>
+          <span className="text-[8px] min-[380px]:text-[9px] font-bold text-slate-300 uppercase mt-1">Mins</span>
         </div>
 
-        <span className="text-[#ffd000] font-black text-lg pb-4">:</span>
+        <span className="text-[#ffd000] font-black text-base min-[380px]:text-lg pb-3 sm:pb-4">:</span>
 
         <div className="flex flex-col items-center">
-          <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-[#e51b23] border-2 border-white/60 text-white font-mono font-black text-lg sm:text-xl flex items-center justify-center shadow-lg animate-pulse">
+          <div className="w-9 h-9 min-[380px]:w-11 min-[380px]:h-11 sm:w-13 sm:h-13 rounded-xl min-[380px]:rounded-2xl bg-[#e51b23] border-2 border-white/60 text-white font-mono font-black text-base min-[380px]:text-lg sm:text-xl flex items-center justify-center shadow-lg animate-pulse">
             {String(timeLeft.seconds).padStart(2, '0')}
           </div>
-          <span className="text-[9px] font-bold text-slate-300 uppercase mt-1">Secs</span>
+          <span className="text-[8px] min-[380px]:text-[9px] font-bold text-slate-300 uppercase mt-1">Secs</span>
         </div>
       </div>
     </div>

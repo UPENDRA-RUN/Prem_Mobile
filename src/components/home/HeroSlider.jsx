@@ -178,7 +178,7 @@ export default function HeroSlider() {
         <div className="relative w-full rounded-2xl sm:rounded-3xl lg:rounded-[26px] overflow-hidden border border-[#ffd000]/40 bg-[#000000] shadow-[0_12px_45px_rgba(0,0,0,0.9),0_0_35px_rgba(255,208,0,0.18)] group transition-all duration-300">
           
           {/* SLIDE CONTENT AREA - Sleek Landscape Frame */}
-          <div className="relative w-full aspect-[16/9] sm:aspect-[1024/520] max-h-[460px] min-h-[200px] sm:min-h-[320px] md:min-h-[390px] lg:min-h-[440px] flex items-center justify-center overflow-hidden bg-black">
+          <div className={`relative w-full ${activeSlideData.type === 'landscape-image' ? 'aspect-[16/9] sm:aspect-[1024/520] min-h-[190px]' : 'h-auto min-h-[310px] sm:min-h-[360px]'} max-h-[520px] flex items-center justify-center overflow-hidden bg-black`}>
             
             {/* 1. FULL LANDSCAPE IMAGE SLIDES (Main Banner & Sunday Special) */}
             {activeSlideData.type === 'landscape-image' ? (
@@ -219,7 +219,7 @@ export default function HeroSlider() {
                         e.stopPropagation();
                         openGeneralWhatsApp(activeSlideData.whatsappTopic);
                       }}
-                      className="px-3 sm:px-3.5 py-1.5 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white font-black text-[11px] sm:text-xs uppercase tracking-wider shadow-lg flex items-center gap-1.5 hover:scale-105 transition-all"
+                      className="px-2.5 sm:px-3.5 py-1.5 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white font-black text-[10px] sm:text-xs uppercase tracking-wider shadow-lg flex items-center gap-1.5 hover:scale-105 transition-all"
                     >
                       <MessageCircle className="w-3.5 h-3.5 fill-white" />
                       <span>ORDER ON WHATSAPP</span>
@@ -242,10 +242,10 @@ export default function HeroSlider() {
               /* 2. LANDSCAPE PRODUCT FEATURE DEAL SLIDES */
               <div
                 key={activeSlideData.id}
-                className="relative w-full h-full grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6 items-center p-5 sm:p-8 lg:p-10 z-10 animate-fade-in bg-gradient-to-r from-black via-[#0c0c0c] to-[#141414]"
+                className="relative w-full h-full grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-6 items-center p-4 sm:p-8 lg:p-10 z-10 animate-fade-in bg-gradient-to-r from-black via-[#0c0c0c] to-[#141414]"
               >
                 {/* Left Content Column */}
-                <div className="md:col-span-7 space-y-3 text-center md:text-left z-10">
+                <div className="md:col-span-7 space-y-2 sm:space-y-3 text-center md:text-left z-10">
                   
                   {/* Badge */}
                   <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#e51b23] text-white text-[11px] font-black tracking-wider uppercase shadow-md">

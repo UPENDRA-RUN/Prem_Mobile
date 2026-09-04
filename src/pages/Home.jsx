@@ -68,23 +68,23 @@ export default function Home() {
       {/* 4. ON SALE & HOT DEALS (If products are marked on sale) */}
       {onSaleProducts.length > 0 && (
         <section className="py-10 bg-gradient-to-r from-red-50 via-amber-50 to-red-50 border-y border-red-200">
-          <div className="max-w-[1500px] mx-auto px-6 space-y-6">
+          <div className="max-w-[1500px] mx-auto px-3.5 sm:px-6 space-y-6">
             <div className="flex items-center justify-between">
               <div>
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E31B23] text-white text-[11px] font-black uppercase tracking-wider mb-1 shadow-sm">
                   <Flame className="w-3.5 h-3.5 fill-white" />
                   <span>SPECIAL OFFER DEALS</span>
                 </div>
-                <h2 className="font-display font-black text-2xl sm:text-[26px] text-slate-900 tracking-tight">
+                <h2 className="font-display font-black text-xl sm:text-[26px] text-slate-900 tracking-tight">
                   🔥 ON SALE & HOT DEALS
                 </h2>
               </div>
 
               <Link
                 to="/shop?sort=discount"
-                className="px-4 py-2 rounded-lg bg-[#E31B23] hover:bg-[#c9141b] text-white font-black text-xs uppercase tracking-wider transition-colors shadow-sm"
+                className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-lg bg-[#E31B23] hover:bg-[#c9141b] text-white font-black text-[11px] sm:text-xs uppercase tracking-wider transition-colors shadow-sm flex-shrink-0"
               >
-                View All Deals
+                View Deals
               </Link>
             </div>
 
@@ -96,23 +96,23 @@ export default function Home() {
       {/* 5. BEST SELLING PRODUCTS */}
       {bestSellers.length > 0 && (
         <section className="py-10 bg-white border-b border-[#dedede]">
-          <div className="max-w-[1500px] mx-auto px-6 space-y-6">
+          <div className="max-w-[1500px] mx-auto px-3.5 sm:px-6 space-y-6">
             <div className="flex items-center justify-between">
               <div>
                 <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#FFD400]/20 text-[#050505] text-[11px] font-black uppercase tracking-wider mb-1">
                   <Sparkles className="w-3 h-3 text-amber-600" />
                   <span>CUSTOMER FAVORITES</span>
                 </div>
-                <h2 className="font-display font-black text-2xl sm:text-[26px] text-[#050505] tracking-tight">
+                <h2 className="font-display font-black text-xl sm:text-[26px] text-[#050505] tracking-tight">
                   🏆 BEST SELLING PRODUCTS
                 </h2>
               </div>
 
               <Link
                 to="/shop?sort=bestsellers"
-                className="px-4 py-2 rounded-lg bg-[#050505] hover:bg-[#1a1a1a] text-[#FFD400] font-black text-xs uppercase tracking-wider transition-colors"
+                className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-lg bg-[#050505] hover:bg-[#1a1a1a] text-[#FFD400] font-black text-[11px] sm:text-xs uppercase tracking-wider transition-colors flex-shrink-0"
               >
-                Explore Best Sellers
+                Explore
               </Link>
             </div>
 
@@ -123,21 +123,21 @@ export default function Home() {
 
       {/* 4. NEW ARRIVALS */}
       <section className="py-10 bg-white border-y border-[#dedede]">
-        <div className="max-w-[1500px] mx-auto px-6 space-y-6">
+        <div className="max-w-[1500px] mx-auto px-3.5 sm:px-6 space-y-6">
           <div className="flex items-center justify-between">
             <div>
               <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#ffd000]/20 text-[#050505] text-[11px] font-black uppercase tracking-wider mb-1">
                 <Sparkles className="w-3 h-3 text-amber-500" />
                 <span>FRESH STORE ARRIVALS</span>
               </div>
-              <h2 className="font-display font-black text-2xl sm:text-[26px] text-[#050505] tracking-tight">
+              <h2 className="font-display font-black text-xl sm:text-[26px] text-[#050505] tracking-tight">
                 NEW ARRIVALS
               </h2>
             </div>
 
             <Link
               to="/shop?sort=newest"
-              className="px-4 py-2 rounded-lg bg-[#050505] hover:bg-[#1a1a1a] text-[#ffd000] font-black text-xs uppercase tracking-wider transition-colors"
+              className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-lg bg-[#050505] hover:bg-[#1a1a1a] text-[#ffd000] font-black text-[11px] sm:text-xs uppercase tracking-wider transition-colors flex-shrink-0"
             >
               View All
             </Link>
@@ -149,23 +149,23 @@ export default function Home() {
 
       {/* 5. MOBILE ACCESSORIES SECTION */}
       <section className="py-10 bg-[#f5f5f5]">
-        <div className="max-w-[1500px] mx-auto px-6 space-y-6">
+        <div className="max-w-[1500px] mx-auto px-3.5 sm:px-6 space-y-6">
           <div className="flex items-center justify-between">
             <div>
               <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#e51b23]/10 text-[#e51b23] text-[11px] font-black uppercase tracking-wider mb-1">
                 <Headphones className="w-3 h-3 text-[#e51b23]" />
                 <span>BEST ACCESSORIES</span>
               </div>
-              <h2 className="font-display font-black text-2xl sm:text-[26px] text-[#050505] tracking-tight">
+              <h2 className="font-display font-black text-xl sm:text-[26px] text-[#050505] tracking-tight">
                 MOBILE ACCESSORIES
               </h2>
             </div>
 
             <Link
               to="/shop?category=Accessories"
-              className="px-4 py-2 rounded-lg bg-[#050505] hover:bg-[#1a1a1a] text-[#ffd000] font-black text-xs uppercase tracking-wider transition-colors"
+              className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-lg bg-[#050505] hover:bg-[#1a1a1a] text-[#ffd000] font-black text-[11px] sm:text-xs uppercase tracking-wider transition-colors flex-shrink-0"
             >
-              Explore Accessories
+              Explore
             </Link>
           </div>
 
@@ -178,21 +178,21 @@ export default function Home() {
 
       {/* 7. POPULAR GADGETS */}
       <section className="py-10 bg-white border-y border-[#dedede]">
-        <div className="max-w-[1500px] mx-auto px-6 space-y-6">
+        <div className="max-w-[1500px] mx-auto px-3.5 sm:px-6 space-y-6">
           <div className="flex items-center justify-between">
             <div>
               <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#ffd000]/20 text-[#050505] text-[11px] font-black uppercase tracking-wider mb-1">
                 <Watch className="w-3 h-3 text-amber-500" />
                 <span>TRENDING SMART TECH</span>
               </div>
-              <h2 className="font-display font-black text-2xl sm:text-[26px] text-[#050505] tracking-tight">
+              <h2 className="font-display font-black text-xl sm:text-[26px] text-[#050505] tracking-tight">
                 POPULAR GADGETS
               </h2>
             </div>
 
             <Link
               to="/shop?category=Gadgets"
-              className="px-4 py-2 rounded-lg bg-[#050505] hover:bg-[#1a1a1a] text-[#ffd000] font-black text-xs uppercase tracking-wider transition-colors"
+              className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-lg bg-[#050505] hover:bg-[#1a1a1a] text-[#ffd000] font-black text-[11px] sm:text-xs uppercase tracking-wider transition-colors flex-shrink-0"
             >
               View Gadgets
             </Link>
@@ -207,13 +207,13 @@ export default function Home() {
 
       {/* 9. ABOUT PREM MOBILE SECTION */}
       <section className="py-12 bg-[#050505] text-white border-t border-[#222222]">
-        <div className="max-w-[1500px] mx-auto px-6">
-          <div className="rounded-3xl bg-[#0a0a0a] border-2 border-[#ffd000]/40 p-6 sm:p-10 lg:p-12 shadow-2xl">
+        <div className="max-w-[1500px] mx-auto px-3.5 sm:px-6">
+          <div className="rounded-3xl bg-[#0a0a0a] border-2 border-[#ffd000]/40 p-4 sm:p-10 lg:p-12 shadow-2xl">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               
               {/* Left Photo */}
               <div className="lg:col-span-4 flex justify-center">
-                <div className="relative w-52 h-52 sm:w-60 sm:h-60 rounded-full border-4 border-[#ffd000] overflow-hidden shadow-[0_0_35px_rgba(255,208,0,0.35)] bg-black group flex items-center justify-center">
+                <div className="relative w-48 h-48 sm:w-60 sm:h-60 rounded-full border-4 border-[#ffd000] overflow-hidden shadow-[0_0_35px_rgba(255,208,0,0.35)] bg-black group flex items-center justify-center flex-shrink-0">
                   <img
                     src="/images/prem-main.jpg"
                     alt="About Prem Mobile Gwalior"
@@ -235,18 +235,18 @@ export default function Home() {
                   ABOUT PREM MOBILE
                 </h2>
 
-                <p className="text-lg font-black text-[#ffd000]">
+                <p className="text-base sm:text-lg font-black text-[#ffd000]">
                   “{storeConfig.tagline}”
                 </p>
 
-                <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
+                <p className="text-xs sm:text-base text-slate-300 leading-relaxed">
                   Prem Mobile is a local mobile and electronics store in Gwalior, offering mobiles, accessories, gadgets and everyday electronics. Located at Pinto Park, Jaderua Gate Ke Samne, Gwalior (M.P.), we bring you genuine tech products at unbeatable store prices.
                 </p>
 
-                <div className="pt-2 flex flex-wrap gap-3 justify-center lg:justify-start">
+                <div className="pt-2 flex flex-col min-[460px]:flex-row flex-wrap gap-3 justify-center lg:justify-start">
                   <Link
                     to="/about"
-                    className="px-6 py-3 rounded-lg bg-[#ffd000] hover:bg-[#e6bd00] text-[#050505] font-black text-xs uppercase tracking-wider shadow-lg flex items-center gap-2"
+                    className="w-full min-[460px]:w-auto px-6 py-3 rounded-lg bg-[#ffd000] hover:bg-[#e6bd00] text-[#050505] font-black text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 text-center"
                   >
                     <span>KNOW MORE</span>
                     <ArrowRight className="w-4 h-4" />
@@ -254,7 +254,7 @@ export default function Home() {
 
                   <button
                     onClick={() => openGeneralWhatsApp('About Prem Mobile Enquiry')}
-                    className="px-6 py-3 rounded-lg bg-[#25D366] hover:bg-[#20ba5a] text-white font-black text-xs uppercase tracking-wider shadow-lg flex items-center gap-2"
+                    className="w-full min-[460px]:w-auto px-6 py-3 rounded-lg bg-[#25D366] hover:bg-[#20ba5a] text-white font-black text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 text-center"
                   >
                     <span>CONNECT ON WHATSAPP</span>
                   </button>

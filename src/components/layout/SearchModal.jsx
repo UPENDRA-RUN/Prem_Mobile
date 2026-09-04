@@ -200,14 +200,14 @@ export default function SearchModal({ isOpen, onClose }) {
       <div className="relative mx-auto max-w-3xl w-full transform rounded-3xl bg-white shadow-2xl border border-slate-200 overflow-hidden transition-all z-10 flex flex-col max-h-[85vh]">
         
         {/* TOP SEARCH BOX & ACTION BUTTON */}
-        <div className="p-4 sm:p-5 bg-slate-50 border-b border-slate-200 space-y-3">
-          <div className="flex items-center gap-2">
+        <div className="p-3 sm:p-5 bg-slate-50 border-b border-slate-200 space-y-3">
+          <div className="flex items-center gap-1.5 sm:gap-2">
             <div className="relative flex-1 flex items-center bg-white rounded-2xl border border-slate-300 shadow-sm focus-within:border-[#FFD400] focus-within:ring-2 focus-within:ring-[#FFD400]/30 transition-all">
-              <div className="pl-4 pr-2 text-slate-400">
+              <div className="pl-3 sm:pl-4 pr-1.5 sm:pr-2 text-slate-400">
                 {isSearching ? (
-                  <Loader2 className="w-5 h-5 text-[#E31B23] animate-spin" />
+                  <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 text-[#E31B23] animate-spin" />
                 ) : (
-                  <Search className="w-5 h-5 text-slate-500" />
+                  <Search className="w-4 h-4 sm:w-5 sm:h-5 text-slate-500" />
                 )}
               </div>
 
@@ -217,8 +217,8 @@ export default function SearchModal({ isOpen, onClose }) {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Search smartphones, boAt bassheads, power banks, 25W chargers..."
-                className="w-full bg-transparent border-0 py-3.5 pr-10 text-xs sm:text-sm font-bold text-[#050505] placeholder-slate-400 focus:outline-none"
+                placeholder="Search smartphones, accessories..."
+                className="w-full bg-transparent border-0 py-3 sm:py-3.5 pr-8 sm:pr-10 text-xs sm:text-sm font-bold text-[#050505] placeholder-slate-400 focus:outline-none"
               />
 
               {searchTerm && (
@@ -227,7 +227,7 @@ export default function SearchModal({ isOpen, onClose }) {
                     setSearchTerm('');
                     setDebouncedQuery('');
                   }}
-                  className="pr-3 text-slate-400 hover:text-black transition-colors"
+                  className="pr-2.5 sm:pr-3 text-slate-400 hover:text-black transition-colors"
                   title="Clear input"
                 >
                   <X className="w-4 h-4" />
@@ -238,18 +238,18 @@ export default function SearchModal({ isOpen, onClose }) {
             {/* EXPLICIT SEARCH BUTTON */}
             <button
               onClick={() => handleExecuteSearch()}
-              className="py-3.5 px-5 rounded-2xl bg-[#FFD400] hover:bg-[#e6be00] text-[#050505] font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-sm transition-transform hover:scale-102 flex-shrink-0"
+              className="py-3 sm:py-3.5 px-3 sm:px-5 rounded-2xl bg-[#FFD400] hover:bg-[#e6be00] text-[#050505] font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1 sm:gap-1.5 shadow-sm transition-transform hover:scale-102 flex-shrink-0"
             >
-              <span>SEARCH</span>
+              <span className="hidden min-[380px]:inline">SEARCH</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
 
             <button
               onClick={onClose}
-              className="p-2.5 rounded-2xl text-slate-400 hover:text-black hover:bg-slate-200 transition-colors flex-shrink-0"
+              className="p-2 sm:p-2.5 rounded-2xl text-slate-400 hover:text-black hover:bg-slate-200 transition-colors flex-shrink-0"
               title="Close modal (ESC)"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
           </div>
 

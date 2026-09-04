@@ -15,7 +15,7 @@ export default function PromotionalGrid() {
     <section className="py-12 bg-[#0a0a0a] text-white border-y border-[#222222] overflow-hidden relative">
       
       {/* SECTION HEADER */}
-      <div className="max-w-[1500px] mx-auto px-6 mb-8">
+      <div className="max-w-[1500px] mx-auto px-3.5 sm:px-6 mb-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
             <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#e51b23]/20 text-[#e51b23] text-[11px] font-black uppercase tracking-wider mb-1">
@@ -56,11 +56,11 @@ export default function PromotionalGrid() {
         <div className="absolute right-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-l from-[#0a0a0a] to-transparent z-10 pointer-events-none" />
 
         {/* Moving Track: translates from -50% to 0% (Left to Right motion) */}
-        <div className="animate-marquee-ltr flex gap-6 px-4 py-2">
+        <div className="animate-marquee-ltr flex gap-4 sm:gap-6 px-4 py-2">
           {marqueeItems.map((promo, index) => (
             <div
               key={`${promo.id}-${index}`}
-              className="w-[280px] sm:w-[330px] md:w-[360px] shrink-0 bg-[#111111] rounded-2xl border border-[#333333] hover:border-[#ffd000] overflow-hidden shadow-xl hover:shadow-yellow-glow transition-all duration-300 flex flex-col justify-between group/card hover:-translate-y-1"
+              className="w-[260px] min-[380px]:w-[300px] sm:w-[330px] md:w-[360px] shrink-0 bg-[#111111] rounded-2xl border border-[#333333] hover:border-[#ffd000] overflow-hidden shadow-xl hover:shadow-yellow-glow transition-all duration-300 flex flex-col justify-between group/card hover:-translate-y-1"
             >
               {/* Full Promotional Image */}
               <div className="relative aspect-[9/13] w-full overflow-hidden bg-black flex items-center justify-center p-2">

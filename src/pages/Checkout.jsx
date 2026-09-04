@@ -284,8 +284,8 @@ export default function Checkout() {
   };
 
   return (
-    <div className="bg-[#f8fafc] min-h-screen py-10 sm:py-14">
-      <div className="max-w-5xl mx-auto px-6 space-y-8">
+    <div className="bg-[#f8fafc] min-h-screen py-8 sm:py-14">
+      <div className="max-w-5xl mx-auto px-3.5 sm:px-6 space-y-6 sm:space-y-8">
         
         {/* HEADER */}
         <div>
@@ -295,20 +295,20 @@ export default function Checkout() {
           <h1 className="font-display font-black text-2xl sm:text-4xl text-[#050505] tracking-tight">
             Checkout
           </h1>
-          <p className="text-slate-500 text-sm mt-1">
+          <p className="text-slate-500 text-xs sm:text-sm mt-1">
             Fill in your details below to place your order. Prices are verified securely by our store server.
           </p>
         </div>
 
         {/* LOGIN REQUIRED WARNING BANNER */}
         {!isLoggedIn && (
-          <div className="p-6 rounded-3xl bg-amber-50 border-2 border-[#ffd000] text-slate-900 shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="p-4 sm:p-6 rounded-3xl bg-amber-50 border-2 border-[#ffd000] text-slate-900 shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-[#050505] text-[#ffd000] flex items-center justify-center flex-shrink-0 font-black">
-                <User className="w-6 h-6 text-[#ffd000]" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-[#050505] text-[#ffd000] flex items-center justify-center flex-shrink-0 font-black">
+                <User className="w-5 h-5 sm:w-6 sm:h-6 text-[#ffd000]" />
               </div>
               <div>
-                <h3 className="font-display font-black text-base text-[#050505]">
+                <h3 className="font-display font-black text-sm sm:text-base text-[#050505]">
                   Login Required to Place Order
                 </h3>
                 <p className="text-xs text-slate-600 font-medium mt-0.5">
@@ -319,7 +319,7 @@ export default function Checkout() {
 
             <Link
               to="/login?redirect=/checkout"
-              className="px-6 py-3 rounded-xl bg-[#ffd000] hover:bg-[#e6bd00] text-[#050505] font-black text-xs uppercase tracking-wider shadow-md flex items-center gap-2 flex-shrink-0 transition-transform hover:scale-102"
+              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#ffd000] hover:bg-[#e6bd00] text-[#050505] font-black text-xs uppercase tracking-wider shadow-md flex items-center justify-center gap-2 flex-shrink-0 transition-transform hover:scale-102 text-center"
             >
               <span>LOG IN TO CONTINUE</span>
               <ArrowRight className="w-4 h-4" />
@@ -340,7 +340,7 @@ export default function Checkout() {
           <div className="lg:col-span-7 space-y-6">
 
             {/* CUSTOMER DETAILS */}
-            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+            <div className="bg-white rounded-3xl p-4 sm:p-8 border border-slate-200 shadow-sm space-y-6">
               <h2 className="font-display font-black text-lg sm:text-xl text-[#050505] border-b border-slate-100 pb-3 flex items-center gap-2">
                 <User className="w-5 h-5 text-[#e51b23]" />
                 <span>Customer Details</span>

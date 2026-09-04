@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { storeConfig } from '../config/store';
 import { useCart } from '../context/CartContext';
 import {
@@ -173,30 +173,56 @@ export default function Login() {
   return (
     <div className="py-8 sm:py-12 bg-[#F6F6F6] min-h-[90vh] flex items-center justify-center">
       <div className="max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8">
-        
-        <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-12">
+        {/* MAIN AUTHENTICATION CONTAINER */}
+        <div className="rounded-3xl sm:rounded-4xl bg-white border-2 border-slate-200 overflow-hidden shadow-2xl grid grid-cols-1 lg:grid-cols-12">
           
-          {/* LEFT COLUMN: BRANDING, TESTIMONIAL & NEW FEATURE SHOWCASE */}
-          <div className="lg:col-span-5 bg-[#050505] text-white p-8 sm:p-10 flex flex-col justify-between space-y-8 relative overflow-hidden border-b lg:border-b-0 lg:border-r border-[#222222]">
+          {/* LEFT COLUMN: BRAND PROMISE & TESTIMONIALS */}
+          <div className="lg:col-span-5 bg-[#050505] p-4 sm:p-10 text-white flex flex-col justify-between space-y-6 relative overflow-hidden">
             
-            {/* LOGO & SYMBOL MARK */}
-            <div className="space-y-4 relative z-10">
-              <Link to="/" className="inline-flex items-center gap-2.5">
-                <div className="w-10 h-10 rounded-2xl bg-[#111111] text-[#FFD400] flex items-center justify-center border border-[#FFD400]/40 shadow-sm">
+            {/* BRAND HEADER & TAGLINE */}
+            <div className="space-y-3 relative z-10">
+              <div className="flex items-center gap-2">
+                <div className="w-10 h-10 rounded-2xl bg-[#111111] text-[#FFD400] flex items-center justify-center border border-[#FFD400]/40">
                   <Smartphone className="w-5 h-5 text-[#FFD400]" />
                 </div>
                 <div className="font-display font-black text-2xl tracking-tight leading-none">
                   <span className="text-[#E31B23]">PREM</span>{' '}
                   <span className="text-white">MOBILE</span>
                 </div>
-              </Link>
+              </div>
 
-              <div className="inline-block px-3 py-1 rounded-full bg-[#FFD400] text-[#050505] text-[11px] font-black uppercase tracking-wider">
+              <div className="inline-block px-3 py-1 rounded-lg bg-[#FFD400] text-[#050505] text-xs font-black uppercase tracking-wider">
                 “{storeConfig.tagline}”
+              </div>
+
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Pinto Park, Jaderua Gate Ke Samne, Gwalior (M.P.) • Genuine tech, live audio tests, and store warranty.
+              </p>
+            </div>
+
+            {/* VALUE PROPOSITION PERKS LIST */}
+            <div className="space-y-3 relative z-10 py-2 border-y border-white/10">
+              <span className="text-[11px] font-black text-[#FFD400] uppercase tracking-wider block">
+                Exclusive Customer Privileges:
+              </span>
+
+              <div className="space-y-2 text-xs text-slate-200">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-[#FFD400] flex-shrink-0" />
+                  <span>1-Click Pinto Park Store Pickup Reservations</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-[#FFD400] flex-shrink-0" />
+                  <span>Exclusive Sunday Sale VIP Early Access</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-[#FFD400] flex-shrink-0" />
+                  <span>Live Audio Testing & 100% Brand Warranty</span>
+                </div>
               </div>
             </div>
 
-            {/* NEW FEATURE SHOWCASE BANNER */}
+            {/* FEATURE HIGHLIGHT: VIP SUNDAY ACCESS */}
             <div className="p-4 rounded-2xl bg-[#111111] border border-[#FFD400]/40 space-y-2 relative z-10">
               <div className="flex items-center gap-1.5 text-[#FFD400] font-black text-xs uppercase tracking-wider">
                 <Sparkles className="w-4 h-4 fill-[#FFD400]" />
@@ -210,27 +236,12 @@ export default function Login() {
               </p>
             </div>
 
-            {/* TESTIMONIAL CARD */}
-            <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2 relative z-10">
-              <Quote className="w-5 h-5 text-[#FFD400] opacity-80" />
-              <p className="text-xs text-slate-300 italic leading-relaxed">
-                “Prem Mobile is the best mobile shop in Pinto Park, Gwalior! Bought my boAt earbuds here and got 100% genuine warranty and live testing before taking it home.”
-              </p>
-              <div className="flex items-center justify-between pt-1 border-t border-white/10 text-[11px]">
-                <strong className="text-white font-bold">— Rahul S., Gwalior Customer</strong>
-                <span className="text-emerald-400 font-semibold flex items-center gap-1">
-                  <ShieldCheck className="w-3 h-3" />
-                  Verified Store Buyer
-                </span>
-              </div>
-            </div>
-
             {/* Background Accent Glow */}
             <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-[#FFD400]/10 rounded-full blur-3xl pointer-events-none" />
           </div>
 
           {/* RIGHT COLUMN: LOGIN / SIGN UP / RESET PASSWORD FLOW */}
-          <div className="lg:col-span-7 p-6 sm:p-10 space-y-6 flex flex-col justify-center">
+          <div className="lg:col-span-7 p-4 sm:p-10 space-y-6 flex flex-col justify-center">
             
             {/* TITLE & SUBTITLE */}
             <div className="space-y-1">
@@ -502,7 +513,7 @@ export default function Login() {
                   Or Connect With One-Click Social Login
                 </span>
 
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-1 min-[380px]:grid-cols-3 gap-2">
                   <button
                     onClick={() => handleSocialLogin('Google')}
                     className="py-2.5 px-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-white text-slate-800 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors shadow-2xs"
