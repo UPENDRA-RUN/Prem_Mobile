@@ -31,7 +31,8 @@ export default function AdminProductForm() {
     images: '/images/prem-main.jpg',
     regularPrice: '',
     stock: '15',
-    isActive: true
+    isActive: true,
+    isFeatured: false
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -72,7 +73,8 @@ export default function AdminProductForm() {
               images: Array.isArray(p.images) ? p.images.join(', ') : (p.image || '/images/prem-main.jpg'),
               regularPrice: String(p.regularPrice || ''),
               stock: String(p.stock !== undefined ? p.stock : '15'),
-              isActive: Boolean(p.isActive)
+              isActive: Boolean(p.isActive),
+              isFeatured: Boolean(p.isFeatured)
             });
           }
         })
@@ -220,7 +222,8 @@ export default function AdminProductForm() {
         images: imgArray.length > 0 ? imgArray : ['/images/prem-main.jpg'],
         regularPrice: price,
         stock: stock,
-        isActive: formData.isActive
+        isActive: formData.isActive,
+        isFeatured: formData.isFeatured ? 1 : 0
       };
 
       const url = isEdit ? `/api/products/${id}` : '/api/products';
@@ -542,8 +545,8 @@ export default function AdminProductForm() {
           />
         </div>
 
-        {/* Active Toggle */}
-        <div className="pt-2">
+        {/* Active & Featured Toggles */}
+        <div className="pt-2 space-y-3">
           <label className="flex items-center gap-3 cursor-pointer">
             <input
               type="checkbox"
@@ -553,6 +556,20 @@ export default function AdminProductForm() {
               className="w-4 h-4 text-[#e51b23] rounded focus:ring-0 accent-[#e51b23] cursor-pointer"
             />
             <span className="text-sm font-bold text-slate-700">Product is Active & visible in store</span>
+          </label>
+
+          <label className="flex items-center gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              name="isFeatured"
+              checked={formData.isFeatured}
+              onChange={handleChange}
+              className="w-4 h-4 text-[#ffd000] rounded focus:ring-0 accent-[#ffd000] cursor-pointer"
+            />
+            <span className="text-sm font-bold text-slate-700 flex items-center gap-1.5">
+              <span>⭐ Mark as Featured Product</span>
+              <span className="text-xs text-slate-400 font-normal">(Highlights on Homepage & Deals)</span>
+            </span>
           </label>
         </div>
 

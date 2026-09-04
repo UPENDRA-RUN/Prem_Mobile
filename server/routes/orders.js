@@ -1,13 +1,16 @@
 import express from 'express';
 import { db } from '../db.js';
-import { requireAdmin } from '../auth.js';
+import { requireAdmin, verifyToken } from '../auth.js';
 import { resolveServerProductPrice } from '../saleLogic.js';
 
 const router = express.Router();
 
-
 // Public: POST /api/orders (Customer places order)
 router.post('/', (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+  const payload = token ? verifyToken(token) : null;
+
   const {
     customerName,
     mobile,
@@ -17,8 +20,11 @@ router.post('/', (req, res) => {
     state,
     pincode,
     items, // array of { productId, quantity }
-    notes
+    notes,
+    userId: bodyUserId
   } = req.body || {};
+
+  const resolvedUserId = payload?.userId || bodyUserId || null;
 
   // Form validations
   if (!customerName || !customerName.trim()) {
@@ -102,8 +108,8 @@ router.post('/', (req, res) => {
   const orderInsert = db.prepare(`
     INSERT INTO orders (
       orderNumber, customerName, mobile, email, address, city, state, pincode,
-      subtotal, discount, total, status, notes, isSundaySaleOrder, createdAt
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'PENDING', ?, ?, ?)
+      subtotal, discount, total, status, notes, isSundaySaleOrder, createdAt, userId
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'PENDING', ?, ?, ?, ?)
   `);
 
   const orderResult = orderInsert.run(
@@ -120,7 +126,8 @@ router.post('/', (req, res) => {
     finalTotal,
     notes ? notes.trim() : '',
     isSundaySaleOrder ? 1 : 0,
-    now
+    now,
+    resolvedUserId
   );
 
   const orderId = orderResult.lastInsertRowid;
@@ -163,6 +170,39 @@ router.post('/', (req, res) => {
       items: verifiedItems,
       createdAt: now
     }
+  });
+});
+
+// Customer: GET /api/orders/my-orders
+router.get('/my-orders', (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+  const payload = token ? verifyToken(token) : null;
+  const queryMobile = req.query.mobile ? String(req.query.mobile).replace(/\D/g, '') : null;
+  const queryEmail = req.query.email ? String(req.query.email).trim().toLowerCase() : null;
+
+  let query = 'SELECT * FROM orders WHERE 1=0';
+  const params = [];
+
+  if (payload && payload.userId) {
+    query = 'SELECT * FROM orders WHERE userId = ? OR email = ? OR mobile = ? ORDER BY id DESC';
+    params.push(payload.userId, payload.email || '', payload.mobile || '');
+  } else if (queryMobile || queryEmail) {
+    query = 'SELECT * FROM orders WHERE (mobile = ? OR email = ?) ORDER BY id DESC';
+    params.push(queryMobile || '', queryEmail || '');
+  } else {
+    return res.status(401).json({ success: false, error: 'Authentication required to view orders' });
+  }
+
+  const orders = db.prepare(query).all(...params);
+  const fullOrders = orders.map(order => {
+    const items = db.prepare('SELECT * FROM order_items WHERE orderId = ?').all(order.id);
+    return { ...order, items };
+  });
+
+  res.json({
+    success: true,
+    orders: fullOrders
   });
 });
 

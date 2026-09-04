@@ -20,9 +20,11 @@ export default function AdminDashboard() {
 
   const [stats, setStats] = useState({
     totalProducts: 0,
-    activeProducts: 0,
+    totalCategories: 0,
     totalOrders: 0,
-    todayOrders: 0
+    lowStock: 0,
+    isSaleLive: false,
+    saleName: 'None'
   });
 
   const [sundaySale, setSundaySale] = useState({
@@ -43,33 +45,36 @@ export default function AdminDashboard() {
       });
       const prodData = await prodRes.json();
       const allProds = prodData.products || [];
-      const activeProds = allProds.filter(p => p.isActive);
+      const lowStockCount = allProds.filter(p => Number(p.stock) <= 5).length;
 
-      // 2. Orders
+      // 2. Categories
+      const catRes = await fetch('/api/categories');
+      const catData = await catRes.json();
+      const allCats = catData.categories || [];
+
+      // 3. Orders
       const orderRes = await fetch('/api/orders/admin', {
         headers: { Authorization: `Bearer ${adminToken}` }
       });
       const orderData = await orderRes.json();
       const allOrders = orderData.orders || [];
-      const todayStr = new Date().toISOString().slice(0, 10);
-      const todayOrders = allOrders.filter(o => o.createdAt?.startsWith(todayStr));
 
-      // 3. Sunday Sale
-      const saleRes = await fetch('/api/sunday-sale/admin', {
-        headers: { Authorization: `Bearer ${adminToken}` }
-      });
+      // 4. Sale Status
+      const saleRes = await fetch('/api/sale');
       const saleData = await saleRes.json();
 
       setStats({
         totalProducts: allProds.length,
-        activeProducts: activeProds.length,
+        totalCategories: allCats.length,
         totalOrders: allOrders.length,
-        todayOrders: todayOrders.length
+        lowStock: lowStockCount,
+        isSaleLive: Boolean(saleData.isLive),
+        saleName: saleData.sale?.name || 'Special Sale'
       });
 
       setSundaySale({
         isLive: saleData.isLive,
-        statusText: saleData.statusText || 'OFFLINE',
+        statusText: saleData.isLive ? 'LIVE' : 'OFFLINE',
         dayInfo: saleData.dayInfo || {}
       });
     } catch (err) {
@@ -113,12 +118,7 @@ export default function AdminDashboard() {
             Admin Dashboard
           </h1>
           <p className="text-sm text-slate-500 mt-0.5">
-            Today: <span className="font-bold text-slate-700">{sundaySale.dayInfo?.dayName || 'Today'}</span>
-            {sundaySale.dayInfo?.isSimulated && (
-              <span className="ml-2 px-2 py-0.5 rounded bg-amber-100 text-amber-800 text-[10px] font-black uppercase">
-                Simulated {sundaySale.dayInfo?.simulatedDay}
-              </span>
-            )}
+            Store inventory, categories, sales and customer order management.
           </p>
         </div>
 
@@ -147,68 +147,90 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      {/* 4 KEY STAT METRIC CARDS */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      {/* 5 KEY STAT METRIC CARDS (Requirement 9: Products, Categories, Orders, Low Stock, Active Sale) */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
         
-        {/* Total Products */}
-        <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between">
+        {/* 1. Total Products */}
+        <Link to="/admin/products" className="bg-white rounded-3xl p-5 border border-slate-200 hover:border-[#ffd000] shadow-xs flex flex-col justify-between transition-all group">
           <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-black uppercase tracking-wider text-slate-500">Total Products</span>
-            <div className="w-9 h-9 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center">
-              <Package className="w-5 h-5" />
+            <span className="text-[11px] font-black uppercase tracking-wider text-slate-500">Products</span>
+            <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center group-hover:bg-[#ffd000] group-hover:text-black transition-colors">
+              <Package className="w-4 h-4" />
             </div>
           </div>
-          <div className="mt-4">
-            <span className="font-display font-black text-3xl sm:text-4xl text-slate-900">
+          <div className="mt-3">
+            <span className="font-display font-black text-2xl sm:text-3xl text-slate-900">
               {stats.totalProducts}
             </span>
           </div>
-        </div>
+        </Link>
 
-        {/* Active Products */}
-        <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between">
+        {/* 2. Categories */}
+        <Link to="/admin/categories" className="bg-white rounded-3xl p-5 border border-slate-200 hover:border-[#ffd000] shadow-xs flex flex-col justify-between transition-all group">
           <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-black uppercase tracking-wider text-slate-500">Active Products</span>
-            <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-              <CheckCircle2 className="w-5 h-5" />
+            <span className="text-[11px] font-black uppercase tracking-wider text-slate-500">Categories</span>
+            <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center group-hover:bg-[#ffd000] group-hover:text-black transition-colors">
+              <CheckCircle2 className="w-4 h-4" />
             </div>
           </div>
-          <div className="mt-4">
-            <span className="font-display font-black text-3xl sm:text-4xl text-emerald-600">
-              {stats.activeProducts}
+          <div className="mt-3">
+            <span className="font-display font-black text-2xl sm:text-3xl text-purple-600">
+              {stats.totalCategories}
             </span>
           </div>
-        </div>
+        </Link>
 
-        {/* Total Orders */}
-        <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between">
+        {/* 3. Orders */}
+        <Link to="/admin/orders" className="bg-white rounded-3xl p-5 border border-slate-200 hover:border-[#ffd000] shadow-xs flex flex-col justify-between transition-all group">
           <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-black uppercase tracking-wider text-slate-500">Total Orders</span>
-            <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
-              <ShoppingCart className="w-5 h-5" />
+            <span className="text-[11px] font-black uppercase tracking-wider text-slate-500">Orders</span>
+            <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center group-hover:bg-[#ffd000] group-hover:text-black transition-colors">
+              <ShoppingCart className="w-4 h-4" />
             </div>
           </div>
-          <div className="mt-4">
-            <span className="font-display font-black text-3xl sm:text-4xl text-slate-900">
+          <div className="mt-3">
+            <span className="font-display font-black text-2xl sm:text-3xl text-slate-900">
               {stats.totalOrders}
             </span>
           </div>
-        </div>
+        </Link>
 
-        {/* Today's Orders */}
-        <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between">
+        {/* 4. Low Stock */}
+        <Link to="/admin/products" className="bg-white rounded-3xl p-5 border border-slate-200 hover:border-red-400 shadow-xs flex flex-col justify-between transition-all group">
           <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-black uppercase tracking-wider text-slate-500">Today's Orders</span>
-            <div className="w-9 h-9 rounded-xl bg-red-50 text-[#e51b23] flex items-center justify-center">
-              <Clock className="w-5 h-5" />
+            <span className="text-[11px] font-black uppercase tracking-wider text-slate-500">Low Stock</span>
+            <div className="w-8 h-8 rounded-xl bg-red-50 text-red-600 flex items-center justify-center">
+              <AlertCircle className="w-4 h-4" />
             </div>
           </div>
-          <div className="mt-4">
-            <span className="font-display font-black text-3xl sm:text-4xl text-[#e51b23]">
-              {stats.todayOrders}
+          <div className="mt-3">
+            <span className={`font-display font-black text-2xl sm:text-3xl ${stats.lowStock > 0 ? 'text-[#e51b23]' : 'text-slate-900'}`}>
+              {stats.lowStock}
+            </span>
+            <span className="text-[10px] text-slate-400 block font-medium">Stock ≤ 5 units</span>
+          </div>
+        </Link>
+
+        {/* 5. Active Sale */}
+        <Link to="/admin/sale" className="bg-white rounded-3xl p-5 border border-slate-200 hover:border-[#e51b23] shadow-xs flex flex-col justify-between transition-all group">
+          <div className="flex items-center justify-between text-slate-400">
+            <span className="text-[11px] font-black uppercase tracking-wider text-slate-500">Active Sale</span>
+            <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${stats.isSaleLive ? 'bg-red-100 text-[#e51b23]' : 'bg-slate-100 text-slate-400'}`}>
+              <Flame className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="mt-3">
+            <span className={`px-2 py-0.5 rounded-full text-xs font-black uppercase tracking-wider inline-flex items-center gap-1 ${
+              stats.isSaleLive ? 'bg-emerald-500 text-white animate-pulse' : 'bg-slate-200 text-slate-700'
+            }`}>
+              <span className={`w-1.5 h-1.5 rounded-full ${stats.isSaleLive ? 'bg-white' : 'bg-slate-500'}`} />
+              {stats.isSaleLive ? 'LIVE' : 'OFFLINE'}
+            </span>
+            <span className="text-[10px] text-slate-500 truncate block mt-1 font-bold">
+              {stats.saleName}
             </span>
           </div>
-        </div>
+        </Link>
 
       </div>
 

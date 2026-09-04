@@ -131,13 +131,44 @@ export function initDatabase() {
       FOREIGN KEY (orderId) REFERENCES orders (id) ON DELETE CASCADE
     );
 
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      email TEXT UNIQUE NOT NULL,
+      mobile TEXT UNIQUE NOT NULL,
+      passwordHash TEXT NOT NULL,
+      salt TEXT NOT NULL,
+      role TEXT NOT NULL DEFAULT 'CUSTOMER', -- 'CUSTOMER', 'ADMIN'
+      createdAt TEXT NOT NULL,
+      updatedAt TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS categories (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT UNIQUE NOT NULL,
+      slug TEXT UNIQUE NOT NULL,
+      icon TEXT,
+      createdAt TEXT NOT NULL
+    );
+
     CREATE TABLE IF NOT EXISTS settings (
       key TEXT PRIMARY KEY,
       value TEXT NOT NULL
     );
   `);
 
-  // Seed default admin if none exists
+  // Ensure orders table has userId column
+  try {
+    const tableInfo = db.prepare('PRAGMA table_info(orders)').all();
+    const hasUserId = tableInfo.some(col => col.name === 'userId');
+    if (!hasUserId) {
+      db.exec('ALTER TABLE orders ADD COLUMN userId INTEGER;');
+    }
+  } catch (e) {
+    // Ignore if already present
+  }
+
+  // Seed default admin in admins table if none exists
   const adminCheck = db.prepare('SELECT COUNT(*) as count FROM admins').get();
   if (adminCheck.count === 0) {
     const salt = crypto.randomBytes(16).toString('hex');
@@ -148,6 +179,52 @@ export function initDatabase() {
       VALUES (?, ?, ?, ?, ?)
     `).run('Prem Mobile Admin', 'admin@premmobile.com', passwordHash, salt, now);
     console.log('[DB] Seeded default admin: admin@premmobile.com / admin123');
+  }
+
+  // Seed default admin in users table if none exists
+  const userAdminCheck = db.prepare("SELECT * FROM users WHERE email = 'admin@premmobile.com'").get();
+  if (!userAdminCheck) {
+    const salt = crypto.randomBytes(16).toString('hex');
+    const passwordHash = crypto.pbkdf2Sync('admin123', salt, 1000, 64, 'sha512').toString('hex');
+    const now = new Date().toISOString();
+    db.prepare(`
+      INSERT INTO users (name, email, mobile, passwordHash, salt, role, createdAt, updatedAt)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `).run('Prem Mobile Admin', 'admin@premmobile.com', '9893947470', passwordHash, salt, 'ADMIN', now, now);
+    console.log('[DB] Seeded default admin in users table: admin@premmobile.com');
+  }
+
+  // Seed default sample customer in users table if none exists
+  const customerCheck = db.prepare("SELECT * FROM users WHERE email = 'rahul.gwalior@gmail.com' OR mobile = '9893947477'").get();
+  if (!customerCheck) {
+    const salt = crypto.randomBytes(16).toString('hex');
+    const passwordHash = crypto.pbkdf2Sync('customer123', salt, 1000, 64, 'sha512').toString('hex');
+    const now = new Date().toISOString();
+    db.prepare(`
+      INSERT INTO users (name, email, mobile, passwordHash, salt, role, createdAt, updatedAt)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `).run('Rahul Sharma', 'rahul.gwalior@gmail.com', '9893947477', passwordHash, salt, 'CUSTOMER', now, now);
+    console.log('[DB] Seeded default customer in users table: rahul.gwalior@gmail.com / 9893947477');
+  }
+
+  // Seed default categories if empty
+  const categoryCheck = db.prepare('SELECT COUNT(*) as count FROM categories').get();
+  if (categoryCheck.count === 0) {
+    const defaultCategories = [
+      { name: 'Earbuds', slug: 'earbuds', icon: '🎧' },
+      { name: 'Headphones', slug: 'headphones', icon: '🎧' },
+      { name: 'Smartwatches', slug: 'smartwatches', icon: '⌚' },
+      { name: 'Power Banks', slug: 'power-banks', icon: '🔋' },
+      { name: 'Chargers', slug: 'chargers', icon: '⚡' },
+      { name: 'Mobile Covers', slug: 'covers', icon: '📱' },
+      { name: 'Cables & Adapters', slug: 'cables', icon: '🔌' },
+      { name: 'Gadgets & Audio', slug: 'gadgets', icon: '🔊' }
+    ];
+    const now = new Date().toISOString();
+    const insertCat = db.prepare('INSERT OR IGNORE INTO categories (name, slug, icon, createdAt) VALUES (?, ?, ?, ?)');
+    for (const cat of defaultCategories) {
+      insertCat.run(cat.name, cat.slug, cat.icon, now);
+    }
   }
 
   // Seed initial settings

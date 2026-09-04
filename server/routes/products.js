@@ -158,7 +158,7 @@ router.get('/admin/all', requireAdmin, (req, res) => {
 
 // Admin: POST /api/products (Add product)
 router.post('/', requireAdmin, (req, res) => {
-  const { name, category, description, brand, images, regularPrice, stock, isActive } = req.body || {};
+  const { name, category, description, brand, images, regularPrice, stock, isActive, isFeatured } = req.body || {};
 
   if (!name || !name.trim()) {
     return res.status(400).json({ success: false, error: 'Product name is required' });
@@ -183,7 +183,7 @@ router.post('/', requireAdmin, (req, res) => {
   const stmt = db.prepare(`
     INSERT INTO products (
       name, slug, description, category, categorySlug, brand, images, regularPrice, stock, isActive, isFeatured, tag, createdAt, updatedAt
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, '', ?, ?)
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '', ?, ?)
   `);
 
   const result = stmt.run(
@@ -197,6 +197,7 @@ router.post('/', requireAdmin, (req, res) => {
     price,
     stockNum,
     isActive !== undefined ? (isActive ? 1 : 0) : 1,
+    isFeatured !== undefined ? (isFeatured ? 1 : 0) : 0,
     now,
     now
   );
@@ -211,7 +212,7 @@ router.post('/', requireAdmin, (req, res) => {
 // Admin: PUT /api/products/:id (Update product)
 router.put('/:id', requireAdmin, (req, res) => {
   const { id } = req.params;
-  const { name, category, description, brand, images, regularPrice, stock, isActive } = req.body || {};
+  const { name, category, description, brand, images, regularPrice, stock, isActive, isFeatured } = req.body || {};
 
   const existing = db.prepare('SELECT * FROM products WHERE id = ?').get(id);
   if (!existing) {
@@ -236,6 +237,7 @@ router.put('/:id', requireAdmin, (req, res) => {
   const updatedDesc = description !== undefined ? description : existing.description;
   const updatedBrand = brand !== undefined ? brand : existing.brand;
   const updatedActive = isActive !== undefined ? (isActive ? 1 : 0) : existing.isActive;
+  const updatedFeatured = isFeatured !== undefined ? (isFeatured ? 1 : 0) : existing.isFeatured;
 
   db.prepare(`
     UPDATE products SET
@@ -248,6 +250,7 @@ router.put('/:id', requireAdmin, (req, res) => {
       regularPrice = ?,
       stock = ?,
       isActive = ?,
+      isFeatured = ?,
       updatedAt = ?
     WHERE id = ?
   `).run(
@@ -260,6 +263,7 @@ router.put('/:id', requireAdmin, (req, res) => {
     price,
     stockNum,
     updatedActive,
+    updatedFeatured,
     now,
     id
   );

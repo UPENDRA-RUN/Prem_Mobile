@@ -6,6 +6,7 @@ import sundaySaleRoutes from './routes/sundaySale.js';
 import orderRoutes from './routes/orders.js';
 import settingRoutes from './routes/settings.js';
 import uploadRoutes from './routes/upload.js';
+import categoryRoutes from './routes/categories.js';
 
 export function createApiRouter() {
   const app = express();
@@ -38,6 +39,7 @@ export function createApiRouter() {
   app.use('/sunday-sale', saleRoutes); // Alias for seamless backward compatibility
   app.use('/orders', orderRoutes);
   app.use('/settings', settingRoutes);
+  app.use('/categories', categoryRoutes);
 
   // Health check endpoint for UptimeRobot keep-alive ping
   app.get('/health', (req, res) => {

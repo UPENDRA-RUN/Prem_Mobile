@@ -12,7 +12,8 @@ import {
   CheckCircle2,
   AlertCircle,
   ExternalLink,
-  RefreshCw
+  RefreshCw,
+  Star
 } from 'lucide-react';
 
 export default function AdminProducts() {
@@ -43,6 +44,27 @@ export default function AdminProducts() {
   useEffect(() => {
     fetchProducts();
   }, [adminToken]);
+
+  const handleToggleFeatured = async (product) => {
+    const updatedFeatured = product.isFeatured ? 0 : 1;
+    try {
+      const res = await fetch(`/api/products/${product.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${adminToken}`
+        },
+        body: JSON.stringify({ isFeatured: updatedFeatured })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setFeedback(`Product "${product.name}" ${updatedFeatured ? 'marked as featured ⭐' : 'unmarked from featured'}.`);
+        fetchProducts();
+      }
+    } catch (e) {
+      alert('Error updating featured status: ' + e.message);
+    }
+  };
 
   const handleToggleStatus = async (product) => {
     const updatedActive = product.isActive ? 0 : 1;
@@ -233,6 +255,18 @@ export default function AdminProducts() {
                     {/* Actions */}
                     <td className="py-3.5 px-4 sm:px-6 text-right">
                       <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          onClick={() => handleToggleFeatured(p)}
+                          title={p.isFeatured ? 'Featured (Click to unfeature)' : 'Mark as Featured'}
+                          className={`p-1.5 rounded-lg border text-xs transition-colors ${
+                            p.isFeatured
+                              ? 'bg-amber-50 text-amber-500 border-amber-300 shadow-xs'
+                              : 'text-slate-400 hover:text-amber-500 hover:bg-slate-50 border-slate-200'
+                          }`}
+                        >
+                          <Star className={`w-3.5 h-3.5 ${p.isFeatured ? 'fill-amber-400' : ''}`} />
+                        </button>
+
                         <button
                           onClick={() => handleToggleStatus(p)}
                           title={p.isActive ? 'Disable Product' : 'Enable Product'}

@@ -127,7 +127,7 @@ router.post('/admin/save', requireAdmin, (req, res) => {
  */
 router.post('/admin/go-live', requireAdmin, (req, res) => {
   try {
-    const { saleId } = req.body;
+    const { saleId } = req.body || {};
 
     let targetSale = null;
     if (saleId) {
@@ -199,7 +199,7 @@ router.post('/admin/go-live', requireAdmin, (req, res) => {
  */
 router.post('/admin/end', requireAdmin, (req, res) => {
   try {
-    const { saleId } = req.body;
+    const { saleId } = req.body || {};
 
     let targetSale = null;
     if (saleId) {

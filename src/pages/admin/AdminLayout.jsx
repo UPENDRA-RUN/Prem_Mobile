@@ -13,7 +13,8 @@ import {
   Smartphone,
   ExternalLink,
   ShieldCheck,
-  PlusCircle
+  PlusCircle,
+  Tag
 } from 'lucide-react';
 
 export default function AdminLayout() {
@@ -29,8 +30,9 @@ export default function AdminLayout() {
   const navItems = [
     { to: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { to: '/admin/products', label: 'Products', icon: Package, badge: '📦' },
-    { to: '/admin/orders', label: 'Orders', icon: ShoppingCart, badge: '🛒' },
+    { to: '/admin/categories', label: 'Categories', icon: Tag, badge: '🏷️' },
     { to: '/admin/sale', label: 'Sale Management', icon: Flame, badge: '🔥' },
+    { to: '/admin/orders', label: 'Orders', icon: ShoppingCart, badge: '🛒' },
     { to: '/admin/settings', label: 'Settings', icon: Settings, badge: '⚙️' }
   ];
 
