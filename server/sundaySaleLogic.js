@@ -2,34 +2,9 @@ import { db } from './db.js';
 
 /**
  * Returns current day of week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
- * Takes into account Indian Standard Time (Asia/Kolkata) or simulated day setting.
+ * Uses Indian Standard Time (Asia/Kolkata) — always real time.
  */
 export function getCurrentDayInfo() {
-  const simulatedDaySetting = db.prepare("SELECT value FROM settings WHERE key = 'simulated_day'").get();
-  const simulatedDay = simulatedDaySetting?.value || 'REAL';
-
-  const dayMap = {
-    'SUNDAY': 0,
-    'MONDAY': 1,
-    'TUESDAY': 2,
-    'WEDNESDAY': 3,
-    'THURSDAY': 4,
-    'FRIDAY': 5,
-    'SATURDAY': 6
-  };
-
-  if (simulatedDay !== 'REAL' && dayMap[simulatedDay] !== undefined) {
-    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    return {
-      dayOfWeek: dayMap[simulatedDay],
-      dayName: dayNames[dayMap[simulatedDay]],
-      isSunday: dayMap[simulatedDay] === 0,
-      isSimulated: true,
-      simulatedDay
-    };
-  }
-
-  // Real IST time
   const now = new Date();
   const istFormatter = new Intl.DateTimeFormat('en-US', {
     timeZone: 'Asia/Kolkata',
@@ -71,7 +46,7 @@ export function getSundaySaleStatus() {
     return {
       isLive: false,
       status: 'OFF',
-      customerState: 'WEEKDAY_CLOSED', // Monday-Saturday message
+      customerState: 'WEEKDAY_CLOSED',
       dayInfo,
       saleRecord: latestSale || null,
       message: 'Sunday Shopping is currently closed. Special deals are available every Sunday. Come back on Sunday for exciting offers!'
@@ -83,7 +58,7 @@ export function getSundaySaleStatus() {
     return {
       isLive: false,
       status: 'NOT_LIVE',
-      customerState: 'SUNDAY_PREPARING', // Sunday before admin activates
+      customerState: 'SUNDAY_PREPARING',
       dayInfo,
       saleRecord: latestSale || null,
       message: "Today's sale is getting ready! Please check back soon."

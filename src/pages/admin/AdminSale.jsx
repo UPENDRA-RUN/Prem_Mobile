@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useAdminAuth } from '../../context/AdminAuthContext';
-import { formatCurrency } from '../../utils/formatters';
+import { formatCurrency, formatDateDDMMYYYY } from '../../utils/formatters';
 import { uploadToCloudinary } from '../../utils/cloudinary';
 import { parseResponseJson } from '../../utils/apiHelper';
 import {
@@ -57,6 +57,7 @@ export default function AdminSale() {
   const [selectedCombos, setSelectedCombos] = useState({}); // { [comboId]: salePrice }
   const [activeTab, setActiveTab] = useState('gallery'); // 'gallery' | 'custom' | 'combos'
   const [searchQuery, setSearchQuery] = useState('');
+  const [comboSearchQuery, setComboSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('ALL');
 
   // Image Upload Loading States
@@ -1378,21 +1379,44 @@ export default function AdminSale() {
                   </button>
                 </div>
 
+                {/* Search Filter for Combo Product Picker */}
+                <div className="relative">
+                  <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
+                  <input
+                    type="text"
+                    placeholder="Search all products by name or brand..."
+                    value={comboSearchQuery}
+                    onChange={(e) => setComboSearchQuery(e.target.value)}
+                    className="w-full pl-9 pr-8 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs font-medium focus:outline-none"
+                  />
+                  {comboSearchQuery && (
+                    <button type="button" onClick={() => setComboSearchQuery('')}
+                      className="absolute right-3 top-2 text-slate-400 hover:text-white font-bold text-xs">✕</button>
+                  )}
+                </div>
+
                 <div className="space-y-2">
                   {newSaleCombo.items.map((it, idx) => (
                     <div key={idx} className="flex flex-col sm:flex-row items-center gap-2 p-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-xs">
-                      {/* Select Product from Gallery */}
+                      {/* Select Product from Gallery (Filtered by comboSearchQuery) */}
                       <select
                         value={it.productId}
                         onChange={(e) => handleComboItemChange(idx, 'productId', e.target.value)}
                         className="flex-1 w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white font-medium focus:outline-none"
                       >
-                        <option value="">-- Custom Custom Product Title --</option>
-                        {candidateProducts.map(p => (
-                          <option key={p.id} value={p.id}>
-                            {p.name} ({formatCurrency(p.regularPrice)})
-                          </option>
-                        ))}
+                        <option value="">-- Select or Type Custom Name --</option>
+                        {candidateProducts
+                          .filter(p => {
+                            if (String(p.id) === String(it.productId)) return true;
+                            if (!comboSearchQuery.trim()) return true;
+                            const q = comboSearchQuery.toLowerCase();
+                            return p.name?.toLowerCase().includes(q) || p.brand?.toLowerCase().includes(q);
+                          })
+                          .map(p => (
+                            <option key={p.id} value={p.id}>
+                              {p.name} ({formatCurrency(p.regularPrice)})
+                            </option>
+                          ))}
                       </select>
 
                       {/* Custom Item Title Fallback */}
@@ -1587,7 +1611,7 @@ export default function AdminSale() {
 
             <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 space-y-1">
               <div>• Products included: <strong className="text-slate-900">{selectedCount}</strong></div>
-              <div>• Schedule: <strong className="text-slate-900">{startDate} to {endDate}</strong></div>
+              <div>• Schedule: <strong className="text-slate-900">{formatDateDDMMYYYY(startDate)} to {formatDateDDMMYYYY(endDate)}</strong></div>
             </div>
 
             <div className="flex items-center justify-end gap-3 pt-2">

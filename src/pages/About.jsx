@@ -116,6 +116,9 @@ export default function About() {
               <p>📍 <strong>Address:</strong> {storeConfig.address}</p>
               <p>📞 <strong>Phone:</strong> {storeConfig.displayPhone}</p>
               <p>⏰ <strong>Hours:</strong> {storeConfig.timing}</p>
+              {storeConfig.closedDay && (
+                <p>🚫 <strong>Closed on:</strong> {storeConfig.closedDay}</p>
+              )}
             </div>
           </div>
 

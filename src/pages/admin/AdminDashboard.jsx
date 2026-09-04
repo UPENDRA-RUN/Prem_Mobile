@@ -140,15 +140,9 @@ export default function AdminDashboard() {
           </span>
           <h1 className="font-display font-black text-3xl sm:text-4xl text-slate-900 tracking-tight mt-1">
             Admin Dashboard
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Today: <span className="font-bold text-slate-900">{currentDayName}</span>
-            {sundaySale.dayInfo?.isSimulated && (
-              <span className="ml-2 px-2 py-0.5 rounded bg-amber-500 text-slate-900 text-[10px] font-black uppercase">
-                Simulated {sundaySale.dayInfo?.simulatedDay}
-              </span>
-            )}
-          </p>
+          </h1>            <p className="text-xs sm:text-sm text-slate-500 mt-1">
+              Today: <span className="font-bold text-slate-900">{currentDayName}</span>
+            </p>
         </div>
 
         <div className="flex items-center gap-3">

@@ -218,6 +218,12 @@ export default function Footer() {
                     <Clock className="w-4 h-4 text-[#FFD400] flex-shrink-0 mt-0.5" />
                     <span>{storeConfig.timing}</span>
                   </li>
+                  {storeConfig.closedDay && (
+                    <li className="flex items-center gap-2 text-[#E31B23] font-bold">
+                      <span className="w-4 h-4 flex-shrink-0 text-center text-xs">🚫</span>
+                      <span>Closed on {storeConfig.closedDay}</span>
+                    </li>
+                  )}
                 </ul>
               </div>
 

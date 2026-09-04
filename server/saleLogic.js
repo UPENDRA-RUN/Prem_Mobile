@@ -93,7 +93,7 @@ export function getSalePublicState() {
       p.images as productImages,
       p.stock as productStock,
       p.regularPrice as productRegularPrice,
-      c.title as comboTitle,
+      c.name as comboTitle,
       c.description as comboDescription,
       c.image as comboImage,
       c.regularPrice as comboRegularPrice,

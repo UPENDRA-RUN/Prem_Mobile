@@ -44,7 +44,7 @@ export function createApiRouter() {
   app.use('/products', productRoutes);
   app.use('/upload', uploadRoutes);
   app.use('/sale', saleRoutes);
-  app.use('/sunday-sale', saleRoutes); // Alias for seamless backward compatibility
+  app.use('/sunday-sale', sundaySaleRoutes);
   app.use('/combos', combosRoutes);
   app.use('/orders', orderRoutes);
   app.use('/settings', settingRoutes);

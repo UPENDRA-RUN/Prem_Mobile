@@ -3,10 +3,12 @@
  * Cloud Name: iuuqceor
  */
 
+const env = (typeof import.meta !== 'undefined' && import.meta.env) ? import.meta.env : {};
+
 export const CLOUDINARY_CONFIG = {
-  cloudName: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'iuuqceor',
-  apiKey: import.meta.env.VITE_CLOUDINARY_API_KEY || '546736928497622',
-  uploadPreset: import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'prem_mobile_preset'
+  cloudName: env.VITE_CLOUDINARY_CLOUD_NAME || 'iuuqceor',
+  apiKey: env.VITE_CLOUDINARY_API_KEY || '546736928497622',
+  uploadPreset: env.VITE_CLOUDINARY_UPLOAD_PRESET || 'prem_mobile_preset'
 };
 
 /**
@@ -22,6 +24,11 @@ export function getCloudinaryUrl(publicIdOrUrl, options = {}) {
     if (!publicIdOrUrl.includes('cloudinary.com')) {
       return publicIdOrUrl;
     }
+  }
+
+  // If it's a relative path (e.g. /images/photo.jpg), return as is
+  if (publicIdOrUrl.startsWith('/')) {
+    return publicIdOrUrl;
   }
 
   const { width, height, crop = 'fill', quality = 'auto', format = 'auto' } = options;

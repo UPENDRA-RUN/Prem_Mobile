@@ -194,61 +194,6 @@ export function initDatabase() {
     console.log('[DB] Seeded default admin: admin@premmobile.com / admin123');
   }
 
-  // Seed initial settings
-  const settingsCheck = db.prepare("SELECT value FROM settings WHERE key = 'simulated_day'").get();
-  if (!settingsCheck) {
-    db.prepare("INSERT INTO settings (key, value) VALUES ('simulated_day', 'REAL')").run();
-  }
-
-  // Seed initial products from existing products.js if empty
-  const productCheck = db.prepare('SELECT COUNT(*) as count FROM products').get();
-  if (productCheck.count === 0) {
-    try {
-      const productsFilePath = path.join(__dirname, '..', 'src', 'data', 'products.js');
-      if (fs.existsSync(productsFilePath)) {
-        const fileContent = fs.readFileSync(productsFilePath, 'utf8');
-        // Extract products array using dynamic import or eval in safe context
-        import('../src/data/products.js').then(({ products }) => {
-          if (Array.isArray(products)) {
-            const now = new Date().toISOString();
-            const insert = db.prepare(`
-              INSERT INTO products (
-                id, name, slug, description, category, categorySlug, brand, images, regularPrice, stock, isActive, isFeatured, tag, createdAt, updatedAt
-              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            `);
-
-            for (const p of products) {
-              const slug = p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') + '-' + p.id;
-              const imgList = p.images && p.images.length > 0 ? p.images : (p.image ? [p.image] : ['/images/prem-main.jpg']);
-              const regPrice = Number(p.originalPrice || p.price || 499);
-              insert.run(
-                p.id,
-                p.name,
-                slug,
-                p.description || `${p.name} at Prem Mobile`,
-                p.category || 'Accessories',
-                p.categorySlug || 'accessories',
-                p.brand || 'Prem Mobile',
-                JSON.stringify(imgList),
-                regPrice,
-                15,
-                1,
-                p.isFeatured ? 1 : 0,
-                p.tag || '',
-                now,
-                now
-              );
-            }
-            console.log(`[DB] Seeded ${products.length} products into SQLite database.`);
-          }
-        }).catch(err => {
-          console.warn('[DB] Could not dynamically load initial products:', err.message);
-        });
-      }
-    } catch (e) {
-      console.warn('[DB] Product seed warning:', e.message);
-    }
-  }
 }
 
 // Automatically initialize on import

@@ -1,19 +1,37 @@
 import React from 'react';
 import { storeConfig } from '../../config/store';
-import { MapPin, Instagram, Facebook } from 'lucide-react';
+import { MapPin, Instagram, Facebook, Clock } from 'lucide-react';
+
+function getIsStoreClosedToday() {
+  if (!storeConfig.closedDay) return false;
+  const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const todayIndex = new Date().toLocaleDateString('en-US', { timeZone: 'Asia/Kolkata', weekday: 'long' });
+  return todayIndex.toLowerCase() === storeConfig.closedDay.toLowerCase();
+}
 
 export default function AnnouncementBar() {
+  const isClosedToday = getIsStoreClosedToday();
+
   return (
-    <div className="text-white text-xs h-[38px] flex items-center bg-[#050505] border-b border-[#ffd000]/40">
+    <div className={`text-white text-xs h-[38px] flex items-center ${isClosedToday ? 'bg-[#E31B23]/90' : 'bg-[#050505]'} border-b border-[#ffd000]/40`}>
       <div className="max-w-[1500px] w-full mx-auto px-6 flex items-center justify-between">
         
-        {/* LEFT: Address */}
-        <div className="flex items-center gap-1.5 text-slate-200 truncate">
-          <MapPin className="w-3.5 h-3.5 text-[#ffd000] flex-shrink-0" />
-          <span className="font-normal text-[12px] truncate">
-            {storeConfig.address}
-          </span>
-        </div>
+        {/* LEFT: Address or Closed Notice */}
+        {isClosedToday ? (
+          <div className="flex items-center gap-1.5 text-white truncate">
+            <Clock className="w-3.5 h-3.5 text-white flex-shrink-0" />
+            <span className="font-bold text-[12px] truncate">
+              🚫 Store Closed Today ({storeConfig.closedDay}). We open tomorrow! {storeConfig.timing}
+            </span>
+          </div>
+        ) : (
+          <div className="flex items-center gap-1.5 text-slate-200 truncate">
+            <MapPin className="w-3.5 h-3.5 text-[#ffd000] flex-shrink-0" />
+            <span className="font-normal text-[12px] truncate">
+              {storeConfig.address}
+            </span>
+          </div>
+        )}
 
         {/* CENTER: Official Tagline */}
         <div className="hidden md:flex items-center gap-1.5 text-center">
