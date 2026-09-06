@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import SearchModal from './SearchModal';
 import NotificationDropdown from './NotificationDropdown';
+import StoreLiveBadge from '../common/StoreLiveBadge';
 import { usePwaInstall } from '../common/PwaInstallPrompt';
 import { purgeAllAuthSessions } from '../../utils/authCleanup';
 
@@ -157,6 +158,12 @@ export default function MobileNavbar() {
               <span className="font-black text-base group-hover:translate-x-1 transition-transform">→</span>
             </Link>
           )}
+
+          {/* Store Live Status in Drawer */}
+          <div className="flex items-center justify-between px-1">
+            <span className="text-[11px] font-bold text-slate-500">Pinto Park Store Status:</span>
+            <StoreLiveBadge />
+          </div>
 
           {/* Quick Search Trigger */}
           <div

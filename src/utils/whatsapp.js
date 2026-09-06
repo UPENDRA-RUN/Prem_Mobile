@@ -11,20 +11,31 @@ export function getWhatsAppUrl(text) {
 }
 
 /**
- * Open WhatsApp with single product enquiry
+ * Open WhatsApp with single product direct order / enquiry
  * @param {object} product 
  * @param {string} customNote 
  */
 export function openProductWhatsApp(product, customNote = '') {
-  const message = 
-`Hello Prem Mobile,
-I am interested in:
-*${product.name}*
-Brand: ${product.brand || 'Prem Mobile'}
-Price: ₹${product.price?.toLocaleString('en-IN') || ''}
-Store Tagline: “${storeConfig.tagline}”
+  const price = product.price ?? product.currentPrice ?? product.regularPrice ?? 0;
+  const origPrice = product.originalPrice ?? product.regularPrice ?? 0;
+  const discountStr = product.discount ? ` (${product.discount}% OFF)` : '';
+  const productUrl = `${window.location.origin}/product/${product.id}`;
 
-${customNote ? `${customNote}\n` : ''}Please share availability and store pickup details at Pinto Park, Gwalior.`;
+  const message = 
+`🛍️ *PREM MOBILE — DIRECT STORE ORDER / ENQUIRY*
+━━━━━━━━━━━━━━━━━━━━
+Namaste Prem Mobile Gwalior! Mujhe ye product order karna hai:
+
+📱 *Product:* ${product.name}
+🏷️ *Brand:* ${product.brand || 'Prem Mobile'}
+💰 *Deal Price:* ₹${price.toLocaleString('en-IN')}${discountStr}${origPrice > price ? ` (MRP: ₹${origPrice.toLocaleString('en-IN')})` : ''}
+🔗 *Link:* ${productUrl}
+
+📍 *Store Location:* Pinto Park, Jaderua Gate Ke Samne, Gwalior
+🔥 *Tagline:* “${storeConfig.tagline}”
+${customNote ? `\n📝 *Note:* ${customNote}` : ''}
+━━━━━━━━━━━━━━━━━━━━
+Please confirm stock availability & in-store pickup / delivery details.`;
 
   window.open(getWhatsAppUrl(message), '_blank');
 }
@@ -47,27 +58,27 @@ export function openCartWhatsApp(cartItems, subtotal, appliedPromo = null, promo
       const variantStr = item.selectedVariants
         ? ` [${Object.entries(item.selectedVariants).map(([k, v]) => `${k}: ${v}`).join(', ')}]`
         : '';
-      return `${idx + 1}. *${item.name}*${variantStr} (Qty: ${item.quantity}) - ₹${(item.price * item.quantity).toLocaleString('en-IN')}`;
+      return `${idx + 1}. *${item.name}*${variantStr}\n   └ Qty: ${item.quantity} × ₹${item.price.toLocaleString('en-IN')} = ₹${(item.price * item.quantity).toLocaleString('en-IN')}`;
     })
-    .join('\n');
+    .join('\n\n');
 
   const promoLine = appliedPromo && promoDiscount > 0
-    ? `\n*Applied Coupon (${appliedPromo.code}):* -₹${promoDiscount.toLocaleString('en-IN')}`
+    ? `\n🎟️ *Applied Coupon (${appliedPromo.code}):* -₹${promoDiscount.toLocaleString('en-IN')}`
     : '';
 
   const message = 
-`Hello Prem Mobile (Gwalior),
-I would like to place an order / enquiry for the following items from my cart:
+`🛒 *PREM MOBILE — CART ORDER CHECKOUT*
+━━━━━━━━━━━━━━━━━━━━
+Namaste Prem Mobile Gwalior! Mai apni cart ke items ka order confirm karna chahta hu:
 
 ${itemList}
 
--------------------------
-*Subtotal:* ₹${subtotal.toLocaleString('en-IN')}${promoLine}
-*Total Estimated Amount:* ₹${totalPayable.toLocaleString('en-IN')}
-*Tagline:* “${storeConfig.tagline}”
--------------------------
-
-Please confirm item availability and store pickup or delivery options at Pinto Park, Gwalior.`;
+━━━━━━━━━━━━━━━━━━━━
+💵 *Cart Subtotal:* ₹${subtotal.toLocaleString('en-IN')}${promoLine}
+🔥 *Total Payable:* ₹${totalPayable.toLocaleString('en-IN')}
+📍 *Store Pickup:* Pinto Park, Gwalior (M.P.)
+━━━━━━━━━━━━━━━━━━━━
+Please confirm order preparation and pickup timing.`;
 
   window.open(getWhatsAppUrl(message), '_blank');
 }
@@ -77,10 +88,14 @@ Please confirm item availability and store pickup or delivery options at Pinto P
  */
 export function openGeneralWhatsApp(topic = 'Store Enquiry & Deals') {
   const message = 
-`Hello Prem Mobile,
+`👋 *Namaste Prem Mobile Gwalior!*
+
 I would like to enquire about: *${topic}*.
 
-Please assist me with product availability, Sunday Sale deals, or directions to Pinto Park, Gwalior store.`;
+📍 *Store:* Pinto Park, Jaderua Gate Ke Samne, Gwalior
+🔥 “${storeConfig.tagline}”
+
+Please share latest deals, Sunday Sale offers, or product availability.`;
 
   window.open(getWhatsAppUrl(message), '_blank');
 }

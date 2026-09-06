@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Phone, MessageCircle, Instagram, X, MessageSquare, Sparkles } from 'lucide-react';
 import { storeConfig } from '../../config/store';
 import { openGeneralWhatsApp } from '../../utils/whatsapp';
+import StoreLiveBadge from '../common/StoreLiveBadge';
 
 export default function FloatingActions() {
   const [isOpen, setIsOpen] = useState(false);
@@ -46,22 +47,22 @@ export default function FloatingActions() {
   return (
     <div
       ref={containerRef}
-      className="fixed bottom-3.5 right-3.5 sm:bottom-6 sm:right-6 z-40 flex flex-col items-end select-none"
+      className="fixed bottom-[68px] right-3.5 sm:bottom-6 sm:right-6 z-40 flex flex-col items-end select-none"
       style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
     >
       {/* ==================================================== */}
       {/* POPUP CONTACT MENU (Appears Vertically Above Button) */}
       {/* ==================================================== */}
       {isOpen && (
-        <div className="mb-2.5 sm:mb-3 w-[190px] min-[380px]:w-[210px] bg-[#050505] text-white rounded-2xl border-2 border-[#ffd000]/70 p-2 shadow-[0_15px_40px_rgba(0,0,0,0.85),0_0_25px_rgba(255,208,0,0.2)] space-y-1.5 animate-scale-up backdrop-blur-md">
+        <div className="mb-2.5 sm:mb-3 w-[210px] min-[380px]:w-[230px] bg-[#050505] text-white rounded-2xl border-2 border-[#ffd000]/70 p-2.5 shadow-[0_15px_40px_rgba(0,0,0,0.85),0_0_25px_rgba(255,208,0,0.2)] space-y-2 animate-scale-up backdrop-blur-md">
           
-          {/* Header Label */}
-          <div className="px-2 py-1 flex items-center justify-between border-b border-white/10 text-[10px] font-black uppercase tracking-wider text-[#ffd000]">
-            <span className="flex items-center gap-1">
+          {/* Header Label + Live Store Status */}
+          <div className="px-1 py-1 flex items-center justify-between border-b border-white/10 pb-2">
+            <span className="flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-[#ffd000]">
               <Sparkles className="w-3 h-3 text-[#ffd000]" />
-              <span>Connect With Us</span>
+              <span>Prem Mobile</span>
             </span>
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <StoreLiveBadge compact={true} />
           </div>
 
           {/* 1. Instagram Option */}

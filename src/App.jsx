@@ -8,6 +8,7 @@ import SundaySaleBanner from './components/layout/SundaySaleBanner';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import FloatingActions from './components/layout/FloatingActions';
+import MobileBottomNav from './components/layout/MobileBottomNav';
 import CartDrawer from './components/common/CartDrawer';
 import CompareDrawer from './components/common/CompareDrawer';
 import Toast from './components/common/Toast';
@@ -150,7 +151,7 @@ export default function App() {
           <Navbar />
 
           {/* 4. MAIN ROUTED VIEW */}
-          <main className="flex-1">
+          <main className="flex-1 pb-16 lg:pb-0">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/shop" element={<Shop />} />
@@ -200,6 +201,7 @@ export default function App() {
           <CompareDrawer />
           <Toast />
           <FloatingActions />
+          <MobileBottomNav />
           <PwaInstallPrompt />
         </>
       )}

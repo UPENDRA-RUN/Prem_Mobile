@@ -55,6 +55,7 @@ export default function Shop() {
   const initialBrand = searchParams.get('brand') || 'all';
   const initialQuery = searchParams.get('q') || '';
   const initialSort = searchParams.get('sort') || 'popular';
+  const initialSale = searchParams.get('sale') === 'true';
 
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [selectedBrand, setSelectedBrand] = useState(initialBrand);
@@ -64,12 +65,14 @@ export default function Shop() {
   const [sortBy, setSortBy] = useState(initialSort);
   const [priceRange, setPriceRange] = useState('all');
   const [minRating, setMinRating] = useState(0);
+  const [onlySale, setOnlySale] = useState(initialSale);
   const [currentPage, setCurrentPage] = useState(1);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
 
   useEffect(() => {
     if (searchParams.get('category')) setSelectedCategory(searchParams.get('category'));
     if (searchParams.get('brand')) setSelectedBrand(searchParams.get('brand'));
+    if (searchParams.get('sale') !== null) setOnlySale(searchParams.get('sale') === 'true');
     if (searchParams.get('q') !== null) {
       setSearchQuery(searchParams.get('q') || '');
       setDebouncedQuery(searchParams.get('q') || '');
@@ -100,6 +103,10 @@ export default function Shop() {
   const filteredProducts = useMemo(() => {
     return products
       .filter((p) => {
+        if (onlySale && !(p.isOnSale || p.discount > 0 || p.isSundaySale)) {
+          return false;
+        }
+
         if (
           selectedCategory !== 'all' &&
           p.category.toLowerCase() !== selectedCategory.toLowerCase() &&
@@ -143,7 +150,7 @@ export default function Shop() {
         if (sortBy === 'rating') return b.rating - a.rating;
         return b.rating - a.rating || b.reviewsCount - a.reviewsCount;
       });
-  }, [selectedCategory, selectedBrand, debouncedQuery, priceRange, minRating, sortBy]);
+  }, [selectedCategory, selectedBrand, debouncedQuery, priceRange, minRating, sortBy, onlySale]);
 
   // Active filters count
   const activeFiltersCount = useMemo(() => {
@@ -152,9 +159,10 @@ export default function Shop() {
       (selectedBrand !== 'all' ? 1 : 0) +
       (priceRange !== 'all' ? 1 : 0) +
       (minRating > 0 ? 1 : 0) +
+      (onlySale ? 1 : 0) +
       (debouncedQuery ? 1 : 0)
     );
-  }, [selectedCategory, selectedBrand, priceRange, minRating, debouncedQuery]);
+  }, [selectedCategory, selectedBrand, priceRange, minRating, onlySale, debouncedQuery]);
 
   // Pagination calculations
   const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
@@ -170,6 +178,7 @@ export default function Shop() {
     setDebouncedQuery('');
     setPriceRange('all');
     setMinRating(0);
+    setOnlySale(false);
     setSortBy('popular');
     setCurrentPage(1);
     setSearchParams({});
@@ -287,8 +296,108 @@ export default function Shop() {
 
           </div>
 
+          {/* 1-TAP QUICK FILTER PILLS (SWIPEABLE HORIZONTAL PILLS) */}
+          <div className="pt-2 border-t border-slate-100">
+            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 -mx-1 px-1">
+              <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider flex-shrink-0 flex items-center gap-1 mr-1">
+                <Filter className="w-3 h-3 text-[#E31B23]" />
+                <span>Quick:</span>
+              </span>
+
+              {/* Sunday Sale Pill */}
+              <button
+                onClick={() => {
+                  setOnlySale(!onlySale);
+                  setCurrentPage(1);
+                }}
+                className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-black flex items-center gap-1.5 transition-all shadow-xs ${
+                  onlySale
+                    ? 'bg-[#E31B23] text-white ring-2 ring-[#E31B23]/40 shadow-sm scale-102'
+                    : 'bg-red-50 text-[#E31B23] border border-red-200 hover:bg-red-100'
+                }`}
+              >
+                <Flame className={`w-3.5 h-3.5 ${onlySale ? 'fill-white' : 'fill-[#E31B23]'}`} />
+                <span>Sunday Deals</span>
+              </button>
+
+              {/* 4 Star & Above Pill */}
+              <button
+                onClick={() => {
+                  setMinRating(minRating === 4 ? 0 : 4);
+                  setCurrentPage(1);
+                }}
+                className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-black flex items-center gap-1.5 transition-all shadow-xs ${
+                  minRating === 4
+                    ? 'bg-[#050505] text-[#FFD400] ring-2 ring-[#FFD400]/50 shadow-sm scale-102'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200'
+                }`}
+              >
+                <Star className={`w-3.5 h-3.5 ${minRating === 4 ? 'fill-[#FFD400] text-[#FFD400]' : 'fill-amber-400 text-amber-500'}`} />
+                <span>4★ & Above</span>
+              </button>
+
+              {/* Under 1000 Pill */}
+              <button
+                onClick={() => {
+                  setPriceRange(priceRange === 'under-1000' ? 'all' : 'under-1000');
+                  setCurrentPage(1);
+                }}
+                className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-bold transition-all shadow-xs ${
+                  priceRange === 'under-1000'
+                    ? 'bg-[#050505] text-[#FFD400] ring-2 ring-[#FFD400]/50 shadow-sm scale-102'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200'
+                }`}
+              >
+                Under ₹1,000
+              </button>
+
+              {/* 1000 - 3000 Pill */}
+              <button
+                onClick={() => {
+                  setPriceRange(priceRange === '1000-3000' ? 'all' : '1000-3000');
+                  setCurrentPage(1);
+                }}
+                className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-bold transition-all shadow-xs ${
+                  priceRange === '1000-3000'
+                    ? 'bg-[#050505] text-[#FFD400] ring-2 ring-[#FFD400]/50 shadow-sm scale-102'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200'
+                }`}
+              >
+                ₹1,000 - ₹3,000
+              </button>
+
+              {/* Quick Categories */}
+              {[
+                { name: 'Earbuds', icon: '🎧' },
+                { name: 'Smartwatches', icon: '⌚' },
+                { name: 'Chargers', icon: '⚡' },
+                { name: 'Power Banks', icon: '🔋' },
+                { name: 'Smartphones', icon: '📱' },
+              ].map((cat) => {
+                const isActive = selectedCategory.toLowerCase() === cat.name.toLowerCase();
+                return (
+                  <button
+                    key={cat.name}
+                    onClick={() => {
+                      setSelectedCategory(isActive ? 'all' : cat.name);
+                      setCurrentPage(1);
+                    }}
+                    className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1 transition-all shadow-xs ${
+                      isActive
+                        ? 'bg-[#050505] text-[#FFD400] ring-2 ring-[#FFD400]/50 shadow-sm scale-102'
+                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200'
+                    }`}
+                  >
+                    <span>{cat.icon}</span>
+                    <span>{cat.name}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           {/* SUGGESTED TRENDING SEARCH CHIPS */}
-          <div className="flex flex-wrap items-center gap-1.5 pt-1 border-t border-slate-100 text-xs">
+          <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-slate-100 text-xs">
             <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
               <Sparkles className="w-3 h-3 text-amber-500 fill-amber-400" />
               <span>Suggested:</span>
@@ -318,6 +427,20 @@ export default function Shop() {
               <Filter className="w-3.5 h-3.5 text-[#E31B23]" />
               <span>Active Filters ({activeFiltersCount}):</span>
             </span>
+
+            {onlySale && (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E31B23] text-white font-bold shadow-xs">
+                <Flame className="w-3.5 h-3.5 fill-white" />
+                <span>Sunday Deals</span>
+                <button
+                  onClick={() => setOnlySale(false)}
+                  className="hover:text-amber-200 ml-0.5"
+                  title="Remove sale filter"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </span>
+            )}
 
             {debouncedQuery && (
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#050505] text-[#FFD400] font-bold">

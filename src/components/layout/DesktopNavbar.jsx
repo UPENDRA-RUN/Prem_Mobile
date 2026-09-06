@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import SearchModal from './SearchModal';
 import NotificationDropdown from './NotificationDropdown';
+import StoreLiveBadge from '../common/StoreLiveBadge';
 import { purgeAllAuthSessions } from '../../utils/authCleanup';
 
 export default function DesktopNavbar() {
@@ -54,21 +55,26 @@ export default function DesktopNavbar() {
       <div className="max-w-[1500px] mx-auto px-6 h-[84px] md:h-[90px] flex items-center justify-between gap-4">
         
         {/* LEFT: BRAND LOGO LOCKUP */}
-        <Link to="/" className="flex items-center gap-2.5 flex-shrink-0 group">
-          <div className="w-9 h-11 border-2 border-black rounded-xl flex items-center justify-center p-0.5 relative flex-shrink-0 bg-white group-hover:border-[#e51b23] transition-colors shadow-xs">
-            <div className="w-2 h-0.5 bg-black rounded-full absolute top-1" />
-            <Smartphone className="w-5 h-5 text-black group-hover:text-[#e51b23] transition-colors" />
-          </div>
-          <div className="flex flex-col min-w-0 justify-center">
-            <div className="font-display font-black text-2xl md:text-[26px] tracking-tight leading-none">
-              <span className="text-[#e51b23]">PREM</span>{' '}
-              <span className="text-[#050505]">MOBILE</span>
+        <div className="flex items-center gap-3 flex-shrink-0">
+          <Link to="/" className="flex items-center gap-2.5 flex-shrink-0 group">
+            <div className="w-9 h-11 border-2 border-black rounded-xl flex items-center justify-center p-0.5 relative flex-shrink-0 bg-white group-hover:border-[#e51b23] transition-colors shadow-xs">
+              <div className="w-2 h-0.5 bg-black rounded-full absolute top-1" />
+              <Smartphone className="w-5 h-5 text-black group-hover:text-[#e51b23] transition-colors" />
             </div>
-            <span className="text-[10.5px] font-bold text-[#050505] tracking-tight mt-1 leading-tight flex items-center gap-1">
-              Deal Aise Jo Deewana Bana De 🔥
-            </span>
+            <div className="flex flex-col min-w-0 justify-center">
+              <div className="font-display font-black text-2xl md:text-[26px] tracking-tight leading-none">
+                <span className="text-[#e51b23]">PREM</span>{' '}
+                <span className="text-[#050505]">MOBILE</span>
+              </div>
+              <span className="text-[10.5px] font-bold text-[#050505] tracking-tight mt-1 leading-tight flex items-center gap-1">
+                Deal Aise Jo Deewana Bana De 🔥
+              </span>
+            </div>
+          </Link>
+          <div className="hidden 2xl:block pl-2 border-l border-slate-200">
+            <StoreLiveBadge />
           </div>
-        </Link>
+        </div>
 
         {/* CENTER: DESKTOP NAVIGATION */}
         <nav className="flex items-center gap-5 xl:gap-7">
