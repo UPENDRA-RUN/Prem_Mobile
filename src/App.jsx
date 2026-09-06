@@ -57,6 +57,7 @@ import AdminOrders from './pages/admin/AdminOrders';
 import AdminSundaySale from './pages/admin/AdminSundaySale';
 import AdminSale from './pages/admin/AdminSale';
 import AdminSettings from './pages/admin/AdminSettings';
+import AdminAnalytics from './pages/admin/AdminAnalytics';
 
 // Protected Admin Route Wrapper
 function ProtectedAdminRoute({ children }) {
@@ -77,7 +78,7 @@ function ProtectedAdminRoute({ children }) {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/admin/login" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   return children;
@@ -120,6 +121,7 @@ export default function App() {
             >
               <Route index element={<AdminDashboard />} />
               <Route path="dashboard" element={<AdminDashboard />} />
+              <Route path="analytics" element={<AdminAnalytics />} />
               <Route path="products" element={<AdminProducts />} />
               <Route path="products/new" element={<AdminProductForm />} />
               <Route path="products/edit/:id" element={<AdminProductForm />} />

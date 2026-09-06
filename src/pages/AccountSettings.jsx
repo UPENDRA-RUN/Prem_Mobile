@@ -114,12 +114,12 @@ export default function AccountSettings() {
   }, [customerUser]);
 
   // Fetch customer orders from API
-  const fetchMyOrders = useCallback(async () => {
+  const fetchMyOrders = useCallback(async (isSilent = false) => {
     const activeEmail = profile.email || customerUser?.email || '';
     const activePhone = profile.phone || customerUser?.mobile || '';
     if (!activePhone && !activeEmail && !customerToken) return;
 
-    setIsLoadingOrders(true);
+    if (!isSilent) setIsLoadingOrders(true);
     try {
       const headers = {};
       if (customerToken) {
@@ -133,13 +133,13 @@ export default function AccountSettings() {
       if (data.success) {
         setOrders(data.orders || []);
         if (data.orders && data.orders.length > 0) {
-          setExpandedOrder(data.orders[0].id);
+          setExpandedOrder(prev => prev || data.orders[0].id);
         }
       }
     } catch (e) {
       console.error('Error fetching customer orders:', e);
     } finally {
-      setIsLoadingOrders(false);
+      if (!isSilent) setIsLoadingOrders(false);
     }
   }, [profile.phone, profile.email, customerUser, customerToken]);
 
@@ -148,7 +148,7 @@ export default function AccountSettings() {
   }, [fetchMyOrders]);
 
   // Real-time SSE updates for live order tracking
-  useRealtimeSync(fetchMyOrders, ['ORDERS_UPDATED'], 3000);
+  useRealtimeSync(fetchMyOrders, ['ORDERS_UPDATED'], 15000);
 
   // Determine if form has un-saved changes
   const isDirty = JSON.stringify(profile) !== JSON.stringify(savedProfile);

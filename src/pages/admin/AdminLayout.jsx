@@ -14,7 +14,8 @@ import {
   ExternalLink,
   PlusCircle,
   Sparkles,
-  Layers
+  Layers,
+  BarChart3
 } from 'lucide-react';
 
 export default function AdminLayout() {
@@ -29,6 +30,7 @@ export default function AdminLayout() {
 
   const navItems = [
     { to: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { to: '/admin/analytics', label: 'Analytics & Insights', icon: BarChart3, badge: '📊' },
     { to: '/admin/products', label: 'Manage Products & Images', icon: Package, badge: '📦' },
     { to: '/admin/combos', label: 'Combos & Bundle Packs', icon: Layers, badge: '🎁' },
     { to: '/admin/orders', label: 'Store Orders', icon: ShoppingCart, badge: '🛒' },

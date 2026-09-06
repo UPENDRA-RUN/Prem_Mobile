@@ -325,6 +325,26 @@ router.put('/:id', requireAdmin, (req, res) => {
   });
 });
 
+// Admin: DELETE /api/products/clear-all (Purge all products for clean slate)
+router.delete('/clear-all', requireAdmin, (req, res) => {
+  try {
+    db.prepare('DELETE FROM sunday_sale_items').run();
+    db.prepare('DELETE FROM sale_items').run();
+    db.prepare('DELETE FROM combo_items').run();
+    db.prepare('DELETE FROM products').run();
+
+    broadcastEvent('PRODUCTS_UPDATED');
+
+    res.json({
+      success: true,
+      message: 'All sample products purged successfully.'
+    });
+  } catch (err) {
+    console.error('Error clearing products:', err);
+    res.status(500).json({ success: false, error: 'Failed to clear products: ' + err.message });
+  }
+});
+
 // Admin: DELETE /api/products/:id
 router.delete('/:id', requireAdmin, (req, res) => {
   const { id } = req.params;

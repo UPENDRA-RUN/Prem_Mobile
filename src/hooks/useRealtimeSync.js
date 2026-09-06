@@ -6,7 +6,7 @@ import { useEffect } from 'react';
  * a database mutation occurs (e.g. PRODUCTS_UPDATED, ORDERS_UPDATED, SALE_UPDATED).
  * Also runs a periodic polling check as a safety net.
  */
-export function useRealtimeSync(onUpdate, eventTypes = ['PRODUCTS_UPDATED'], pollIntervalMs = 4000) {
+export function useRealtimeSync(onUpdate, eventTypes = ['PRODUCTS_UPDATED'], pollIntervalMs = 15000) {
   useEffect(() => {
     let eventSource = null;
     let pollTimer = null;
@@ -19,7 +19,7 @@ export function useRealtimeSync(onUpdate, eventTypes = ['PRODUCTS_UPDATED'], pol
           try {
             const data = JSON.parse(event.data);
             if (data && eventTypes.includes(data.type)) {
-              onUpdate();
+              onUpdate(true); // Pass true for silent background update
             }
           } catch (e) {
             // Ignore parse errors
@@ -40,7 +40,7 @@ export function useRealtimeSync(onUpdate, eventTypes = ['PRODUCTS_UPDATED'], pol
 
     if (pollIntervalMs > 0) {
       pollTimer = setInterval(() => {
-        onUpdate();
+        onUpdate(true); // Pass true for silent background update
       }, pollIntervalMs);
     }
 

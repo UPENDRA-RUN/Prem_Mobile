@@ -152,6 +152,30 @@ export function initDatabase() {
       updatedAt TEXT NOT NULL
     );
 
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      email TEXT UNIQUE NOT NULL,
+      mobile TEXT UNIQUE NOT NULL,
+      passwordHash TEXT NOT NULL,
+      salt TEXT NOT NULL,
+      role TEXT NOT NULL DEFAULT 'CUSTOMER',
+      address TEXT,
+      city TEXT,
+      state TEXT,
+      pincode TEXT,
+      createdAt TEXT NOT NULL,
+      updatedAt TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS categories (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT UNIQUE NOT NULL,
+      slug TEXT UNIQUE NOT NULL,
+      icon TEXT DEFAULT '📦',
+      createdAt TEXT NOT NULL
+    );
+
     CREATE TABLE IF NOT EXISTS combo_items (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       comboId INTEGER NOT NULL,
@@ -185,19 +209,52 @@ export function initDatabase() {
     console.warn('[DB] Migration warning:', e.message);
   }
 
-  // Seed default admin if none exists
-  const adminCheck = db.prepare('SELECT COUNT(*) as count FROM admins').get();
-  if (adminCheck.count === 0) {
-    const salt = crypto.randomBytes(16).toString('hex');
-    const passwordHash = crypto.pbkdf2Sync('admin123', salt, 1000, 64, 'sha512').toString('hex');
-    const now = new Date().toISOString();
+  // Ensure default admin account exists and has updated credentials
+  const targetEmail = process.env.ADMIN_EMAIL || 'admin@premmobile.com';
+  const targetPassword = process.env.ADMIN_PASSWORD || 'Prem@2026Admin';
+  
+  const existingAdmin = db.prepare('SELECT id FROM admins WHERE email = ?').get(targetEmail);
+  const salt = crypto.randomBytes(16).toString('hex');
+  const passwordHash = crypto.pbkdf2Sync(targetPassword, salt, 1000, 64, 'sha512').toString('hex');
+  const now = new Date().toISOString();
+
+  if (!existingAdmin) {
     db.prepare(`
       INSERT INTO admins (name, email, passwordHash, salt, createdAt)
       VALUES (?, ?, ?, ?, ?)
-    `).run('Prem Mobile Admin', 'admin@premmobile.com', passwordHash, salt, now);
-    console.log('[DB] Seeded default admin: admin@premmobile.com / admin123');
+    `).run('Prem Mobile Admin', targetEmail, passwordHash, salt, now);
+    console.log(`[DB] Seeded admin account: ${targetEmail}`);
+  } else {
+    db.prepare(`
+      UPDATE admins SET passwordHash = ?, salt = ? WHERE email = ?
+    `).run(passwordHash, salt, targetEmail);
+    console.log(`[DB] Updated admin password for: ${targetEmail}`);
   }
 
+  // Seed default categories if none exist
+  try {
+    const catCheck = db.prepare('SELECT COUNT(*) as count FROM categories').get();
+    if (catCheck.count === 0) {
+      const defaultCategories = [
+        { name: 'Smartphones', slug: 'smartphones', icon: '📱' },
+        { name: 'Feature Phones', slug: 'feature-phones', icon: '📞' },
+        { name: 'Earbuds', slug: 'earbuds', icon: '🎧' },
+        { name: 'Headphones', slug: 'headphones', icon: '🎧' },
+        { name: 'Smartwatches', slug: 'smartwatches', icon: '⌚' },
+        { name: 'Power Banks', slug: 'power-banks', icon: '🔋' },
+        { name: 'Chargers', slug: 'chargers', icon: '⚡' },
+        { name: 'Mobile Accessories', slug: 'accessories', icon: '🔌' }
+      ];
+      const insertCat = db.prepare('INSERT INTO categories (name, slug, icon, createdAt) VALUES (?, ?, ?, ?)');
+      const now = new Date().toISOString();
+      for (const cat of defaultCategories) {
+        insertCat.run(cat.name, cat.slug, cat.icon, now);
+      }
+      console.log('[DB] Seeded default categories');
+    }
+  } catch (e) {
+    console.warn('[DB] Category seed warning:', e.message);
+  }
 }
 
 // Automatically initialize on import

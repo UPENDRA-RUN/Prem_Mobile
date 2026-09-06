@@ -303,4 +303,21 @@ router.get('/my-orders', (req, res) => {
   });
 });
 
+// Admin: DELETE /api/orders/admin/purge-all (Purge all orders)
+router.delete('/admin/purge-all', requireAdmin, (req, res) => {
+  try {
+    db.prepare('DELETE FROM order_items').run();
+    db.prepare('DELETE FROM orders').run();
+    broadcastEvent('ORDERS_UPDATED');
+
+    res.json({
+      success: true,
+      message: 'All store orders purged successfully.'
+    });
+  } catch (err) {
+    console.error('Error purging orders:', err);
+    res.status(500).json({ success: false, error: 'Failed to purge orders' });
+  }
+});
+
 export default router;

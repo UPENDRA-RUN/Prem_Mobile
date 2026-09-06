@@ -44,8 +44,8 @@ export default function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [actionMessage, setActionMessage] = useState(null);
 
-  const fetchDashboardData = useCallback(async () => {
-    setIsLoading(true);
+  const fetchDashboardData = useCallback(async (isSilent = false) => {
+    if (!isSilent) setIsLoading(true);
     try {
       // 1. Products
       const prodRes = await fetch('/api/products/admin/all', {
@@ -86,7 +86,7 @@ export default function AdminDashboard() {
     } catch (err) {
       console.error('Failed to load dashboard data:', err);
     } finally {
-      setIsLoading(false);
+      if (!isSilent) setIsLoading(false);
     }
   }, [adminToken]);
 
@@ -94,7 +94,7 @@ export default function AdminDashboard() {
     fetchDashboardData();
   }, [fetchDashboardData]);
 
-  useRealtimeSync(fetchDashboardData, ['PRODUCTS_UPDATED', 'ORDERS_UPDATED'], 3000);
+  useRealtimeSync(fetchDashboardData, ['PRODUCTS_UPDATED', 'ORDERS_UPDATED'], 15000);
 
   const handleToggleProductStatus = async (product) => {
     const updatedActive = product.isActive ? 0 : 1;

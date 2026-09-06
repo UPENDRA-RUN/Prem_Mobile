@@ -26,8 +26,8 @@ export default function AdminProducts() {
   const [categoryFilter, setCategoryFilter] = useState('ALL');
   const [feedback, setFeedback] = useState(null);
 
-  const fetchProducts = useCallback(async () => {
-    setIsLoading(true);
+  const fetchProducts = useCallback(async (isSilent = false) => {
+    if (!isSilent) setIsLoading(true);
     try {
       const res = await fetch('/api/products/admin/all', {
         headers: { Authorization: `Bearer ${adminToken}` }
@@ -39,7 +39,7 @@ export default function AdminProducts() {
     } catch (err) {
       console.error('Failed to load products:', err);
     } finally {
-      setIsLoading(false);
+      if (!isSilent) setIsLoading(false);
     }
   }, [adminToken]);
 
@@ -47,7 +47,7 @@ export default function AdminProducts() {
     fetchProducts();
   }, [fetchProducts]);
 
-  useRealtimeSync(fetchProducts, ['PRODUCTS_UPDATED'], 3000);
+  useRealtimeSync(fetchProducts, ['PRODUCTS_UPDATED'], 15000);
 
   const handleToggleStatus = async (product) => {
     const updatedActive = product.isActive ? 0 : 1;

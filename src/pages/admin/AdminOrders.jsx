@@ -24,8 +24,8 @@ export default function AdminOrders() {
   const [search, setSearch] = useState('');
   const [feedback, setFeedback] = useState(null);
 
-  const fetchOrders = useCallback(async () => {
-    setIsLoading(true);
+  const fetchOrders = useCallback(async (isSilent = false) => {
+    if (!isSilent) setIsLoading(true);
     try {
       const res = await fetch('/api/orders/admin', {
         headers: { Authorization: `Bearer ${adminToken}` }
@@ -37,7 +37,7 @@ export default function AdminOrders() {
     } catch (err) {
       console.error('Failed to load orders:', err);
     } finally {
-      setIsLoading(false);
+      if (!isSilent) setIsLoading(false);
     }
   }, [adminToken]);
 
@@ -45,7 +45,7 @@ export default function AdminOrders() {
     fetchOrders();
   }, [fetchOrders]);
 
-  useRealtimeSync(fetchOrders, ['ORDERS_UPDATED'], 3000);
+  useRealtimeSync(fetchOrders, ['ORDERS_UPDATED'], 15000);
 
   const handleUpdateStatus = async (orderId, newStatus) => {
     try {

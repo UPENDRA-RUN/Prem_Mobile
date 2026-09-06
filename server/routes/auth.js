@@ -105,14 +105,13 @@ router.post('/customer/register', (req, res) => {
 });
 
 /**
- * CUSTOMER LOGIN
+ * UNIFIED LOGIN (CUSTOMER & ADMIN)
  * POST /api/auth/customer/login
  * Fields: identifier (email or mobile), password
  */
 router.post('/customer/login', (req, res) => {
   const { identifier, password } = req.body || {};
 
-  // Requirement 4: If fields are empty
   if (!identifier || !String(identifier).trim() || !password || !String(password).trim()) {
     return res.status(400).json({
       success: false,
@@ -121,6 +120,7 @@ router.post('/customer/login', (req, res) => {
   }
 
   const cleanIdent = String(identifier).trim();
+  const cleanEmail = cleanIdent.toLowerCase();
   const cleanDigits = cleanIdent.replace(/\D/g, '');
 
   // Brute force check
@@ -129,51 +129,6 @@ router.post('/customer/login', (req, res) => {
     return res.status(429).json({ success: false, error: attemptCheck.error });
   }
 
-  // Look up user by email or mobile
-  let user = db.prepare('SELECT * FROM users WHERE email = ?').get(cleanIdent.toLowerCase());
-  if (!user && cleanDigits.length >= 10) {
-    user = db.prepare('SELECT * FROM users WHERE mobile = ?').get(cleanDigits);
-  }
-
-  // Requirement 4: If account does not exist
-  if (!user) {
-    recordFailedLogin(cleanIdent);
-    return res.status(401).json({
-      success: false,
-      error: 'Account not found. Please create an account.'
-    });
-  }
-
-  // Verify password
-  const isValid = verifyPassword(password, user.salt, user.passwordHash);
-  if (!isValid) {
-    recordFailedLogin(cleanIdent);
-    // Requirement 4: If credentials are incorrect
-    return res.status(401).json({
-      success: false,
-      error: 'Incorrect email/mobile number or password.'
-    });
-  }
-
-  // Clear attempts on success
-  clearLoginAttempts(cleanIdent);
-
-  const token = generateToken({
-    userId: user.id,
-    name: user.name,
-    email: user.email,
-    mobile: user.mobile,
-    role: user.role
-  });
-
-  const userData = {
-    id: user.id,
-    name: user.name,
-    email: user.email,
-    mobile: user.mobile,
-    role: user.role
-  };
-
   const cookieOptions = {
     maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     httpOnly: false,
@@ -181,14 +136,104 @@ router.post('/customer/login', (req, res) => {
     path: '/'
   };
 
+  // 1. First check if credentials match an Admin in admins table or users table with role='ADMIN'
+  let admin = db.prepare('SELECT * FROM admins WHERE email = ?').get(cleanEmail);
+  if (!admin) {
+    admin = db.prepare("SELECT * FROM users WHERE (email = ? OR mobile = ?) AND role = 'ADMIN'").get(cleanEmail, cleanDigits);
+  }
+
+  if (admin) {
+    const isValidAdmin = verifyPassword(password, admin.salt, admin.passwordHash);
+    if (isValidAdmin) {
+      clearLoginAttempts(cleanIdent);
+      const token = generateToken({
+        adminId: admin.id,
+        userId: admin.id,
+        email: admin.email,
+        name: admin.name,
+        role: 'ADMIN'
+      });
+
+      const adminData = {
+        id: admin.id,
+        name: admin.name,
+        email: admin.email,
+        mobile: admin.mobile || '',
+        role: 'ADMIN'
+      };
+
+      res.cookie('premmobile_customer_token', token, cookieOptions);
+      res.cookie('premmobile_customer_user', JSON.stringify(adminData), cookieOptions);
+      res.cookie('premmobile_admin_token', token, cookieOptions);
+      res.cookie('premmobile_admin_user', JSON.stringify(adminData), cookieOptions);
+
+      return res.json({
+        success: true,
+        message: 'Logged in as Administrator!',
+        token,
+        role: 'ADMIN',
+        user: adminData,
+        admin: adminData
+      });
+    }
+  }
+
+  // 2. Otherwise check regular users table
+  let user = db.prepare('SELECT * FROM users WHERE email = ?').get(cleanEmail);
+  if (!user && cleanDigits.length >= 10) {
+    user = db.prepare('SELECT * FROM users WHERE mobile = ?').get(cleanDigits);
+  }
+
+  if (!user) {
+    recordFailedLogin(cleanIdent);
+    return res.status(401).json({
+      success: false,
+      error: 'Account not found. Please create an account or check your credentials.'
+    });
+  }
+
+  const isValidUser = verifyPassword(password, user.salt, user.passwordHash);
+  if (!isValidUser) {
+    recordFailedLogin(cleanIdent);
+    return res.status(401).json({
+      success: false,
+      error: 'Incorrect email/mobile number or password.'
+    });
+  }
+
+  clearLoginAttempts(cleanIdent);
+
+  const token = generateToken({
+    userId: user.id,
+    name: user.name,
+    email: user.email,
+    mobile: user.mobile,
+    role: user.role || 'CUSTOMER'
+  });
+
+  const userData = {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    mobile: user.mobile,
+    role: user.role || 'CUSTOMER'
+  };
+
   res.cookie('premmobile_customer_token', token, cookieOptions);
   res.cookie('premmobile_customer_user', JSON.stringify(userData), cookieOptions);
 
-  res.json({
+  if (userData.role === 'ADMIN') {
+    res.cookie('premmobile_admin_token', token, cookieOptions);
+    res.cookie('premmobile_admin_user', JSON.stringify(userData), cookieOptions);
+  }
+
+  return res.json({
     success: true,
     message: 'Logged in successfully!',
     token,
-    user: userData
+    role: userData.role,
+    user: userData,
+    ...(userData.role === 'ADMIN' ? { admin: userData } : {})
   });
 });
 
