@@ -17,7 +17,8 @@ import {
   Plus,
   Loader2,
   X,
-  Sparkles
+  Sparkles,
+  Camera
 } from 'lucide-react';
 
 export default function AdminProductForm() {
@@ -26,6 +27,7 @@ export default function AdminProductForm() {
   const navigate = useNavigate();
   const { adminToken } = useAdminAuth();
   const fileInputRef = useRef(null);
+  const cameraInputRef = useRef(null);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -485,7 +487,7 @@ export default function AdminProductForm() {
             </div>
           )}
 
-          {/* Hidden File Input */}
+          {/* Hidden File Inputs */}
           <input
             ref={fileInputRef}
             type="file"
@@ -494,14 +496,21 @@ export default function AdminProductForm() {
             onChange={handleDeviceUpload}
             className="hidden"
           />
+          <input
+            ref={cameraInputRef}
+            type="file"
+            accept="image/*"
+            capture="environment"
+            onChange={handleDeviceUpload}
+            className="hidden"
+          />
 
           {/* Upload Drop Zone Box */}
           <div
-            onClick={() => fileInputRef.current && fileInputRef.current.click()}
-            className={`border-2 border-dashed rounded-3xl p-6 text-center cursor-pointer transition-all ${
+            className={`border-2 border-dashed rounded-3xl p-6 text-center transition-all ${
               isUploading
                 ? 'bg-amber-50 border-amber-400'
-                : 'bg-slate-50 hover:bg-slate-100 border-slate-300 hover:border-slate-400'
+                : 'bg-slate-50 border-slate-300 hover:border-slate-400'
             }`}
           >
             {isUploading ? (
@@ -518,19 +527,38 @@ export default function AdminProductForm() {
                 </div>
                 <div>
                   <span className="text-sm font-bold text-slate-900 block">
-                    Click to select product photos from your device
+                    Upload or Capture Product Photos
                   </span>
                   <span className="text-xs text-slate-500">
-                    Supports JPG, PNG, WEBP. Photos automatically upload to Cloudinary CDN.
+                    Supports JPG, PNG, WEBP. Directly use camera on mobile/tablet or pick files.
                   </span>
                 </div>
-                <button
-                  type="button"
-                  className="mt-1 px-4 py-2 rounded-xl bg-[#E31B23] hover:bg-[#c9141b] text-white font-black text-xs uppercase tracking-wider shadow-sm flex items-center gap-1.5 transition-colors"
-                >
-                  <Plus className="w-3.5 h-3.5 fill-white" />
-                  <span>CHOOSE PHOTOS FROM COMPUTER</span>
-                </button>
+
+                <div className="flex flex-wrap items-center justify-center gap-2.5 mt-1">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      fileInputRef.current && fileInputRef.current.click();
+                    }}
+                    className="px-4 py-2.5 rounded-xl bg-[#E31B23] hover:bg-[#c9141b] text-white font-black text-xs uppercase tracking-wider shadow-sm flex items-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <Plus className="w-3.5 h-3.5 fill-white" />
+                    <span>CHOOSE FROM FILES</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      cameraInputRef.current && cameraInputRef.current.click();
+                    }}
+                    className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-black text-[#FFD400] font-black text-xs uppercase tracking-wider shadow-sm flex items-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <Camera className="w-4 h-4 text-[#FFD400]" />
+                    <span>TAKE PHOTO WITH CAMERA 📷</span>
+                  </button>
+                </div>
               </div>
             )}
           </div>

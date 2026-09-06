@@ -1,0 +1,29 @@
+{
+  "name": "Prem Mobile - Gwalior Mobile Store",
+  "short_name": "PremMobile",
+  "description": "Deal Aise Jo Deewana Bana De 🔥 - Buy 100% Authentic Mobiles, Earbuds, Smartwatches & Accessories with Gwalior Fast Local Delivery.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#e51b23",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/pwa-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/pwa-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

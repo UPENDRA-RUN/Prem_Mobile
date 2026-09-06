@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Heart, ShoppingBag, MessageCircle } from 'lucide-react';
+import { Heart, ShoppingBag, MessageCircle, Scale } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
+import { useCompare } from '../../context/CompareContext';
 import { formatCurrency } from '../../utils/formatters';
 import { openProductWhatsApp } from '../../utils/whatsapp';
 import RatingStars from '../common/RatingStars';
@@ -12,15 +13,17 @@ import QuickEnquiryModal from './QuickEnquiryModal';
 export default function ProductCard({ product, searchQuery = '' }) {
   const { addToCart } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
+  const { isInCompare, toggleCompare } = useCompare();
   const [isEnquiryModalOpen, setIsEnquiryModalOpen] = useState(false);
 
   const isLiked = isInWishlist(product.id);
+  const isCompared = isInCompare(product.id);
 
   return (
     <>
       <div className="group relative bg-white rounded-2xl sm:rounded-3xl border border-slate-200 p-3 sm:p-4 shadow-sm hover:shadow-card-hover hover:border-[#FFD400] transition-all duration-300 flex flex-col justify-between hover:-translate-y-1">
         
-        {/* Top Badges & Wishlist */}
+        {/* Top Badges & Actions */}
         <div>
           <div className="relative aspect-square w-full rounded-xl sm:rounded-2xl bg-[#F6F6F6] overflow-hidden mb-3 p-2 flex items-center justify-center border border-slate-100">
             
@@ -38,22 +41,42 @@ export default function ProductCard({ product, searchQuery = '' }) {
               </span>
             )}
 
-            {/* Wishlist Button */}
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                toggleWishlist(product);
-              }}
-              className={`absolute top-2.5 right-2.5 z-10 w-8 h-8 rounded-full flex items-center justify-center transition-all shadow-xs ${
-                isLiked
-                  ? 'bg-red-50 text-[#E31B23] scale-110'
-                  : 'bg-white/90 text-slate-400 hover:text-[#E31B23] hover:bg-white'
-              }`}
-              aria-label="Toggle Wishlist"
-            >
-              <Heart className={`w-4 h-4 ${isLiked ? 'fill-[#E31B23]' : ''}`} />
-            </button>
+            {/* Top Right Buttons: Wishlist & Compare */}
+            <div className="absolute top-2.5 right-2.5 z-10 flex items-center gap-1.5">
+              {/* Compare Button */}
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  toggleCompare(product);
+                }}
+                className={`w-8 h-8 rounded-full flex items-center justify-center transition-all shadow-xs ${
+                  isCompared
+                    ? 'bg-[#050505] text-[#FFD400] scale-105'
+                    : 'bg-white/90 text-slate-400 hover:text-[#050505] hover:bg-white'
+                }`}
+                title={isCompared ? 'In Compare list' : 'Add to Compare'}
+              >
+                <Scale className="w-3.5 h-3.5" />
+              </button>
+
+              {/* Wishlist Button */}
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  toggleWishlist(product);
+                }}
+                className={`w-8 h-8 rounded-full flex items-center justify-center transition-all shadow-xs ${
+                  isLiked
+                    ? 'bg-red-50 text-[#E31B23] scale-110'
+                    : 'bg-white/90 text-slate-400 hover:text-[#E31B23] hover:bg-white'
+                }`}
+                aria-label="Toggle Wishlist"
+              >
+                <Heart className={`w-4 h-4 ${isLiked ? 'fill-[#E31B23]' : ''}`} />
+              </button>
+            </div>
 
             {/* Product Image */}
             <Link to={`/product/${product.id}`} className="w-full h-full flex items-center justify-center">

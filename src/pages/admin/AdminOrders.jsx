@@ -14,8 +14,12 @@ import {
   Flame,
   Search,
   RefreshCw,
-  Trash2
+  Trash2,
+  FileText,
+  Download,
+  Lock
 } from 'lucide-react';
+import { generateGSTInvoicePDF } from '../../utils/pdfInvoiceGenerator';
 
 export default function AdminOrders() {
   const { adminToken } = useAdminAuth();
@@ -249,8 +253,10 @@ export default function AdminOrders() {
               {/* TOTALS BREAKDOWN */}
               {(() => {
                 const itemsSubtotal = order.items?.reduce((acc, it) => acc + ((it.finalPrice || 0) * (it.quantity || 1)), 0) || order.subtotal || order.total;
+                const isDelivered = order.status === 'DELIVERED';
+
                 return (
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between pt-3 border-t border-slate-100 text-xs sm:text-sm gap-2">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between pt-3 border-t border-slate-100 text-xs sm:text-sm gap-3">
                     <div className="space-x-2 text-slate-600 font-medium">
                       <span>Items Subtotal: <strong className="text-slate-900 font-black">{formatCurrency(itemsSubtotal)}</strong></span>
                       {order.discount > 0 && (
@@ -259,8 +265,30 @@ export default function AdminOrders() {
                         </span>
                       )}
                     </div>
-                    <div className="font-display font-black text-base sm:text-lg text-slate-900">
-                      Total Payable: <span className="text-[#e51b23]">{formatCurrency(order.total || itemsSubtotal)}</span>
+
+                    <div className="flex flex-wrap items-center gap-3">
+                      <div className="font-display font-black text-base sm:text-lg text-slate-900">
+                        Total: <span className="text-[#e51b23]">{formatCurrency(order.total || itemsSubtotal)}</span>
+                      </div>
+
+                      {isDelivered ? (
+                        <button
+                          onClick={() => generateGSTInvoicePDF(order)}
+                          className="py-1.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs uppercase tracking-wider shadow-sm flex items-center gap-1.5 transition-transform hover:scale-102 cursor-pointer"
+                          title="Download Official GST Tax Invoice PDF"
+                        >
+                          <Download className="w-3.5 h-3.5" />
+                          <span>GST INVOICE PDF</span>
+                        </button>
+                      ) : (
+                        <div
+                          className="py-1 px-2.5 rounded-xl bg-slate-100 text-slate-400 font-bold text-[10px] uppercase tracking-wider flex items-center gap-1 border border-slate-200 cursor-not-allowed"
+                          title="GST Invoice available only when order status is DELIVERED"
+                        >
+                          <Lock className="w-3 h-3 text-slate-400" />
+                          <span>INVOICE AT DELIVERY</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 );

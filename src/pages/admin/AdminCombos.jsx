@@ -18,12 +18,14 @@ import {
   ShoppingBag,
   Upload,
   Search,
-  Loader2
+  Loader2,
+  Camera
 } from 'lucide-react';
 
 export default function AdminCombos() {
   const { adminToken } = useAdminAuth();
   const fileInputRef = useRef(null);
+  const cameraInputRef = useRef(null);
 
   const [combos, setCombos] = useState([]);
   const [candidateProducts, setCandidateProducts] = useState([]);
@@ -485,18 +487,37 @@ export default function AdminCombos() {
                     accept="image/*"
                     className="hidden"
                   />
+                  <input
+                    type="file"
+                    ref={cameraInputRef}
+                    onChange={handleDeviceUpload}
+                    accept="image/*"
+                    capture="environment"
+                    className="hidden"
+                  />
+                  
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
                     disabled={isUploading}
-                    className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-center gap-2 transition-colors shrink-0 disabled:opacity-50"
+                    className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-center gap-2 transition-colors shrink-0 disabled:opacity-50 cursor-pointer"
                   >
                     {isUploading ? (
                       <Loader2 className="w-4 h-4 animate-spin text-[#ffd000]" />
                     ) : (
                       <Upload className="w-4 h-4 text-[#ffd000]" />
                     )}
-                    <span>Upload Image from Device</span>
+                    <span>Choose File 📁</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => cameraInputRef.current?.click()}
+                    disabled={isUploading}
+                    className="px-4 py-2.5 rounded-xl bg-[#E31B23] hover:bg-[#c9141b] text-white font-black text-xs uppercase flex items-center justify-center gap-2 transition-colors shrink-0 disabled:opacity-50 cursor-pointer shadow-xs"
+                  >
+                    <Camera className="w-4 h-4 text-white" />
+                    <span>Snap Photo 📷</span>
                   </button>
 
                   <input

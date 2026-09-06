@@ -31,6 +31,23 @@ function formatProduct(p, sundayItemsMap = new Map()) {
   const stock = Number(p.stock !== undefined ? p.stock : 10);
   const isOnSale = Boolean(p.isOnSale || isSundaySale || discount > 0);
 
+  let rating = 4.8;
+  let reviewsCount = 0;
+  try {
+    const stats = db.prepare(`
+      SELECT COUNT(*) as count, AVG(rating) as avgRating
+      FROM reviews
+      WHERE productId = ? AND status = 'APPROVED'
+    `).get(p.id);
+    if (stats && stats.count > 0) {
+      reviewsCount = stats.count;
+      rating = Number(Number(stats.avgRating).toFixed(1));
+    }
+  } catch (e) {
+    rating = 4.8;
+    reviewsCount = 12;
+  }
+
   return {
     ...p,
     images,
@@ -49,8 +66,8 @@ function formatProduct(p, sundayItemsMap = new Map()) {
     tag: p.tag || (isOnSale && discount > 0 ? `${discount}% OFF` : (p.isBestSeller ? 'Best Seller' : '')),
     discount,
     stock,
-    rating: 4.8,
-    reviewsCount: 120
+    rating,
+    reviewsCount
   };
 }
 
@@ -363,4 +380,233 @@ router.delete('/:id', requireAdmin, (req, res) => {
   });
 });
 
+// GET /api/products/export-csv - Download full store product catalog as CSV
+router.get('/export-csv', (req, res) => {
+  try {
+    const products = db.prepare('SELECT * FROM products ORDER BY id ASC').all();
+
+    const headers = [
+      'id',
+      'name',
+      'slug',
+      'category',
+      'brand',
+      'regularPrice',
+      'offerPrice',
+      'stock',
+      'description',
+      'images',
+      'isActive',
+      'isFeatured',
+      'isBestSeller',
+      'isNew',
+      'tag'
+    ];
+
+    const escapeCsv = (str) => {
+      if (str === null || str === undefined) return '""';
+      const text = String(str).replace(/"/g, '""');
+      return `"${text}"`;
+    };
+
+    let csvContent = headers.join(',') + '\n';
+
+    for (const p of products) {
+      let imageStr = p.images;
+      try {
+        const parsed = JSON.parse(p.images);
+        if (Array.isArray(parsed)) imageStr = parsed.join(' | ');
+      } catch (e) {
+        imageStr = p.images;
+      }
+
+      const row = [
+        p.id,
+        escapeCsv(p.name),
+        escapeCsv(p.slug),
+        escapeCsv(p.category),
+        escapeCsv(p.brand || ''),
+        p.regularPrice,
+        p.offerPrice || p.regularPrice,
+        p.stock,
+        escapeCsv(p.description || ''),
+        escapeCsv(imageStr),
+        p.isActive,
+        p.isFeatured,
+        p.isBestSeller,
+        p.isNew,
+        escapeCsv(p.tag || '')
+      ];
+
+      csvContent += row.join(',') + '\n';
+    }
+
+    const filename = `Prem_Mobile_Products_${new Date().toISOString().split('T')[0]}.csv`;
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    return res.status(200).send(csvContent);
+  } catch (err) {
+    console.error('Error exporting products CSV:', err);
+    return res.status(500).json({ success: false, message: 'Failed to export CSV: ' + err.message });
+  }
+});
+
+// GET /api/products/sample-template-csv - Download pre-formatted sample CSV template
+router.get('/sample-template-csv', (req, res) => {
+  try {
+    const csvTemplate = `id,name,slug,category,brand,regularPrice,offerPrice,stock,description,images,isActive,isFeatured,isBestSeller,isNew,tag
+,boAt Airdopes 141 ANC,boat-airdopes-141-anc,Earbuds,boAt,2990,1499,25,"Noise cancelling earbud with 42 hrs battery backup and ASAP Fast Charge.","https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop",1,1,1,0,Best Seller
+,Noise Buds VS102 Pro,noise-buds-vs102-pro,Earbuds,Noise,3499,1299,30,"HyperSync technology with 11mm dynamic drivers and 50 hrs playtime.","https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=500&auto=format&fit=crop",1,0,1,1,Hot Deal
+,Fire-Boltt Ninja Call Pro Plus,fire-boltt-ninja-call-pro,Smartwatches,Fire-Boltt,4999,1799,15,"1.83 HD display bluetooth calling smartwatch with 100+ sports modes.","https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&auto=format&fit=crop",1,1,0,1,Trending
+,Mi 20000mAh Power Bank 3i,mi-20000mah-power-bank-3i,Power Banks,Xiaomi,2199,1699,40,"22.5W Fast charging triple port power bank with smart power management.","https://images.unsplash.com/photo-1609592424109-dd9892f1b177?w=500&auto=format&fit=crop",1,0,0,0,Essential
+,Realme 33W Dart Flash Charger,realme-33w-dart-charger,Chargers,Realme,1299,899,50,"33W SuperDart fast charger adapter with Type-C braided cable included.","https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=500&auto=format&fit=crop",1,0,0,0,Fast Charge`;
+
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', 'attachment; filename="Prem_Mobile_Bulk_Product_Template.csv"');
+    return res.status(200).send(csvTemplate);
+  } catch (err) {
+    console.error('Error serving CSV template:', err);
+    return res.status(500).json({ success: false, message: 'Failed to generate template' });
+  }
+});
+
+// POST /api/products/bulk-import - Bulk insert or update (UPSERT) products from CSV data
+router.post('/bulk-import', requireAdmin, (req, res) => {
+  try {
+    const { products: rawProducts } = req.body;
+
+    if (!Array.isArray(rawProducts) || rawProducts.length === 0) {
+      return res.status(400).json({ success: false, message: 'No products provided for bulk import' });
+    }
+
+    let createdCount = 0;
+    let updatedCount = 0;
+    const errors = [];
+    const now = new Date().toISOString();
+
+    const insertStmt = db.prepare(`
+      INSERT INTO products (
+        name, slug, category, categorySlug, description, brand, images,
+        regularPrice, offerPrice, stock, isActive, isOnSale, isBestSeller, isFeatured, isNew, tag, createdAt, updatedAt
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+
+    const updateStmt = db.prepare(`
+      UPDATE products SET
+        name = ?, category = ?, categorySlug = ?, description = ?, brand = ?, images = ?,
+        regularPrice = ?, offerPrice = ?, stock = ?, isActive = ?, isOnSale = ?,
+        isBestSeller = ?, isFeatured = ?, isNew = ?, tag = ?, updatedAt = ?
+      WHERE id = ?
+    `);
+
+    const updateBySlugStmt = db.prepare(`
+      UPDATE products SET
+        name = ?, category = ?, categorySlug = ?, description = ?, brand = ?, images = ?,
+        regularPrice = ?, offerPrice = ?, stock = ?, isActive = ?, isOnSale = ?,
+        isBestSeller = ?, isFeatured = ?, isNew = ?, tag = ?, updatedAt = ?
+      WHERE slug = ?
+    `);
+
+    const checkIdStmt = db.prepare('SELECT id FROM products WHERE id = ?');
+    const checkSlugStmt = db.prepare('SELECT id, slug FROM products WHERE slug = ?');
+
+    rawProducts.forEach((p, idx) => {
+      try {
+        const name = (p.name || '').trim();
+        if (!name) {
+          errors.push(`Row ${idx + 1}: Product name is required.`);
+          return;
+        }
+
+        const category = (p.category || 'Mobile Accessories').trim();
+        const categorySlug = category.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+        const brand = (p.brand || '').trim() || null;
+        const description = (p.description || '').trim() || 'Original electronic accessory with official warranty.';
+        const regularPrice = Math.max(0, Number(p.regularPrice || p.price || 0));
+        const offerPrice = p.offerPrice !== undefined && p.offerPrice !== null ? Number(p.offerPrice) : regularPrice;
+        const stock = p.stock !== undefined && p.stock !== null ? Math.max(0, Number(p.stock)) : 10;
+        const tag = (p.tag || '').trim() || null;
+
+        const isActive = p.isActive !== undefined ? (Number(p.isActive) ? 1 : 0) : 1;
+        const isFeatured = Number(p.isFeatured) ? 1 : 0;
+        const isBestSeller = Number(p.isBestSeller) ? 1 : 0;
+        const isNew = Number(p.isNew) ? 1 : 0;
+        const isOnSale = (offerPrice > 0 && offerPrice < regularPrice) ? 1 : 0;
+
+        // Process images array
+        let imagesJson = '["/images/prem-main.jpg"]';
+        if (p.images) {
+          if (Array.isArray(p.images)) {
+            imagesJson = JSON.stringify(p.images);
+          } else if (typeof p.images === 'string') {
+            const splitImgs = p.images.split('|').map(s => s.trim()).filter(Boolean);
+            imagesJson = JSON.stringify(splitImgs.length > 0 ? splitImgs : [p.images.trim()]);
+          }
+        }
+
+        // Generate clean slug
+        let slug = (p.slug || '').trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+        if (!slug) {
+          slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+        }
+
+        // Check if updating existing by ID or Slug
+        const existingById = p.id ? checkIdStmt.get(Number(p.id)) : null;
+        const existingBySlug = !existingById && slug ? checkSlugStmt.get(slug) : null;
+
+        if (existingById) {
+          updateStmt.run(
+            name, category, categorySlug, description, brand, imagesJson,
+            regularPrice, offerPrice, stock, isActive, isOnSale,
+            isBestSeller, isFeatured, isNew, tag, now, existingById.id
+          );
+          updatedCount++;
+        } else if (existingBySlug) {
+          updateBySlugStmt.run(
+            name, category, categorySlug, description, brand, imagesJson,
+            regularPrice, offerPrice, stock, isActive, isOnSale,
+            isBestSeller, isFeatured, isNew, tag, now, existingBySlug.slug
+          );
+          updatedCount++;
+        } else {
+          // Unique slug generator for new insert
+          let finalSlug = slug;
+          let counter = 1;
+          while (checkSlugStmt.get(finalSlug)) {
+            finalSlug = `${slug}-${counter}`;
+            counter++;
+          }
+
+          insertStmt.run(
+            name, finalSlug, category, categorySlug, description, brand, imagesJson,
+            regularPrice, offerPrice, stock, isActive, isOnSale, isBestSeller, isFeatured, isNew, tag, now, now
+          );
+          createdCount++;
+        }
+      } catch (rowErr) {
+        console.error(`Error importing row ${idx + 1}:`, rowErr);
+        errors.push(`Row ${idx + 1} ("${p.name || 'Unknown'}"): ${rowErr.message}`);
+      }
+    });
+
+    broadcastEvent('PRODUCTS_UPDATED');
+
+    return res.json({
+      success: true,
+      message: `Bulk import completed! ${createdCount} created, ${updatedCount} updated.`,
+      report: {
+        totalProcessed: rawProducts.length,
+        createdCount,
+        updatedCount,
+        errorsCount: errors.length,
+        errors
+      }
+    });
+  } catch (err) {
+    console.error('Error in bulk import:', err);
+    return res.status(500).json({ success: false, message: 'Bulk import failed: ' + err.message });
+  }
+});
+
 export default router;
+

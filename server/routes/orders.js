@@ -23,7 +23,8 @@ router.post('/', (req, res) => {
       pincode,
       items, // array of { productId, quantity }
       notes,
-      userId: bodyUserId
+      userId: bodyUserId,
+      couponCode
     } = req.body || {};
 
     const resolvedUserId = payload?.userId || bodyUserId || null;
@@ -101,7 +102,27 @@ router.post('/', (req, res) => {
       });
     }
 
-    const finalTotal = subtotal;
+    // Process Coupon Discount if provided
+    let couponDiscountAmount = 0;
+    if (couponCode) {
+      const cleanCoupon = String(couponCode).trim().toUpperCase();
+      const couponRecord = db.prepare('SELECT * FROM coupons WHERE UPPER(code) = ? AND isActive = 1').get(cleanCoupon);
+      if (couponRecord) {
+        if (couponRecord.type === 'PERCENT') {
+          couponDiscountAmount = Math.round((subtotal * couponRecord.value) / 100);
+          if (couponRecord.maxDiscountAmount && couponDiscountAmount > couponRecord.maxDiscountAmount) {
+            couponDiscountAmount = couponRecord.maxDiscountAmount;
+          }
+        } else if (couponRecord.type === 'FLAT') {
+          couponDiscountAmount = Math.min(subtotal, couponRecord.value);
+        }
+        db.prepare('UPDATE coupons SET timesUsed = timesUsed + 1 WHERE id = ?').run(couponRecord.id);
+        totalDiscount += couponDiscountAmount;
+        broadcastEvent('COUPONS_UPDATED');
+      }
+    }
+
+    const finalTotal = Math.max(0, subtotal - couponDiscountAmount);
     const orderNumber = 'PM-' + Date.now().toString().slice(-6) + '-' + Math.floor(100 + Math.random() * 900);
     const now = new Date().toISOString();
 
@@ -244,14 +265,23 @@ router.put('/admin/:id/status', requireAdmin, (req, res) => {
     return res.status(400).json({ success: false, error: 'Invalid order status' });
   }
 
-  const existing = db.prepare('SELECT id FROM orders WHERE id = ?').get(id);
+  const existing = db.prepare('SELECT * FROM orders WHERE id = ?').get(id);
   if (!existing) {
     return res.status(404).json({ success: false, error: 'Order not found' });
   }
 
   db.prepare('UPDATE orders SET status = ? WHERE id = ?').run(status, id);
 
-  broadcastEvent('ORDERS_UPDATED');
+  broadcastEvent('ORDERS_UPDATED', {
+    orderId: existing.id,
+    orderNumber: existing.orderNumber,
+    customerName: existing.customerName,
+    mobile: existing.mobile,
+    email: existing.email,
+    userId: existing.userId,
+    city: existing.city || 'Gwalior',
+    status: status
+  });
 
   res.json({
     success: true,

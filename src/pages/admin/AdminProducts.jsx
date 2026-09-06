@@ -4,6 +4,7 @@ import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useRealtimeSync } from '../../hooks/useRealtimeSync';
 import { formatCurrency } from '../../utils/formatters';
 import { parseResponseJson } from '../../utils/apiHelper';
+import CsvImportModal from '../../components/admin/CsvImportModal';
 import {
   Package,
   PlusCircle,
@@ -15,7 +16,10 @@ import {
   AlertCircle,
   ExternalLink,
   RefreshCw,
-  Sparkles
+  Sparkles,
+  Download,
+  Upload,
+  FileSpreadsheet
 } from 'lucide-react';
 
 export default function AdminProducts() {
@@ -25,6 +29,7 @@ export default function AdminProducts() {
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('ALL');
   const [feedback, setFeedback] = useState(null);
+  const [isCsvImportOpen, setIsCsvImportOpen] = useState(false);
 
   const fetchProducts = useCallback(async (isSilent = false) => {
     if (!isSilent) setIsLoading(true);
@@ -132,13 +137,34 @@ export default function AdminProducts() {
           {products.length > 0 && (
             <button
               onClick={handleClearAllSampleData}
-              className="px-3.5 py-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 transition-colors shadow-sm"
+              className="px-3 py-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 transition-colors shadow-sm"
               title="Purge all sample dummy products for a clean slate"
             >
               <Trash2 className="w-3.5 h-3.5" />
-              <span>Clear Sample Products</span>
+              <span>Clear Sample</span>
             </button>
           )}
+
+          {/* Export CSV Button */}
+          <a
+            href="/api/products/export-csv"
+            download
+            className="px-3.5 py-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 hover:bg-emerald-100 font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 transition-colors shadow-sm"
+            title="Download store product catalog as CSV spreadsheet"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>Export CSV</span>
+          </a>
+
+          {/* Import CSV Button */}
+          <button
+            onClick={() => setIsCsvImportOpen(true)}
+            className="px-3.5 py-2.5 rounded-xl bg-slate-900 text-[#FFD400] hover:bg-slate-800 font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 transition-colors shadow-sm"
+            title="Upload CSV spreadsheet to add or update 50+ products"
+          >
+            <FileSpreadsheet className="w-3.5 h-3.5 text-[#FFD400]" />
+            <span>Import CSV</span>
+          </button>
 
           <button
             onClick={fetchProducts}
@@ -315,6 +341,13 @@ export default function AdminProducts() {
         </div>
       </div>
 
+      <CsvImportModal
+        isOpen={isCsvImportOpen}
+        onClose={() => setIsCsvImportOpen(false)}
+        onSuccess={() => {
+          fetchProducts(true);
+        }}
+      />
     </div>
   );
 }

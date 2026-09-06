@@ -10,8 +10,10 @@ import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import FloatingActions from './components/layout/FloatingActions';
 import CartDrawer from './components/common/CartDrawer';
+import CompareDrawer from './components/common/CompareDrawer';
 import Toast from './components/common/Toast';
 import SplashScreen from './components/common/SplashScreen';
+import PwaInstallPrompt from './components/common/PwaInstallPrompt';
 
 // Customer Pages
 import Home from './pages/Home';
@@ -26,6 +28,7 @@ import FAQ from './pages/FAQ';
 import Login from './pages/Login';
 import AccountSettings from './pages/AccountSettings';
 import Wishlist from './pages/Wishlist';
+import Compare from './pages/Compare';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import OrderSuccess from './pages/OrderSuccess';
@@ -58,6 +61,8 @@ import AdminSundaySale from './pages/admin/AdminSundaySale';
 import AdminSale from './pages/admin/AdminSale';
 import AdminSettings from './pages/admin/AdminSettings';
 import AdminAnalytics from './pages/admin/AdminAnalytics';
+import AdminReviews from './pages/admin/AdminReviews';
+import AdminCoupons from './pages/admin/AdminCoupons';
 
 // Protected Admin Route Wrapper
 function ProtectedAdminRoute({ children }) {
@@ -122,6 +127,8 @@ export default function App() {
               <Route index element={<AdminDashboard />} />
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="analytics" element={<AdminAnalytics />} />
+              <Route path="coupons" element={<AdminCoupons />} />
+              <Route path="reviews" element={<AdminReviews />} />
               <Route path="products" element={<AdminProducts />} />
               <Route path="products/new" element={<AdminProductForm />} />
               <Route path="products/edit/:id" element={<AdminProductForm />} />
@@ -171,6 +178,7 @@ export default function App() {
               <Route path="/account" element={<AccountSettings />} />
               <Route path="/orders" element={<Orders />} />
               <Route path="/wishlist" element={<Wishlist />} />
+              <Route path="/compare" element={<Compare />} />
 
               {/* Component & Design Guides */}
               <Route path="/design-tokens" element={<DesignTokensGuide />} />
@@ -193,8 +201,10 @@ export default function App() {
 
           {/* 6. GLOBAL DRAWERS & FLOATING BUTTONS */}
           <CartDrawer />
+          <CompareDrawer />
           <Toast />
           <FloatingActions />
+          <PwaInstallPrompt />
         </>
       )}
     </div>

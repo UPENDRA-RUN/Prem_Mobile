@@ -6,6 +6,7 @@ import { useWishlist } from '../../context/WishlistContext';
 import { useSundaySale } from '../../context/SundaySaleContext';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useCustomerAuth } from '../../context/CustomerAuthContext';
+import { useCompare } from '../../context/CompareContext';
 import { formatCurrency } from '../../utils/formatters';
 import {
   Search,
@@ -25,9 +26,13 @@ import {
   MessageCircle,
   Tag,
   Package,
-  BarChart3
+  BarChart3,
+  Scale,
+  Download
 } from 'lucide-react';
 import SearchModal from './SearchModal';
+import NotificationDropdown from './NotificationDropdown';
+import { usePwaInstall } from '../common/PwaInstallPrompt';
 
 
 export default function Navbar() {
@@ -39,9 +44,11 @@ export default function Navbar() {
   
   const { totalItems, subtotal, setIsCartDrawerOpen } = useCart();
   const { wishlistCount } = useWishlist();
+  const { compareCount } = useCompare();
   const { isLive: isSundaySaleLive } = useSundaySale();
   const { isAuthenticated: isAdmin, logout: adminLogout } = useAdminAuth();
   const { customerUser, isAuthenticated: isCustomer, logout: customerLogout } = useCustomerAuth();
+  const { canInstall, triggerInstall } = usePwaInstall();
   const location = useLocation();
 
   const isUserAdmin = isAdmin || customerUser?.role === 'admin' || customerUser?.email === 'admin@premmobile.com' || customerUser?.isAdmin === true;
@@ -335,6 +342,9 @@ export default function Navbar() {
           {/* RIGHT: SEARCH, USER ACCOUNT / LOGIN, WISHLIST, CART & MOBILE MENU */}
           <div className="flex items-center gap-1 min-[360px]:gap-1.5 sm:gap-3 flex-shrink-0">
 
+            {/* Notification Bell Dropdown */}
+            <NotificationDropdown />
+
             {/* 1. Search Button */}
             <button
               onClick={() => setIsSearchOpen(true)}
@@ -466,7 +476,27 @@ export default function Navbar() {
               </Link>
             )}
 
-            {/* 3. Wishlist Button with Badge */}
+            {/* 3. Compare Button with Badge */}
+            <Link
+              to="/compare"
+              className="flex flex-col items-center justify-center text-[#050505] hover:text-[#e51b23] hover:bg-slate-100 p-1.5 sm:p-2 rounded-xl transition-colors relative shrink-0"
+              title="Compare Products"
+              aria-label="Compare Products"
+            >
+              <div className="relative inline-flex items-center justify-center">
+                <Scale className="w-4 h-4 min-[360px]:w-[18px] min-[360px]:h-[18px] sm:w-5 sm:h-5 stroke-[2.2]" />
+                {compareCount > 0 && (
+                  <span className="absolute -top-1.5 -right-2 min-w-[16px] h-[16px] px-1 rounded-full bg-[#050505] text-[#FFD400] text-[9px] font-black flex items-center justify-center shadow-xs leading-none border border-[#FFD400]">
+                    {compareCount}
+                  </span>
+                )}
+              </div>
+              <span className="hidden md:inline-block text-[10px] font-bold text-[#050505] mt-0.5 leading-none">
+                Compare
+              </span>
+            </Link>
+
+            {/* 4. Wishlist Button with Badge */}
             <Link
               to="/wishlist"
               className="flex flex-col items-center justify-center text-[#050505] hover:text-[#e51b23] hover:bg-slate-100 p-1.5 sm:p-2 rounded-xl transition-colors relative shrink-0"
@@ -677,6 +707,19 @@ export default function Navbar() {
                 <ShoppingBag className="w-4 h-4 text-[#050505]" />
                 <span>EXPLORE ALL PRODUCTS</span>
               </Link>
+
+              {/* PWA Install App CTA Button */}
+              <button
+                type="button"
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  triggerInstall();
+                }}
+                className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#e51b23] to-red-700 text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm"
+              >
+                <Download className="w-4 h-4 text-white" />
+                <span>INSTALL PREM MOBILE APP 📲</span>
+              </button>
 
               {/* Switch to Admin option */}
               <Link

@@ -40,3 +40,9 @@ export async function parseResponseJson(res) {
     };
   }
 }
+
+export function getApiUrl(path = '') {
+  const baseUrl = import.meta.env.VITE_API_URL || '';
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  return `${baseUrl}${cleanPath}`;
+}

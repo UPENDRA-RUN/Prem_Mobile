@@ -33,8 +33,11 @@ import {
   Truck,
   CreditCard,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  FileText,
+  Download
 } from 'lucide-react';
+import { generateGSTInvoicePDF } from '../utils/pdfInvoiceGenerator';
 
 const LOCAL_STORAGE_KEY = 'premmobile_user_profile';
 
@@ -448,16 +451,34 @@ export default function AccountSettings() {
                           </div>
                         </div>
 
-                        {/* Order Meta Info */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs bg-white p-3 rounded-xl border border-slate-200">
+                        {/* GST Invoice Download Box */}
+                        <div className="pt-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-t border-slate-200">
                           <div>
-                            <span className="text-slate-400 font-bold block">Delivery Address:</span>
-                            <span className="font-bold text-slate-800">{ord.address}, {ord.city}, {ord.state} - {ord.pincode}</span>
+                            <span className="text-xs font-black text-[#050505] flex items-center gap-1.5 uppercase tracking-wider">
+                              <FileText className="w-4 h-4 text-emerald-600" />
+                              <span>Official GST Store Invoice</span>
+                            </span>
+                            <p className="text-[11px] text-slate-500 font-medium mt-0.5">
+                              {isDelivered
+                                ? 'Your order is delivered! Click to download your tax invoice PDF.'
+                                : 'GST Invoice will be downloadable here once order is DELIVERED.'}
+                            </p>
                           </div>
-                          <div>
-                            <span className="text-slate-400 font-bold block">Payment Reference:</span>
-                            <span className="font-bold text-indigo-700">{ord.notes || 'Standard Store Fulfillment'}</span>
-                          </div>
+
+                          {isDelivered ? (
+                            <button
+                              onClick={() => generateGSTInvoicePDF(ord)}
+                              className="py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs uppercase tracking-wider shadow-md flex items-center gap-2 transition-transform hover:scale-102 cursor-pointer shrink-0"
+                            >
+                              <Download className="w-4 h-4" />
+                              <span>DOWNLOAD GST INVOICE (PDF)</span>
+                            </button>
+                          ) : (
+                            <div className="py-2 px-3 rounded-xl bg-slate-100 text-slate-400 font-bold text-[11px] uppercase tracking-wider flex items-center gap-1.5 border border-slate-200 cursor-not-allowed shrink-0" title="Invoice available upon order delivery">
+                              <Lock className="w-3.5 h-3.5 text-slate-400" />
+                              <span>INVOICE AVAILABLE UPON DELIVERY</span>
+                            </div>
+                          )}
                         </div>
 
                       </div>

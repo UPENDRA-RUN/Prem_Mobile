@@ -185,6 +185,34 @@ export function initDatabase() {
       FOREIGN KEY (comboId) REFERENCES combos (id) ON DELETE CASCADE,
       FOREIGN KEY (productId) REFERENCES products (id) ON DELETE CASCADE
     );
+
+    CREATE TABLE IF NOT EXISTS reviews (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      productId INTEGER NOT NULL,
+      customerName TEXT NOT NULL,
+      customerEmail TEXT,
+      rating INTEGER NOT NULL CHECK(rating >= 1 AND rating <= 5),
+      comment TEXT NOT NULL,
+      photoUrl TEXT,
+      status TEXT NOT NULL DEFAULT 'APPROVED',
+      createdAt TEXT NOT NULL,
+      FOREIGN KEY (productId) REFERENCES products (id) ON DELETE CASCADE
+    );
+
+    CREATE TABLE IF NOT EXISTS coupons (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      code TEXT UNIQUE NOT NULL,
+      type TEXT NOT NULL DEFAULT 'PERCENT', -- 'PERCENT' or 'FLAT'
+      value REAL NOT NULL,
+      minOrderAmount REAL DEFAULT 0,
+      maxDiscountAmount REAL,
+      usageLimit INTEGER,
+      timesUsed INTEGER NOT NULL DEFAULT 0,
+      isActive INTEGER NOT NULL DEFAULT 1,
+      expiryDate TEXT,
+      createdAt TEXT NOT NULL,
+      updatedAt TEXT NOT NULL
+    );
   `);
 
   // Migration: Add new columns if upgrading existing database
@@ -254,6 +282,122 @@ export function initDatabase() {
     }
   } catch (e) {
     console.warn('[DB] Category seed warning:', e.message);
+  }
+
+  // Seed sample customer reviews if table is empty
+  try {
+    const revCheck = db.prepare('SELECT COUNT(*) as count FROM reviews').get();
+    if (revCheck.count === 0) {
+      const productsList = db.prepare('SELECT id, name FROM products LIMIT 10').all();
+      if (productsList.length > 0) {
+        const seedReviews = [
+          {
+            customerName: 'Aman Sharma',
+            customerEmail: 'aman.sharma.gwalior@gmail.com',
+            rating: 5,
+            comment: 'Best quality product delivered same day in Sarafa Bazaar Gwalior! Super fast delivery and genuine warranty.',
+            photoUrl: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop',
+            status: 'APPROVED'
+          },
+          {
+            customerName: 'Priya Verma',
+            customerEmail: 'priya.v.gwl@gmail.com',
+            rating: 5,
+            comment: 'Prem Mobile always gives authentic items at wholesale rates. Packaging was top notch!',
+            photoUrl: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=500&auto=format&fit=crop',
+            status: 'APPROVED'
+          },
+          {
+            customerName: 'Rohit Gupta',
+            customerEmail: 'rohit.gwalior.sales@gmail.com',
+            rating: 4,
+            comment: 'Great battery backup and genuine product. Received within 3 hours in City Center Gwalior.',
+            photoUrl: null,
+            status: 'APPROVED'
+          },
+          {
+            customerName: 'Neha Rajput',
+            customerEmail: 'neha.rajput@gmail.com',
+            rating: 5,
+            comment: 'Unboxing experience was awesome. Thank you Prem Mobile for the Sunday Sale deal!',
+            photoUrl: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&auto=format&fit=crop',
+            status: 'APPROVED'
+          }
+        ];
+
+        const insertRev = db.prepare(`
+          INSERT INTO reviews (productId, customerName, customerEmail, rating, comment, photoUrl, status, createdAt)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        `);
+
+        productsList.forEach((prod, index) => {
+          const rev1 = seedReviews[index % seedReviews.length];
+          const rev2 = seedReviews[(index + 1) % seedReviews.length];
+
+          const date1 = new Date(Date.now() - (index + 1) * 86400000).toISOString();
+          const date2 = new Date(Date.now() - (index + 3) * 86400000).toISOString();
+
+          insertRev.run(prod.id, rev1.customerName, rev1.customerEmail, rev1.rating, rev1.comment, rev1.photoUrl, rev1.status, date1);
+          insertRev.run(prod.id, rev2.customerName, rev2.customerEmail, rev2.rating, rev2.comment, rev2.photoUrl, rev2.status, date2);
+        });
+
+        console.log('[DB] Seeded initial customer reviews for catalog products');
+      }
+    }
+  } catch (e) {
+    console.warn('[DB] Review seed warning:', e.message);
+  }
+
+  // Seed sample promo coupons if table is empty
+  try {
+    const couponCheck = db.prepare('SELECT COUNT(*) as count FROM coupons').get();
+    if (couponCheck.count === 0) {
+      const defaultCoupons = [
+        {
+          code: 'GWALIOR10',
+          type: 'PERCENT',
+          value: 10,
+          minOrderAmount: 999,
+          maxDiscountAmount: 500,
+          usageLimit: 500,
+          isActive: 1,
+          expiryDate: '2026-12-31'
+        },
+        {
+          code: 'SUNDAY500',
+          type: 'FLAT',
+          value: 500,
+          minOrderAmount: 2999,
+          maxDiscountAmount: 500,
+          usageLimit: 200,
+          isActive: 1,
+          expiryDate: '2026-12-31'
+        },
+        {
+          code: 'WELCOME100',
+          type: 'FLAT',
+          value: 100,
+          minOrderAmount: 499,
+          maxDiscountAmount: 100,
+          usageLimit: 1000,
+          isActive: 1,
+          expiryDate: '2026-12-31'
+        }
+      ];
+
+      const insertCoupon = db.prepare(`
+        INSERT INTO coupons (code, type, value, minOrderAmount, maxDiscountAmount, usageLimit, isActive, expiryDate, createdAt, updatedAt)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `);
+      const now = new Date().toISOString();
+
+      for (const c of defaultCoupons) {
+        insertCoupon.run(c.code, c.type, c.value, c.minOrderAmount, c.maxDiscountAmount, c.usageLimit, c.isActive, c.expiryDate, now, now);
+      }
+      console.log('[DB] Seeded default promo coupons (GWALIOR10, SUNDAY500, WELCOME100)');
+    }
+  } catch (e) {
+    console.warn('[DB] Coupon seed warning:', e.message);
   }
 }
 

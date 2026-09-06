@@ -12,6 +12,8 @@ import { sseHandler } from './events.js';
 import combosRoutes from './routes/combos.js';
 import categoryRoutes from './routes/categories.js';
 import analyticsRoutes from './routes/analytics.js';
+import reviewsRoutes from './routes/reviews.js';
+import couponsRoutes from './routes/coupons.js';
 
 export function createApiRouter() {
   const app = express();
@@ -52,6 +54,8 @@ export function createApiRouter() {
   app.use('/payment', paymentRoutes);
   app.use('/categories', categoryRoutes);
   app.use('/analytics', analyticsRoutes);
+  app.use('/reviews', reviewsRoutes);
+  app.use('/coupons', couponsRoutes);
 
   // Health check endpoint for UptimeRobot keep-alive ping
   app.get('/health', (req, res) => {

@@ -15,7 +15,9 @@ import {
   PlusCircle,
   Sparkles,
   Layers,
-  BarChart3
+  BarChart3,
+  Star,
+  Ticket
 } from 'lucide-react';
 
 export default function AdminLayout() {
@@ -31,6 +33,8 @@ export default function AdminLayout() {
   const navItems = [
     { to: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { to: '/admin/analytics', label: 'Analytics & Insights', icon: BarChart3, badge: '📊' },
+    { to: '/admin/coupons', label: 'Promo Coupons', icon: Ticket, badge: '🎟️' },
+    { to: '/admin/reviews', label: 'Customer Reviews', icon: Star, badge: '⭐' },
     { to: '/admin/products', label: 'Manage Products & Images', icon: Package, badge: '📦' },
     { to: '/admin/combos', label: 'Combos & Bundle Packs', icon: Layers, badge: '🎁' },
     { to: '/admin/orders', label: 'Store Orders', icon: ShoppingCart, badge: '🛒' },
@@ -180,7 +184,7 @@ export default function AdminLayout() {
       </aside>
 
       {/* MAIN CONTENT AREA */}
-      <main className="flex-1 min-w-0 p-4 sm:p-8 lg:p-10 max-w-7xl bg-slate-50">
+      <main className="flex-1 min-w-0 p-3.5 sm:p-6 lg:p-8 max-w-[1600px] w-full mx-auto bg-slate-50">
         <Outlet />
       </main>
 
