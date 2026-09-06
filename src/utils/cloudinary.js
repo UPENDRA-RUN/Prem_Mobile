@@ -30,12 +30,13 @@ export function getCloudinaryUrl(publicIdOrUrl, options = {}) {
     return publicIdOrUrl;
   }
 
-  const { width, height, crop = 'fill', quality = 'auto', format = 'auto' } = options;
+  const { width, height, crop = 'fill', quality = 'auto', format = 'auto', effect } = options;
   const transformations = [];
 
   if (width) transformations.push(`w_${width}`);
   if (height) transformations.push(`h_${height}`);
   if (crop) transformations.push(`c_${crop}`);
+  if (effect) transformations.push(`e_${effect}`);
   transformations.push(`q_${quality}`);
   transformations.push(`f_${format}`);
 
@@ -44,7 +45,10 @@ export function getCloudinaryUrl(publicIdOrUrl, options = {}) {
   // Extract public ID if full URL passed
   let publicId = publicIdOrUrl;
   if (publicId.includes('/upload/')) {
-    publicId = publicId.split('/upload/')[1].replace(/^v\d+\//, '');
+    const parts = publicId.split('/upload/');
+    const afterUpload = parts[1] || '';
+    // If the URL already contained specific effects/transformations, clean or preserve
+    publicId = afterUpload.replace(/^(v\d+\/)?/, '');
   }
 
   return `https://res.cloudinary.com/${CLOUDINARY_CONFIG.cloudName}/image/upload/${transformString}/${publicId}`;

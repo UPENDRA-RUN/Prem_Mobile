@@ -21,9 +21,36 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Permanent+Marker&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+    <!-- PERMANENT EMERGENCY RECOVERY & CHUNK FAILSAFE SCRIPT -->
+    <script>
+      window.addEventListener('error', function(e) {
+        if (e.target && (e.target.tagName === 'SCRIPT' || e.target.tagName === 'LINK')) {
+          console.warn('[Failsafe] Script/Asset loading error detected. Clearing stale ServiceWorker caches...');
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(regs) {
+              for (var r of regs) r.unregister();
+            });
+          }
+        }
+      }, true);
+    </script>
   </head>
   <body class="bg-[#f8fafc] text-slate-900 font-sans antialiased selection:bg-[#FFD400] selection:text-[#050505]">
-    <div id="root"></div>
+    <div id="root">
+      <!-- Fallback Loading UI during JS boot -->
+      <div style="min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#f8fafc; font-family:-apple-system,BlinkMacSystemFont,sans-serif; text-align:center; padding:24px;">
+        <div style="width:64px; height:64px; border-radius:16px; background:#050505; color:#ffd000; border:2px solid #ffd000; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-weight:900; font-size:24px; box-shadow:0 10px 25px -5px rgba(0,0,0,0.1);">
+          📱
+        </div>
+        <div style="font-size:22px; font-weight:900; color:#e51b23; margin-bottom:4px; text-transform:uppercase; letter-spacing:-0.5px;">
+          PREM MOBILE
+        </div>
+        <div style="font-size:12px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:1px;">
+          Gwalior's #1 Electronic Accessories Store
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

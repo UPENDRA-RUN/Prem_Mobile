@@ -43,6 +43,17 @@ if ('serviceWorker' in navigator) {
       .register('/sw.js')
       .then((reg) => {
         console.log('[PWA] ServiceWorker registered successfully with scope:', reg.scope);
+        reg.onupdatefound = () => {
+          const installingWorker = reg.installing;
+          if (installingWorker) {
+            installingWorker.onstatechange = () => {
+              if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                console.log('[PWA] New deployment version detected! Reloading for fresh bundle...');
+                window.location.reload();
+              }
+            };
+          }
+        };
       })
       .catch((err) => {
         console.warn('[PWA] ServiceWorker registration failed:', err);

@@ -57,11 +57,26 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Static Assets / Page Navigation: Cache first, network fallback
+  // Navigation requests (HTML pages): Network first to ensure fresh HTML & new JS bundles, fallback to cache/offline
+  if (event.request.mode === 'navigate' || url.pathname === '/' || url.pathname.endsWith('.html')) {
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse.status === 200) {
+            const responseClone = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+          }
+          return networkResponse;
+        })
+        .catch(() => caches.match(event.request).then((cached) => cached || caches.match('/index.html')))
+    );
+    return;
+  }
+
+  // Static Assets (Images, fonts, CSS, JS): Cache first, network fallback
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       if (cachedResponse) {
-        // Return cached asset and update cache in background
         fetch(event.request)
           .then((networkResponse) => {
             if (networkResponse.status === 200) {
@@ -79,7 +94,6 @@ self.addEventListener('fetch', (event) => {
         }
         return networkResponse;
       }).catch(() => {
-        // Fallback to offline page/index if HTML navigation request fails
         if (event.request.mode === 'navigate') {
           return caches.match('/index.html');
         }

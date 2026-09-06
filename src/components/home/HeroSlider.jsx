@@ -177,8 +177,8 @@ export default function HeroSlider() {
         {/* MAIN HERO LANDSCAPE SLIDER CONTAINER */}
         <div className="relative w-full rounded-2xl sm:rounded-3xl lg:rounded-[26px] overflow-hidden border border-[#ffd000]/40 bg-[#000000] shadow-[0_12px_45px_rgba(0,0,0,0.9),0_0_35px_rgba(255,208,0,0.18)] group transition-all duration-300">
           
-          {/* SLIDE CONTENT AREA - Sleek Landscape Frame */}
-          <div className={`relative w-full ${activeSlideData.type === 'landscape-image' ? 'aspect-[16/9] sm:aspect-[1024/520] min-h-[190px]' : 'h-auto min-h-[310px] sm:min-h-[360px]'} max-h-[520px] flex items-center justify-center overflow-hidden bg-black`}>
+          {/* SLIDE CONTENT AREA - Uniform Height & Aspect Ratio across All Slide Types */}
+          <div className="relative w-full aspect-[2.4/1] sm:aspect-[2.7/1] min-h-[220px] sm:min-h-[380px] max-h-[460px] flex items-center justify-center overflow-hidden bg-black">
             
             {/* 1. FULL LANDSCAPE IMAGE SLIDES (Main Banner & Sunday Special) */}
             {activeSlideData.type === 'landscape-image' ? (
@@ -187,62 +187,22 @@ export default function HeroSlider() {
                 className="relative w-full h-full flex items-center justify-center animate-fade-in cursor-pointer"
                 onClick={() => openGeneralWhatsApp(activeSlideData.whatsappTopic)}
               >
-                {/* Landscape Stretched Image */}
+                {/* Proportioned Hero Banner Image */}
                 <img
                   src={activeSlideData.image}
                   alt={activeSlideData.alt}
-                  className="w-full h-full object-cover sm:object-fill object-center group-hover:scale-[1.01] transition-transform duration-700 ease-out"
+                  className="w-full h-full object-cover object-center group-hover:scale-[1.01] transition-transform duration-700 ease-out"
                 />
 
-                {/* Subtle Edge Vignette */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none opacity-30 sm:opacity-15" />
-
-                {/* Interactive Floating Quick Actions Bar (Bottom Left & Right) */}
-                <div className="absolute bottom-2.5 sm:bottom-4 left-3 sm:left-5 right-3 sm:right-5 flex flex-wrap items-center justify-between gap-2 pointer-events-auto">
-                  
-                  {/* Left Pill: Deal Tagline */}
-                  <div className="hidden md:inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/75 backdrop-blur-md border border-[#ffd000]/60 text-white shadow-lg">
-                    <span className="text-xs">👑</span>
-                    <span className="text-[11px] font-black tracking-wider text-[#ffd000] uppercase">
-                      PREM MOBILE GWALIOR
-                    </span>
-                    <span className="text-white/40">•</span>
-                    <span className="text-[11px] font-bold text-white">
-                      Pin To Park, Morar
-                    </span>
-                  </div>
-
-                  {/* Right Actions: WhatsApp Order & Shop Now */}
-                  <div className="flex items-center gap-2 ml-auto">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        openGeneralWhatsApp(activeSlideData.whatsappTopic);
-                      }}
-                      className="px-2.5 sm:px-3.5 py-1.5 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white font-black text-[10px] sm:text-xs uppercase tracking-wider shadow-lg flex items-center gap-1.5 hover:scale-105 transition-all"
-                    >
-                      <MessageCircle className="w-3.5 h-3.5 fill-white" />
-                      <span>ORDER ON WHATSAPP</span>
-                    </button>
-
-                    <Link
-                      to={activeSlideData.link}
-                      onClick={(e) => e.stopPropagation()}
-                      className="hidden sm:inline-flex px-3 sm:px-3.5 py-1.5 rounded-xl bg-[#ffd000] hover:bg-[#ffcb05] text-[#050505] font-black text-[11px] sm:text-xs uppercase tracking-wider shadow-lg items-center gap-1.5 hover:scale-105 transition-all"
-                    >
-                      <span>EXPLORE DEALS</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </Link>
-                  </div>
-
-                </div>
+                {/* Subtle Edge Vignette for Depth */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
 
               </div>
             ) : (
               /* 2. LANDSCAPE PRODUCT FEATURE DEAL SLIDES */
               <div
                 key={activeSlideData.id}
-                className="relative w-full h-full grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-6 items-center p-4 sm:p-8 lg:p-10 z-10 animate-fade-in bg-gradient-to-r from-black via-[#0c0c0c] to-[#141414]"
+                className="relative w-full h-full grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-6 items-center p-4 sm:p-6 lg:p-8 z-10 animate-fade-in bg-gradient-to-r from-black via-[#0c0c0c] to-[#141414]"
               >
                 {/* Left Content Column */}
                 <div className="md:col-span-7 space-y-2 sm:space-y-3 text-center md:text-left z-10">
@@ -281,7 +241,7 @@ export default function HeroSlider() {
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="pt-2 flex flex-wrap gap-2.5 justify-center md:justify-start">
+                  <div className="pt-1 sm:pt-2 flex flex-wrap gap-2.5 justify-center md:justify-start">
                     <button
                       onClick={() => openGeneralWhatsApp(activeSlideData.whatsappTopic)}
                       className="px-4 py-2 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white font-black text-xs uppercase tracking-wider shadow-lg flex items-center gap-1.5 hover:scale-105 transition-all"
@@ -302,12 +262,12 @@ export default function HeroSlider() {
                 </div>
 
                 {/* Right Product Showcase Poster */}
-                <div className="md:col-span-5 flex items-center justify-center relative">
-                  <div className="relative max-h-[180px] sm:max-h-[260px] lg:max-h-[300px] rounded-2xl overflow-hidden border-2 border-[#ffd000]/60 shadow-[0_8px_25px_rgba(255,208,0,0.25)] bg-black group-hover:scale-105 transition-transform duration-500">
+                <div className="md:col-span-5 flex items-center justify-center relative h-full">
+                  <div className="relative h-full max-h-[160px] sm:max-h-[260px] lg:max-h-[340px] aspect-[4/3] rounded-2xl overflow-hidden border-2 border-[#ffd000]/60 shadow-[0_8px_25px_rgba(255,208,0,0.25)] bg-black group-hover:scale-102 transition-transform duration-500 flex items-center justify-center">
                     <img
                       src={activeSlideData.image}
                       alt={activeSlideData.title}
-                      className="w-full h-full max-h-[300px] object-contain"
+                      className="w-full h-full object-contain p-2"
                     />
                   </div>
                 </div>

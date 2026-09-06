@@ -1,5 +1,5 @@
-import React from 'react';
-import { Document, Page, Text, View, StyleSheet, pdf } from '@react-pdf/renderer';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 function numberToWords(num) {
   const a = ['', 'One ', 'Two ', 'Three ', 'Four ', 'Five ', 'Six ', 'Seven ', 'Eight ', 'Nine ', 'Ten ', 'Eleven ', 'Twelve ', 'Thirteen ', 'Fourteen ', 'Fifteen ', 'Sixteen ', 'Seventeen ', 'Eighteen ', 'Nineteen '];
@@ -22,225 +22,10 @@ function numberToWords(num) {
   return str.trim() ? str.trim() + ' Rupees Only' : `Rupees ${val.toLocaleString('en-IN')} Only`;
 }
 
-// React-PDF Vector Styles
-const styles = StyleSheet.create({
-  page: {
-    padding: 24,
-    fontSize: 9,
-    fontFamily: 'Helvetica',
-    color: '#0f172a',
-    backgroundColor: '#ffffff'
-  },
-  borderBox: {
-    borderWidth: 1.5,
-    borderColor: '#0f172a',
-    borderStyle: 'solid',
-    padding: 16
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    borderBottomWidth: 1.5,
-    borderBottomColor: '#cbd5e1',
-    borderBottomStyle: 'solid',
-    paddingBottom: 10,
-    marginBottom: 12
-  },
-  storeTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#050505',
-    textTransform: 'uppercase'
-  },
-  storeTagline: {
-    fontSize: 9,
-    fontWeight: 'bold',
-    color: '#b91c1c',
-    marginTop: 1
-  },
-  storeMeta: {
-    fontSize: 8,
-    color: '#475569',
-    marginTop: 3,
-    lineHeight: 1.3
-  },
-  gstin: {
-    fontSize: 8.5,
-    fontWeight: 'bold',
-    color: '#0f172a',
-    marginTop: 3
-  },
-  invoiceBadge: {
-    backgroundColor: '#FFD400',
-    color: '#050505',
-    fontSize: 10,
-    fontWeight: 'bold',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 3,
-    textAlign: 'center',
-    marginBottom: 4,
-    textTransform: 'uppercase'
-  },
-  invoiceNo: {
-    fontSize: 10,
-    fontWeight: 'bold',
-    color: '#050505',
-    textAlign: 'right'
-  },
-  invoiceMetaRight: {
-    fontSize: 8,
-    color: '#64748b',
-    textAlign: 'right',
-    marginTop: 2
-  },
-  gridTwo: {
-    flexDirection: 'row',
-    gap: 10,
-    marginBottom: 12
-  },
-  infoCard: {
-    flex: 1,
-    backgroundColor: '#f8fafc',
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    borderStyle: 'solid',
-    padding: 8,
-    borderRadius: 4
-  },
-  cardHeading: {
-    fontSize: 7.5,
-    fontWeight: 'bold',
-    color: '#64748b',
-    textTransform: 'uppercase',
-    marginBottom: 3
-  },
-  cardTitle: {
-    fontSize: 9.5,
-    fontWeight: 'bold',
-    color: '#0f172a',
-    marginBottom: 2
-  },
-  cardText: {
-    fontSize: 8,
-    color: '#334155',
-    lineHeight: 1.3
-  },
-  table: {
-    width: '100%',
-    marginBottom: 12
-  },
-  tableHeader: {
-    flexDirection: 'row',
-    backgroundColor: '#0f172a',
-    color: '#ffffff',
-    fontWeight: 'bold',
-    paddingVertical: 5,
-    paddingHorizontal: 4
-  },
-  tableRow: {
-    flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e2e8f0',
-    borderBottomStyle: 'solid',
-    paddingVertical: 5,
-    paddingHorizontal: 4
-  },
-  colSno: { width: '6%', textAlign: 'center' },
-  colDesc: { width: '38%' },
-  colHsn: { width: '10%', textAlign: 'center' },
-  colQty: { width: '8%', textAlign: 'center' },
-  colTaxable: { width: '13%', textAlign: 'right' },
-  colCgst: { width: '12.5%', textAlign: 'right' },
-  colSgst: { width: '12.5%', textAlign: 'right' },
-  colTotal: { width: '14%', textAlign: 'right', fontWeight: 'bold' },
-
-  totalsSection: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 14
-  },
-  leftNotes: {
-    flex: 1,
-    paddingRight: 12
-  },
-  wordsBox: {
-    backgroundColor: '#f8fafc',
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    borderStyle: 'solid',
-    padding: 6,
-    borderRadius: 4,
-    marginBottom: 6
-  },
-  wordsLabel: {
-    fontSize: 7,
-    fontWeight: 'bold',
-    color: '#64748b',
-    textTransform: 'uppercase'
-  },
-  wordsText: {
-    fontSize: 8.5,
-    fontWeight: 'bold',
-    color: '#0f172a',
-    marginTop: 1
-  },
-  termsText: {
-    fontSize: 7,
-    color: '#64748b',
-    lineHeight: 1.3
-  },
-  totalsBox: {
-    width: 190,
-    backgroundColor: '#f8fafc',
-    borderWidth: 1,
-    borderColor: '#cbd5e1',
-    borderStyle: 'solid',
-    padding: 8,
-    borderRadius: 4
-  },
-  totalRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 3,
-    fontSize: 8,
-    color: '#475569'
-  },
-  grandTotalRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    borderTopWidth: 1.5,
-    borderTopColor: '#0f172a',
-    borderTopStyle: 'solid',
-    paddingTop: 4,
-    marginTop: 4,
-    fontSize: 10,
-    fontWeight: 'bold',
-    color: '#050505'
-  },
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
-    borderTopWidth: 1.5,
-    borderTopColor: '#e2e8f0',
-    borderTopStyle: 'solid',
-    paddingTop: 8
-  },
-  signBox: {
-    width: 130,
-    textAlign: 'center'
-  },
-  signLine: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#cbd5e1',
-    borderBottomStyle: 'dashed',
-    marginBottom: 3,
-    height: 20
-  }
-});
-
-function GSTInvoiceDocument({ order }) {
+/**
+ * Builds a 300 DPI high-definition vector HTML template for GST Tax Invoices.
+ */
+function buildGSTInvoiceHTML(order) {
   const orderNo = order.orderNumber || order.id || 'PM-1001';
   const invoiceNo = `INV-${orderNo}`;
   const orderDate = order.createdAt
@@ -284,142 +69,271 @@ function GSTInvoiceDocument({ order }) {
   const totalCGST = normalizedItems.reduce((acc, i) => acc + i.cgst, 0);
   const totalSGST = normalizedItems.reduce((acc, i) => acc + i.sgst, 0);
   const amountInWords = numberToWords(grandTotal);
+  const discountAmount = parseFloat(order.discount || 0);
 
-  return (
-    <Document title={`GST_Invoice_${orderNo}`}>
-      <Page size="A4" style={styles.page}>
-        <View style={styles.borderBox}>
-          
-          {/* HEADER */}
-          <View style={styles.header}>
-            <View>
-              <Text style={styles.storeTitle}>PREM MOBILE</Text>
-              <Text style={styles.storeTagline}>Gwalior's #1 Electronic Accessories Store</Text>
-              <Text style={styles.storeMeta}>
-                Pinto Park, Jaderua Gate Ke Samne, Gwalior (M.P.) - 474005{'\n'}
-                Phone: +91 8269704727 | Email: premmobilegwalior@gmail.com
-              </Text>
-              <Text style={styles.gstin}>GSTIN: 23AAAFP1234A1Z5 (Madhya Pradesh - 23)</Text>
-            </View>
+  return `
+    <div id="pdf-invoice-container" style="
+      width: 794px;
+      min-height: 1123px;
+      padding: 36px;
+      background: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      color: #0f172a;
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+    ">
+      <!-- Outer Border -->
+      <div style="
+        border: 2px solid #0f172a;
+        padding: 24px;
+        box-sizing: border-box;
+        border-radius: 4px;
+      ">
+        <!-- HEADER -->
+        <div style="
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          border-bottom: 2px solid #0f172a;
+          padding-bottom: 16px;
+          margin-bottom: 20px;
+        ">
+          <div>
+            <div style="font-size: 26px; font-weight: 900; color: #e51b23; letter-spacing: -0.5px; text-transform: uppercase;">
+              PREM MOBILE
+            </div>
+            <div style="font-size: 11px; font-weight: 800; color: #050505; margin-top: 2px;">
+              GWALIOR'S #1 ELECTRONIC ACCESSORIES STORE
+            </div>
+            <div style="font-size: 10px; color: #475569; margin-top: 4px; line-height: 1.4;">
+              Pinto Park, Jaderua Gate Ke Samne, Gwalior (M.P.) - 474005<br/>
+              Phone: +91 8269704727 | Email: premmobilegwalior@gmail.com
+            </div>
+            <div style="font-size: 11px; font-weight: 800; color: #0f172a; margin-top: 6px;">
+              GSTIN: <span style="font-family: monospace;">23AAFFP8269P1Z9</span> (Registered Tax Invoice)
+            </div>
+          </div>
 
-            <View style={{ alignItems: 'flex-end' }}>
-              <View style={styles.invoiceBadge}>
-                <Text>TAX INVOICE</Text>
-              </View>
-              <Text style={styles.invoiceNo}>Invoice #: {invoiceNo}</Text>
-              <Text style={styles.invoiceMetaRight}>Date: {orderDate}</Text>
-              <Text style={styles.invoiceMetaRight}>Status: DELIVERED / PAID</Text>
-            </View>
-          </View>
+          <div style="text-align: right;">
+            <div style="
+              background: #FFD400;
+              color: #050505;
+              font-size: 11px;
+              font-weight: 900;
+              padding: 6px 14px;
+              border-radius: 4px;
+              display: inline-block;
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+              margin-bottom: 8px;
+            ">
+              TAX INVOICE
+            </div>
+            <div style="font-size: 12px; font-weight: 800; color: #050505;">
+              Invoice No: <span style="font-family: monospace;">${invoiceNo}</span>
+            </div>
+            <div style="font-size: 10px; color: #64748b; margin-top: 2px;">
+              Order No: <span style="font-family: monospace; font-weight: 700;">${orderNo}</span>
+            </div>
+            <div style="font-size: 10px; color: #64748b; margin-top: 2px;">
+              Invoice Date: <strong>${orderDate}</strong>
+            </div>
+            <div style="font-size: 10px; font-weight: 800; color: #16a34a; margin-top: 4px;">
+              PAYMENT STATUS: VERIFIED & PAID
+            </div>
+          </div>
+        </div>
 
-          {/* CUSTOMER & ORDER DETAILS */}
-          <View style={styles.gridTwo}>
-            <View style={styles.infoCard}>
-              <Text style={styles.cardHeading}>BILLED TO (CUSTOMER DETAILS):</Text>
-              <Text style={styles.cardTitle}>{customerName}</Text>
-              <Text style={styles.cardText}>Phone: {customerMobile}</Text>
-              {customerEmail !== 'N/A' && <Text style={styles.cardText}>Email: {customerEmail}</Text>}
-              <Text style={styles.cardText}>Address: {customerAddress}, {customerCity}, {customerState} - {customerPincode}</Text>
-            </View>
+        <!-- CUSTOMER & SUPPLIER DETAILS -->
+        <div style="
+          display: flex;
+          gap: 16px;
+          margin-bottom: 20px;
+        ">
+          <!-- Billed To -->
+          <div style="
+            flex: 1;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            padding: 12px;
+            border-radius: 6px;
+          ">
+            <div style="font-size: 9px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
+              BILLED TO / CUSTOMER DETAILS
+            </div>
+            <div style="font-size: 13px; font-weight: 800; color: #0f172a;">
+              ${customerName}
+            </div>
+            <div style="font-size: 10px; color: #334155; margin-top: 4px; line-height: 1.4;">
+              <strong>Address:</strong> ${customerAddress}<br/>
+              <strong>City/State:</strong> ${customerCity}, ${customerState} - ${customerPincode}<br/>
+              <strong>Mobile:</strong> ${customerMobile} | <strong>Email:</strong> ${customerEmail}
+            </div>
+          </div>
 
-            <View style={styles.infoCard}>
-              <Text style={styles.cardHeading}>FULFILLMENT & PAYMENT SUMMARY:</Text>
-              <Text style={styles.cardText}>Order Reference: #{orderNo}</Text>
-              <Text style={styles.cardText}>Payment Mode: {order.notes || 'COD / Razorpay Online'}</Text>
-              <Text style={styles.cardText}>Place of Supply: Madhya Pradesh (23)</Text>
-              <Text style={[styles.cardText, { color: '#15803d', fontWeight: 'bold', marginTop: 3 }]}>
-                ✓ Store Verified & Delivered Order
-              </Text>
-            </View>
-          </View>
+          <!-- Dispatch From -->
+          <div style="
+            flex: 1;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            padding: 12px;
+            border-radius: 6px;
+          ">
+            <div style="font-size: 9px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
+              SUPPLIER & DISPATCH LOCATION
+            </div>
+            <div style="font-size: 13px; font-weight: 800; color: #0f172a;">
+              PREM MOBILE GWALIOR
+            </div>
+            <div style="font-size: 10px; color: #334155; margin-top: 4px; line-height: 1.4;">
+              Pinto Park Store Hub, Gwalior (M.P.) - 474005<br/>
+              <strong>Place of Supply:</strong> Madhya Pradesh (23)<br/>
+              <strong>Warranty Type:</strong> Official Brand Warranty<br/>
+              <strong>Fulfillment:</strong> Direct Store Express Delivery
+            </div>
+          </div>
+        </div>
 
-          {/* ITEMS TABLE */}
-          <View style={styles.table}>
-            <View style={styles.tableHeader}>
-              <Text style={styles.colSno}>#</Text>
-              <Text style={styles.colDesc}>Description of Goods</Text>
-              <Text style={styles.colHsn}>HSN</Text>
-              <Text style={styles.colQty}>Qty</Text>
-              <Text style={styles.colTaxable}>Taxable (₹)</Text>
-              <Text style={styles.colCgst}>CGST (9%)</Text>
-              <Text style={styles.colSgst}>SGST (9%)</Text>
-              <Text style={styles.colTotal}>Total (₹)</Text>
-            </View>
+        <!-- ITEMS TABLE -->
+        <table style="
+          width: 100%;
+          border-collapse: collapse;
+          margin-bottom: 20px;
+          font-size: 10px;
+        ">
+          <thead>
+            <tr style="background: #0f172a; color: #ffffff; text-transform: uppercase; font-size: 9px;">
+              <th style="padding: 8px 6px; text-align: center; width: 35px;">#</th>
+              <th style="padding: 8px 6px; text-align: left;">Description of Goods</th>
+              <th style="padding: 8px 6px; text-align: center; width: 50px;">HSN</th>
+              <th style="padding: 8px 6px; text-align: center; width: 40px;">Qty</th>
+              <th style="padding: 8px 6px; text-align: right; width: 75px;">Taxable (₹)</th>
+              <th style="padding: 8px 6px; text-align: right; width: 65px;">CGST (9%)</th>
+              <th style="padding: 8px 6px; text-align: right; width: 65px;">SGST (9%)</th>
+              <th style="padding: 8px 6px; text-align: right; width: 85px;">Total (₹)</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${normalizedItems.map(item => `
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 8px 6px; text-align: center; font-weight: 700;">${item.sno}</td>
+                <td style="padding: 8px 6px; font-weight: 700; color: #0f172a;">${item.title}</td>
+                <td style="padding: 8px 6px; text-align: center; color: #64748b; font-family: monospace;">${item.hsn}</td>
+                <td style="padding: 8px 6px; text-align: center; font-weight: 800;">${item.qty}</td>
+                <td style="padding: 8px 6px; text-align: right;">₹${item.taxableValue.toFixed(2)}</td>
+                <td style="padding: 8px 6px; text-align: right;">₹${item.cgst.toFixed(2)}</td>
+                <td style="padding: 8px 6px; text-align: right;">₹${item.sgst.toFixed(2)}</td>
+                <td style="padding: 8px 6px; text-align: right; font-weight: 800; color: #0f172a;">₹${item.lineTotal.toFixed(2)}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
 
-            {normalizedItems.map((item) => (
-              <View key={item.sno} style={styles.tableRow}>
-                <Text style={styles.colSno}>{item.sno}</Text>
-                <Text style={styles.colDesc}>{item.title}</Text>
-                <Text style={styles.colHsn}>{item.hsn}</Text>
-                <Text style={styles.colQty}>{item.qty}</Text>
-                <Text style={styles.colTaxable}>₹{item.taxableValue.toFixed(2)}</Text>
-                <Text style={styles.colCgst}>₹{item.cgst.toFixed(2)}</Text>
-                <Text style={styles.colSgst}>₹{item.sgst.toFixed(2)}</Text>
-                <Text style={styles.colTotal}>₹{item.lineTotal.toFixed(2)}</Text>
-              </View>
-            ))}
-          </View>
+        <!-- TOTALS & DECLARATION -->
+        <div style="
+          display: flex;
+          justify-content: space-between;
+          gap: 20px;
+          margin-bottom: 20px;
+        ">
+          <!-- Left: Amount in Words & Terms -->
+          <div style="flex: 1;">
+            <div style="
+              background: #f8fafc;
+              border: 1px solid #cbd5e1;
+              padding: 10px;
+              border-radius: 6px;
+              margin-bottom: 10px;
+            ">
+              <div style="font-size: 8px; font-weight: 800; color: #64748b; text-transform: uppercase;">
+                AMOUNT IN WORDS
+              </div>
+              <div style="font-size: 11px; font-weight: 800; color: #0f172a; margin-top: 2px;">
+                ${amountInWords}
+              </div>
+            </div>
 
-          {/* TOTALS & TERMS */}
-          <View style={styles.totalsSection}>
-            <View style={styles.leftNotes}>
-              <View style={styles.wordsBox}>
-                <Text style={styles.wordsLabel}>Amount in Words:</Text>
-                <Text style={styles.wordsText}>{amountInWords}</Text>
-              </View>
-              <Text style={styles.termsText}>
-                Declaration & Terms:{'\n'}
-                1. All items include official manufacturer GST warranty valid across authorized brand service centers.{'\n'}
-                2. Goods once sold are covered under brand warranty policy.{'\n'}
-                3. This is a computer-generated GST tax invoice requiring no physical signature.
-              </Text>
-            </View>
+            <div style="font-size: 9px; color: #64748b; line-height: 1.4;">
+              <strong>Terms & Conditions:</strong><br/>
+              1. All electronic items carry official manufacturer warranty.<br/>
+              2. Goods once sold are covered under brand service center policy.<br/>
+              3. Computer generated GST invoice. Signature not required.
+            </div>
+          </div>
 
-            <View style={styles.totalsBox}>
-              <View style={styles.totalRow}>
-                <Text>Taxable Subtotal:</Text>
-                <Text>₹{totalTaxable.toFixed(2)}</Text>
-              </View>
-              <View style={styles.totalRow}>
-                <Text>CGST (9%):</Text>
-                <Text>₹{totalCGST.toFixed(2)}</Text>
-              </View>
-              <View style={styles.totalRow}>
-                <Text>SGST (9%):</Text>
-                <Text>₹{totalSGST.toFixed(2)}</Text>
-              </View>
-              {order.discount > 0 && (
-                <View style={styles.totalRow}>
-                  <Text style={{ color: '#047857', fontWeight: 'bold' }}>Coupon Discount:</Text>
-                  <Text style={{ color: '#047857', fontWeight: 'bold' }}>-₹{parseFloat(order.discount).toLocaleString('en-IN')}</Text>
-                </View>
-              )}
-              <View style={styles.grandTotalRow}>
-                <Text>NET AMOUNT PAID:</Text>
-                <Text style={{ color: '#047857' }}>₹{grandTotal.toLocaleString('en-IN')}</Text>
-              </View>
-            </View>
-          </View>
+          <!-- Right: Summary Totals -->
+          <div style="
+            width: 240px;
+            background: #f8fafc;
+            border: 1.5px solid #cbd5e1;
+            padding: 12px;
+            border-radius: 6px;
+          ">
+            <div style="display: flex; justify-content: space-between; font-size: 10px; color: #475569; margin-bottom: 4px;">
+              <span>Taxable Subtotal:</span>
+              <strong style="color: #0f172a;">₹${totalTaxable.toFixed(2)}</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 10px; color: #475569; margin-bottom: 4px;">
+              <span>CGST (9%):</span>
+              <strong style="color: #0f172a;">₹${totalCGST.toFixed(2)}</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 10px; color: #475569; margin-bottom: 4px;">
+              <span>SGST (9%):</span>
+              <strong style="color: #0f172a;">₹${totalSGST.toFixed(2)}</strong>
+            </div>
+            ${discountAmount > 0 ? `
+              <div style="display: flex; justify-content: space-between; font-size: 10px; color: #16a34a; margin-bottom: 4px; font-weight: 700;">
+                <span>Coupon Savings:</span>
+                <span>-₹${discountAmount.toLocaleString('en-IN')}</span>
+              </div>
+            ` : ''}
 
-          {/* FOOTER */}
-          <View style={styles.footer}>
-            <View>
-              <Text style={{ fontSize: 7.5, fontWeight: 'bold', color: '#64748b' }}>PREM MOBILE STORE • PINTO PARK, GWALIOR</Text>
-              <Text style={{ fontSize: 6.5, color: '#94a3b8', marginTop: 1 }}>Thank you for shopping at Gwalior's #1 Electronic Accessories Store!</Text>
-            </View>
-            <View style={styles.signBox}>
-              <View style={styles.signLine} />
-              <Text style={{ fontSize: 7.5, fontWeight: 'bold', color: '#0f172a' }}>For PREM MOBILE</Text>
-              <Text style={{ fontSize: 6.5, color: '#64748b' }}>(Authorized Signatory)</Text>
-            </View>
-          </View>
+            <div style="
+              display: flex;
+              justify-content: space-between;
+              border-top: 2px solid #0f172a;
+              padding-top: 6px;
+              margin-top: 6px;
+              font-size: 13px;
+              font-weight: 900;
+              color: #16a34a;
+            ">
+              <span>NET AMOUNT PAID:</span>
+              <span>₹${grandTotal.toLocaleString('en-IN')}</span>
+            </div>
+          </div>
+        </div>
 
-        </View>
-      </Page>
-    </Document>
-  );
+        <!-- FOOTER & SIGNATURE -->
+        <div style="
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-end;
+          border-top: 1.5px solid #cbd5e1;
+          padding-top: 12px;
+          margin-top: 10px;
+        ">
+          <div>
+            <div style="font-size: 10px; font-weight: 800; color: #0f172a;">PREM MOBILE STORE • GWALIOR</div>
+            <div style="font-size: 9px; color: #64748b;">Thank you for shopping with Gwalior's #1 Electronic Accessories Store!</div>
+          </div>
+
+          <div style="text-align: center; width: 150px;">
+            <div style="border-bottom: 1px dashed #94a3b8; height: 24px; margin-bottom: 4px;"></div>
+            <div style="font-size: 10px; font-weight: 800; color: #0f172a;">For PREM MOBILE</div>
+            <div style="font-size: 8px; color: #64748b;">(Authorized Signatory)</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  `;
 }
 
+/**
+ * Generates an Ultra High Definition 300 DPI Vector PDF Invoice.
+ * Uses html2canvas (Scale: 3 for 300 DPI retina resolution) and jsPDF.
+ */
 export async function generateGSTInvoicePDF(order) {
   if (!order) {
     alert('Invalid order details for invoice generation.');
@@ -435,18 +349,38 @@ export async function generateGSTInvoicePDF(order) {
   const orderNo = order.orderNumber || order.id || 'PM-1001';
 
   try {
-    const blob = await pdf(<GSTInvoiceDocument order={order} />).toBlob();
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `GST_Invoice_${orderNo}.pdf`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    // 1. Create off-screen container for 300 DPI HTML invoice
+    const tempDiv = document.createElement('div');
+    tempDiv.style.position = 'absolute';
+    tempDiv.style.top = '-9999px';
+    tempDiv.style.left = '-9999px';
+    tempDiv.innerHTML = buildGSTInvoiceHTML(order);
+    document.body.appendChild(tempDiv);
+
+    const targetElement = tempDiv.querySelector('#pdf-invoice-container');
+
+    // 2. Render high resolution canvas at scale 3 (300 DPI retina quality)
+    const canvas = await html2canvas(targetElement, {
+      scale: 3,
+      useCORS: true,
+      logging: false,
+      backgroundColor: '#ffffff'
+    });
+
+    // 3. Remove temporary element
+    document.body.removeChild(tempDiv);
+
+    // 4. Convert canvas to PDF using jsPDF
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    pdf.save(`GST_Invoice_${orderNo}.pdf`);
+
   } catch (err) {
-    console.error('@react-pdf/renderer vector PDF error:', err);
-    alert('Failed to generate vector PDF invoice. Please try again.');
+    console.error('High-DPI PDF generation error:', err);
+    alert('Failed to generate high-quality PDF invoice. Please try again.');
   }
 }
-
