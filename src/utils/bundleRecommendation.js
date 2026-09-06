@@ -11,20 +11,20 @@ export function generateBundleAddons(mainProduct, catalogProducts = []) {
 
   let defaultAddons = [];
 
-  if (category.includes('earbud') || category.includes('headphone') || name.includes('airdope') || name.includes('buds')) {
+  if (category.includes('earbud') || category.includes('headphone') || name.includes('airdope') || name.includes('buds') || name.includes('neckband')) {
     defaultAddons = [
       {
         id: `addon_case_${mainProduct.id}`,
-        name: 'Silicone Protective Case with Carabiner Hook',
+        name: 'Silicone Protective Case & Carabiner Hook',
         category: 'Accessories',
         price: 249,
         regularPrice: 499,
-        image: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=500&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=500&auto=format&fit=crop',
         isAddon: true
       },
       {
         id: `addon_charger_${mainProduct.id}`,
-        name: '33W SuperFast Type-C Wall Charger Cable Pack',
+        name: '33W SuperFast Type-C Fast Charger Pack',
         category: 'Chargers',
         price: 499,
         regularPrice: 999,
@@ -49,7 +49,7 @@ export function generateBundleAddons(mainProduct, catalogProducts = []) {
         category: 'Accessories',
         price: 149,
         regularPrice: 399,
-        image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500&auto=format&fit=crop',
         isAddon: true
       }
     ];
@@ -57,11 +57,11 @@ export function generateBundleAddons(mainProduct, catalogProducts = []) {
     defaultAddons = [
       {
         id: `addon_glass_${mainProduct.id}`,
-        name: '9H Full Coverage Tempered Glass Screen Guard',
+        name: '9H Full Coverage Tempered Glass Guard',
         category: 'Accessories',
         price: 199,
         regularPrice: 499,
-        image: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=500&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500&auto=format&fit=crop',
         isAddon: true
       },
       {
@@ -70,7 +70,7 @@ export function generateBundleAddons(mainProduct, catalogProducts = []) {
         category: 'Accessories',
         price: 299,
         regularPrice: 699,
-        image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=500&auto=format&fit=crop',
         isAddon: true
       }
     ];
@@ -83,7 +83,7 @@ export function generateBundleAddons(mainProduct, catalogProducts = []) {
         category: 'Accessories',
         price: 299,
         regularPrice: 599,
-        image: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=500&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1585338107529-13afc5f02586?w=500&auto=format&fit=crop',
         isAddon: true
       },
       {

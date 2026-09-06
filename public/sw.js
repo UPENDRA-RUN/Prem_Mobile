@@ -34,8 +34,14 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // Skip non-GET or chrome-extension or API event streams
-  if (event.request.method !== 'GET' || url.pathname.startsWith('/api/events')) {
+  // Skip non-GET, API event streams, or Vite development server modules
+  if (
+    event.request.method !== 'GET' ||
+    url.pathname.startsWith('/api/events') ||
+    url.pathname.startsWith('/@') ||
+    url.pathname.includes('/node_modules/') ||
+    url.search.includes('v=')
+  ) {
     return;
   }
 

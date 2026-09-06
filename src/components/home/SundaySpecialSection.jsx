@@ -80,8 +80,8 @@ export default function SundaySpecialSection() {
             <div className="lg:col-span-6 flex items-center justify-center">
               <div className="relative w-full rounded-2xl overflow-hidden border-2 border-[#FFD400] shadow-2xl bg-black group">
                 <img
-                  src="/images/sunday-sale.jpg"
-                  alt="Sunday Special Sale - Prem Mobile"
+                  src="/images/sunday-shocking-sale.jpg"
+                  alt="Sunday Shocking Sale - Prem Mobile"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
