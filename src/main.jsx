@@ -14,17 +14,17 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ErrorBoundary>
       <BrowserRouter>
-        <WishlistProvider>
-          <CartProvider>
-            <SundaySaleProvider>
-              <CustomerAuthProvider>
-                <AdminAuthProvider>
+        <CustomerAuthProvider>
+          <AdminAuthProvider>
+            <WishlistProvider>
+              <CartProvider>
+                <SundaySaleProvider>
                   <App />
-                </AdminAuthProvider>
-              </CustomerAuthProvider>
-            </SundaySaleProvider>
-          </CartProvider>
-        </WishlistProvider>
+                </SundaySaleProvider>
+              </CartProvider>
+            </WishlistProvider>
+          </AdminAuthProvider>
+        </CustomerAuthProvider>
       </BrowserRouter>
     </ErrorBoundary>
   </React.StrictMode>

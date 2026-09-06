@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useCustomerAuth } from './CustomerAuthContext';
+import { useAdminAuth } from './AdminAuthContext';
 
 const CartContext = createContext();
 
@@ -14,12 +16,29 @@ export function getCartItemId(product, selectedVariants) {
 }
 
 export function CartProvider({ children }) {
+  const customerAuth = useCustomerAuth();
+  const adminAuth = useAdminAuth();
+
+  const customerUser = customerAuth?.customerUser;
+  const isAdmin = adminAuth?.isAuthenticated;
+
+  // Compute storage key based on active user context
+  const getActiveUserKey = () => {
+    if (isAdmin) return 'admin';
+    if (customerUser?.id) return `user_${customerUser.id}`;
+    if (customerUser?.email) return `user_${customerUser.email.replace(/[^a-zA-Z0-9]/g, '_')}`;
+    if (customerUser?.mobile) return `user_${customerUser.mobile}`;
+    return 'guest';
+  };
+
+  const activeUserKey = getActiveUserKey();
+  const storageKey = `premmobile_cart_${activeUserKey}`;
+
   const [cart, setCart] = useState(() => {
     try {
-      const saved = localStorage.getItem('premmobile_cart');
+      const saved = localStorage.getItem(storageKey);
       return saved ? JSON.parse(saved) : [];
     } catch (e) {
-      console.error('Failed to load cart from localStorage', e);
       return [];
     }
   });
@@ -27,10 +46,29 @@ export function CartProvider({ children }) {
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [notification, setNotification] = useState(null);
 
+  // Switch cart state dynamically when user context changes (e.g. login/logout)
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(storageKey);
+      setCart(saved ? JSON.parse(saved) : []);
+    } catch (e) {
+      setCart([]);
+    }
+  }, [storageKey]);
+
+  // Persist cart to active user's storage key
+  useEffect(() => {
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(cart));
+    } catch (e) {
+      console.error('Failed to save cart to localStorage', e);
+    }
+  }, [cart, storageKey]);
+
   // Promo code state
   const [appliedPromo, setAppliedPromo] = useState(() => {
     try {
-      const savedPromo = localStorage.getItem('premmobile_promo');
+      const savedPromo = localStorage.getItem(`premmobile_promo_${activeUserKey}`);
       return savedPromo ? JSON.parse(savedPromo) : null;
     } catch (e) {
       return null;
@@ -41,23 +79,15 @@ export function CartProvider({ children }) {
 
   useEffect(() => {
     try {
-      localStorage.setItem('premmobile_cart', JSON.stringify(cart));
-    } catch (e) {
-      console.error('Failed to save cart to localStorage', e);
-    }
-  }, [cart]);
-
-  useEffect(() => {
-    try {
       if (appliedPromo) {
-        localStorage.setItem('premmobile_promo', JSON.stringify(appliedPromo));
+        localStorage.setItem(`premmobile_promo_${activeUserKey}`, JSON.stringify(appliedPromo));
       } else {
-        localStorage.removeItem('premmobile_promo');
+        localStorage.removeItem(`premmobile_promo_${activeUserKey}`);
       }
     } catch (e) {
       console.error('Failed to save promo code to localStorage', e);
     }
-  }, [appliedPromo]);
+  }, [appliedPromo, activeUserKey]);
 
   const showToast = (message) => {
     setNotification(message);
