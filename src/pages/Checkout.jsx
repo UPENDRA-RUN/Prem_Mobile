@@ -80,7 +80,7 @@ export default function Checkout() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           code: targetCode.trim().toUpperCase(),
-          cartTotal: subtotal
+          cartTotal: Math.round(subtotal)
         })
       });
 

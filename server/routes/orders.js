@@ -108,17 +108,24 @@ router.post('/', (req, res) => {
       const cleanCoupon = String(couponCode).trim().toUpperCase();
       const couponRecord = db.prepare('SELECT * FROM coupons WHERE UPPER(code) = ? AND isActive = 1').get(cleanCoupon);
       if (couponRecord) {
-        if (couponRecord.type === 'PERCENT') {
-          couponDiscountAmount = Math.round((subtotal * couponRecord.value) / 100);
-          if (couponRecord.maxDiscountAmount && couponDiscountAmount > couponRecord.maxDiscountAmount) {
-            couponDiscountAmount = couponRecord.maxDiscountAmount;
+        const today = new Date().toISOString().split('T')[0];
+        const isExpired = couponRecord.expiryDate && couponRecord.expiryDate < today;
+        const isLimitReached = couponRecord.usageLimit && couponRecord.timesUsed >= couponRecord.usageLimit;
+        const minOrder = Number(couponRecord.minOrderAmount || 0);
+
+        if (!isExpired && !isLimitReached && (minOrder === 0 || subtotal >= minOrder)) {
+          if (couponRecord.type === 'PERCENT') {
+            couponDiscountAmount = Math.round((subtotal * Number(couponRecord.value)) / 100);
+            if (couponRecord.maxDiscountAmount && couponDiscountAmount > Number(couponRecord.maxDiscountAmount)) {
+              couponDiscountAmount = Number(couponRecord.maxDiscountAmount);
+            }
+          } else if (couponRecord.type === 'FLAT') {
+            couponDiscountAmount = Math.min(subtotal, Number(couponRecord.value));
           }
-        } else if (couponRecord.type === 'FLAT') {
-          couponDiscountAmount = Math.min(subtotal, couponRecord.value);
+          db.prepare('UPDATE coupons SET timesUsed = timesUsed + 1 WHERE id = ?').run(couponRecord.id);
+          totalDiscount += couponDiscountAmount;
+          broadcastEvent('COUPONS_UPDATED');
         }
-        db.prepare('UPDATE coupons SET timesUsed = timesUsed + 1 WHERE id = ?').run(couponRecord.id);
-        totalDiscount += couponDiscountAmount;
-        broadcastEvent('COUPONS_UPDATED');
       }
     }
 

@@ -323,4 +323,26 @@ router.get('/me', requireAdmin, (req, res) => {
   });
 });
 
+/**
+ * UNIFIED LOGOUT
+ * POST /api/auth/logout & POST /api/auth/customer/logout
+ * Completely clears all admin & customer auth cookies on the server
+ */
+const performLogout = (req, res) => {
+  const cookieOptions = { path: '/', httpOnly: false, sameSite: 'lax' };
+  res.clearCookie('premmobile_admin_token', cookieOptions);
+  res.clearCookie('premmobile_admin_user', cookieOptions);
+  res.clearCookie('premmobile_customer_token', cookieOptions);
+  res.clearCookie('premmobile_customer_user', cookieOptions);
+  res.clearCookie('premmobile_user_profile', cookieOptions);
+
+  return res.json({
+    success: true,
+    message: 'Logged out successfully. All security sessions terminated.'
+  });
+};
+
+router.post('/logout', performLogout);
+router.post('/customer/logout', performLogout);
+
 export default router;

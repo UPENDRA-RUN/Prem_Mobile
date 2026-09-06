@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { parseResponseJson } from '../utils/apiHelper';
 import { setCookie, getCookie, eraseCookie } from '../utils/cookies';
+import { purgeAllAuthSessions } from '../utils/authCleanup';
 
 const CustomerAuthContext = createContext();
 
@@ -76,12 +77,7 @@ export function CustomerAuthProvider({ children }) {
   const logout = () => {
     setCustomerToken(null);
     setCustomerUser(null);
-    localStorage.removeItem('premmobile_customer_token');
-    localStorage.removeItem('premmobile_customer_user');
-    localStorage.removeItem('premmobile_user_profile');
-    eraseCookie('premmobile_customer_token');
-    eraseCookie('premmobile_customer_user');
-    eraseCookie('premmobile_user_profile');
+    purgeAllAuthSessions();
   };
 
   return (

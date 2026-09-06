@@ -206,22 +206,34 @@ export default function Orders() {
               </div>
 
               {/* BOTTOM: ADDRESS & TOTAL */}
-              <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 text-xs">
-                <div className="flex items-start gap-2 text-slate-500">
-                  <MapPin className="w-4 h-4 text-slate-400 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <span className="font-bold text-slate-700">Delivery Address: </span>
-                    <span>{order.address}, {order.city}, {order.state} - {order.pincode}</span>
-                  </div>
-                </div>
+              {(() => {
+                const subtotal = order.subtotal || order.items?.reduce((acc, it) => acc + ((it.finalPrice || 0) * (it.quantity || 1)), 0) || order.total;
+                return (
+                  <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 text-xs">
+                    <div className="flex items-start gap-2 text-slate-500">
+                      <MapPin className="w-4 h-4 text-slate-400 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <span className="font-bold text-slate-700">Delivery Address: </span>
+                        <span>{order.address}, {order.city}, {order.state} - {order.pincode}</span>
+                      </div>
+                    </div>
 
-                <div className="flex items-baseline gap-2 sm:text-right">
-                  <span className="text-slate-500 font-bold">Total Paid:</span>
-                  <span className="font-display font-black text-xl text-[#050505]">
-                    {formatCurrency(order.total)}
-                  </span>
-                </div>
-              </div>
+                    <div className="flex flex-wrap items-center gap-3 sm:justify-end">
+                      {order.discount > 0 && (
+                        <span className="text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-xl font-bold text-xs">
+                          🎉 Saved {formatCurrency(order.discount)}
+                        </span>
+                      )}
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-slate-500 font-bold">Total Paid:</span>
+                        <span className="font-display font-black text-xl text-emerald-600">
+                          {formatCurrency(order.total || subtotal)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
 
             </div>
           ))}

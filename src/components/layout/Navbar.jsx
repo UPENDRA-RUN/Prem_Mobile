@@ -33,6 +33,7 @@ import {
 import SearchModal from './SearchModal';
 import NotificationDropdown from './NotificationDropdown';
 import { usePwaInstall } from '../common/PwaInstallPrompt';
+import { purgeAllAuthSessions } from '../../utils/authCleanup';
 
 
 export default function Navbar() {
@@ -51,7 +52,16 @@ export default function Navbar() {
   const { canInstall, triggerInstall } = usePwaInstall();
   const location = useLocation();
 
-  const isUserAdmin = isAdmin || customerUser?.role === 'admin' || customerUser?.email === 'admin@premmobile.com' || customerUser?.isAdmin === true;
+  const isUserAdmin = Boolean(isAdmin) || customerUser?.role === 'ADMIN' || customerUser?.role === 'admin' || customerUser?.isAdmin === true;
+
+  const handleGlobalLogout = () => {
+    setIsUserMenuOpen(false);
+    setIsMobileMenuOpen(false);
+    if (typeof adminLogout === 'function') adminLogout();
+    if (typeof customerLogout === 'function') customerLogout();
+    purgeAllAuthSessions();
+    window.location.href = '/';
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -449,11 +459,7 @@ export default function Navbar() {
 
                     <div className="border-t border-slate-100 my-1" />
                     <button
-                      onClick={() => {
-                        setIsUserMenuOpen(false);
-                        if (typeof adminLogout === 'function') adminLogout();
-                        customerLogout();
-                      }}
+                      onClick={handleGlobalLogout}
                       className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-bold text-red-600 hover:bg-red-50 transition-colors text-left cursor-pointer"
                     >
                       <LogOut className="w-4 h-4" />
@@ -591,11 +597,8 @@ export default function Navbar() {
                   </div>
                 </div>
                 <button
-                  onClick={() => {
-                    setIsMobileMenuOpen(false);
-                    customerLogout();
-                  }}
-                  className="px-2.5 py-1 rounded-lg bg-red-600/90 text-white font-black text-[10px] uppercase hover:bg-red-700 transition-colors shrink-0"
+                  onClick={handleGlobalLogout}
+                  className="px-2.5 py-1 rounded-lg bg-red-600/90 text-white font-black text-[10px] uppercase hover:bg-red-700 transition-colors shrink-0 cursor-pointer"
                 >
                   LOGOUT
                 </button>

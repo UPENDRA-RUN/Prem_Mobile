@@ -299,6 +299,11 @@ export function resolveServerProductPrice(productId) {
     return null;
   }
 
+  const regPrice = Number(product.regularPrice || 0);
+  const offPrice = product.offerPrice !== null && product.offerPrice !== undefined && Number(product.offerPrice) > 0
+    ? Number(product.offerPrice)
+    : regPrice;
+
   const liveSale = getActiveLiveSale();
   if (liveSale) {
     const saleItem = db.prepare(`
@@ -306,30 +311,34 @@ export function resolveServerProductPrice(productId) {
     `).get(liveSale.id, productId);
 
     if (saleItem && Number(saleItem.salePrice) > 0) {
+      const sPrice = Number(saleItem.salePrice);
       return {
         productId: product.id,
         name: product.name,
-        regularPrice: product.regularPrice,
-        effectivePrice: Number(saleItem.salePrice),
-        finalUnitPrice: Number(saleItem.salePrice),
+        regularPrice: regPrice,
+        effectivePrice: sPrice,
+        finalUnitPrice: sPrice,
         isSale: true,
         isSundaySalePrice: true,
-        salePrice: Number(saleItem.salePrice),
-        savings: Math.max(0, product.regularPrice - Number(saleItem.salePrice))
+        salePrice: sPrice,
+        savings: Math.max(0, regPrice - sPrice)
       };
     }
   }
 
+  // Use offerPrice if set and less than regularPrice, or if product.isOnSale
+  const effectivePrice = (offPrice < regPrice || product.isOnSale) ? offPrice : regPrice;
+
   return {
     productId: product.id,
     name: product.name,
-    regularPrice: product.regularPrice,
-    effectivePrice: product.regularPrice,
-    finalUnitPrice: product.regularPrice,
-    isSale: false,
+    regularPrice: regPrice,
+    effectivePrice: effectivePrice,
+    finalUnitPrice: effectivePrice,
+    isSale: effectivePrice < regPrice,
     isSundaySalePrice: false,
-    salePrice: null,
-    savings: 0
+    salePrice: effectivePrice < regPrice ? effectivePrice : null,
+    savings: Math.max(0, regPrice - effectivePrice)
   };
 }
 

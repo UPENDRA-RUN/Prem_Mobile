@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
+import { seedCatalogProductsAndReviews } from './seedData.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -398,6 +399,13 @@ export function initDatabase() {
     }
   } catch (e) {
     console.warn('[DB] Coupon seed warning:', e.message);
+  }
+
+  // Seed 20 Realistic Prem Mobile Catalog Products & Verified Customer Reviews
+  try {
+    seedCatalogProductsAndReviews();
+  } catch (e) {
+    console.warn('[DB] Catalog seed warning:', e.message);
   }
 }
 

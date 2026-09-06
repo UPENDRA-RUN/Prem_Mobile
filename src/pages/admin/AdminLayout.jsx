@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink, Outlet, useNavigate, Link } from 'react-router-dom';
 import { useAdminAuth } from '../../context/AdminAuthContext';
+import { purgeAllAuthSessions } from '../../utils/authCleanup';
 import {
   LayoutDashboard,
   Package,
@@ -27,7 +28,8 @@ export default function AdminLayout() {
 
   const handleLogout = () => {
     logout();
-    navigate('/admin/login');
+    purgeAllAuthSessions();
+    window.location.href = '/login';
   };
 
   const navItems = [
@@ -73,15 +75,15 @@ export default function AdminLayout() {
         />
       )}
 
-      {/* SIDEBAR (Desktop & Mobile Drawer) */}
+      {/* SIDEBAR (Desktop Sticky & Mobile Drawer) */}
       <aside
-        className={`fixed md:sticky top-0 left-0 h-screen w-72 bg-white text-slate-700 flex flex-col justify-between border-r border-slate-200 z-40 transition-transform duration-200 shadow-sm ${
+        className={`fixed md:sticky top-0 left-0 h-screen w-72 bg-white text-slate-700 flex flex-col justify-between border-r border-slate-200 z-40 transition-transform duration-200 shadow-sm shrink-0 overflow-y-auto scrollbar-thin ${
           isMobileNavOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         }`}
       >
-        <div>
+        <div className="flex-1 flex flex-col min-h-0 overflow-y-auto">
           {/* LOGO */}
-          <div className="p-6 border-b border-slate-200 flex items-center justify-between">
+          <div className="p-5 border-b border-slate-200 flex items-center justify-between shrink-0">
             <Link to="/admin/dashboard" className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl bg-[#E31B23] border-2 border-[#FFD400] flex items-center justify-center shadow-md">
                 <Smartphone className="w-5 h-5 text-white" />
@@ -105,7 +107,7 @@ export default function AdminLayout() {
           </div>
 
           {/* PRIMARY CALL TO ACTION: ADD PRODUCT & MANAGE IMAGES */}
-          <div className="p-4 space-y-2">
+          <div className="p-4 space-y-2 shrink-0">
             <Link
               to="/admin/products/new"
               onClick={() => setIsMobileNavOpen(false)}
@@ -126,7 +128,7 @@ export default function AdminLayout() {
           </div>
 
           {/* NAV LINKS */}
-          <nav className="p-4 space-y-1.5">
+          <nav className="p-4 space-y-1.5 flex-1 overflow-y-auto">
             {navItems.map((item) => {
               const Icon = item.icon;
               return (
@@ -151,7 +153,7 @@ export default function AdminLayout() {
         </div>
 
         {/* BOTTOM USER & ACTIONS */}
-        <div className="p-4 border-t border-slate-200 space-y-3">
+        <div className="p-4 border-t border-slate-200 space-y-3 shrink-0 bg-white sticky bottom-0 z-10">
           <div className="px-3.5 py-2.5 rounded-2xl bg-slate-100 border border-slate-200 flex items-center gap-3">
             <div className="w-8 h-8 rounded-full bg-[#E31B23] text-white font-black text-xs flex items-center justify-center shadow-sm">
               {adminUser?.name ? adminUser.name[0].toUpperCase() : 'A'}

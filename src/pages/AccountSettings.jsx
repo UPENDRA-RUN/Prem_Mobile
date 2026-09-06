@@ -49,28 +49,28 @@ export default function AccountSettings() {
 
   // Initial default state derived dynamically
   const buildInitialData = () => {
+    if (!customerUser) {
+      return {
+        fullName: '',
+        phone: '',
+        email: '',
+        address: 'Pinto Park, Gwalior',
+        city: 'Gwalior',
+        pickupPreference: 'Pinto Park Store Pickup'
+      };
+    }
+
     try {
       const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
       if (stored) return JSON.parse(stored);
     } catch (e) {}
 
-    if (customerUser) {
-      return {
-        fullName: customerUser.name || '',
-        phone: customerUser.mobile || '',
-        email: customerUser.email || '',
-        address: customerUser.address || 'Pinto Park, Gwalior',
-        city: customerUser.city || 'Gwalior',
-        pickupPreference: 'Pinto Park Store Pickup'
-      };
-    }
-
     return {
-      fullName: '',
-      phone: '',
-      email: '',
-      address: 'Pinto Park, Gwalior',
-      city: 'Gwalior',
+      fullName: customerUser.name || '',
+      phone: customerUser.mobile || '',
+      email: customerUser.email || '',
+      address: customerUser.address || 'Pinto Park, Gwalior',
+      city: customerUser.city || 'Gwalior',
       pickupPreference: 'Pinto Park Store Pickup'
     };
   };

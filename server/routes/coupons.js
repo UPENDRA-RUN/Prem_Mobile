@@ -15,7 +15,7 @@ router.post('/validate', (req, res) => {
     }
 
     const cleanCode = code.trim().toUpperCase();
-    const total = Number(cartTotal || 0);
+    const total = Math.round(Number(cartTotal || 0));
 
     const coupon = db.prepare('SELECT * FROM coupons WHERE UPPER(code) = ?').get(cleanCode);
 
@@ -38,23 +38,25 @@ router.post('/validate', (req, res) => {
       return res.status(400).json({ success: false, message: `Coupon code "${cleanCode}" usage limit has been reached.` });
     }
 
-    if (coupon.minOrderAmount && total < coupon.minOrderAmount) {
+    const minAmount = Number(coupon.minOrderAmount || 0);
+    if (minAmount > 0 && total < minAmount) {
+      const diff = minAmount - total;
       return res.status(400).json({
         success: false,
-        message: `Coupon "${cleanCode}" requires a minimum order total of ₹${coupon.minOrderAmount}. Add ₹${coupon.minOrderAmount - total} more to apply.`
+        message: `Coupon "${cleanCode}" requires a minimum order total of ₹${minAmount.toLocaleString('en-IN')}. Add ₹${diff.toLocaleString('en-IN')} more to apply.`
       });
     }
 
-    // Calculate discount savings
+    // Calculate exact discount savings
     let discountAmount = 0;
 
     if (coupon.type === 'PERCENT') {
-      discountAmount = Math.round((total * coupon.value) / 100);
-      if (coupon.maxDiscountAmount && discountAmount > coupon.maxDiscountAmount) {
-        discountAmount = coupon.maxDiscountAmount;
+      discountAmount = Math.round((total * Number(coupon.value)) / 100);
+      if (coupon.maxDiscountAmount && discountAmount > Number(coupon.maxDiscountAmount)) {
+        discountAmount = Number(coupon.maxDiscountAmount);
       }
     } else if (coupon.type === 'FLAT') {
-      discountAmount = Math.min(total, coupon.value);
+      discountAmount = Math.min(total, Number(coupon.value));
     }
 
     const finalTotal = Math.max(0, total - discountAmount);

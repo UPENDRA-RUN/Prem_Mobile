@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { parseResponseJson } from '../utils/apiHelper';
+import { purgeAllAuthSessions } from '../utils/authCleanup';
 
 const AdminAuthContext = createContext();
 
@@ -78,8 +78,7 @@ export function AdminAuthProvider({ children }) {
   const logout = () => {
     setAdminToken(null);
     setAdminUser(null);
-    localStorage.removeItem('premmobile_admin_token');
-    localStorage.removeItem('premmobile_admin_user');
+    purgeAllAuthSessions();
   };
 
   return (

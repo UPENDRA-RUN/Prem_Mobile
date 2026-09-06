@@ -388,9 +388,15 @@ function GSTInvoiceDocument({ order }) {
                 <Text>SGST (9%):</Text>
                 <Text>₹{totalSGST.toFixed(2)}</Text>
               </View>
+              {order.discount > 0 && (
+                <View style={styles.totalRow}>
+                  <Text style={{ color: '#047857', fontWeight: 'bold' }}>Coupon Discount:</Text>
+                  <Text style={{ color: '#047857', fontWeight: 'bold' }}>-₹{parseFloat(order.discount).toLocaleString('en-IN')}</Text>
+                </View>
+              )}
               <View style={styles.grandTotalRow}>
-                <Text>GRAND TOTAL:</Text>
-                <Text style={{ color: '#b91c1c' }}>₹{grandTotal.toLocaleString('en-IN')}</Text>
+                <Text>NET AMOUNT PAID:</Text>
+                <Text style={{ color: '#047857' }}>₹{grandTotal.toLocaleString('en-IN')}</Text>
               </View>
             </View>
           </View>
