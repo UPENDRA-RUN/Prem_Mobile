@@ -116,7 +116,8 @@ export function initDatabase() {
       status TEXT NOT NULL DEFAULT 'PENDING', -- 'PENDING', 'CONFIRMED', 'DELIVERED', 'CANCELLED'
       notes TEXT,
       isSundaySaleOrder INTEGER NOT NULL DEFAULT 0,
-      createdAt TEXT NOT NULL
+      createdAt TEXT NOT NULL,
+      userId INTEGER
     );
 
     CREATE TABLE IF NOT EXISTS order_items (
@@ -177,6 +178,9 @@ export function initDatabase() {
     if (!saleItemCols.includes('customBrand')) db.exec('ALTER TABLE sale_items ADD COLUMN customBrand TEXT;');
     if (!saleItemCols.includes('customImage')) db.exec('ALTER TABLE sale_items ADD COLUMN customImage TEXT;');
     if (!saleItemCols.includes('comboId')) db.exec('ALTER TABLE sale_items ADD COLUMN comboId INTEGER;');
+
+    const orderCols = db.prepare("PRAGMA table_info(orders)").all().map(c => c.name);
+    if (!orderCols.includes('userId')) db.exec('ALTER TABLE orders ADD COLUMN userId INTEGER;');
   } catch (e) {
     console.warn('[DB] Migration warning:', e.message);
   }

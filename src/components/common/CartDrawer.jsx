@@ -36,17 +36,18 @@ export default function CartDrawer() {
 
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
 
-  if (!isCartDrawerOpen) return null;
+  if (!isCartDrawerOpen && !isCheckoutOpen) return null;
 
   return (
     <>
-      <div className="fixed inset-0 z-[9999] overflow-hidden animate-fade-in">
-        {/* Backdrop */}
+      {isCartDrawerOpen && (
+        <div className="fixed inset-0 z-[9999] overflow-hidden animate-fade-in">
+          {/* Backdrop */}
 
-        <div
-          className="fixed inset-0 bg-black/80 backdrop-blur-xs transition-opacity"
-          onClick={() => setIsCartDrawerOpen(false)}
-        />
+          <div
+            className="fixed inset-0 bg-black/80 backdrop-blur-xs transition-opacity"
+            onClick={() => setIsCartDrawerOpen(false)}
+          />
 
         <div className="fixed inset-y-0 right-0 max-w-full flex pl-0 sm:pl-10">
           <div className="w-screen max-w-md bg-white shadow-2xl flex flex-col">
@@ -230,6 +231,7 @@ export default function CartDrawer() {
                   <button
                     onClick={() => {
                       setIsCheckoutOpen(true);
+                      setIsCartDrawerOpen(false);
                     }}
                     className="w-full py-3 px-4 rounded-xl bg-[#FFD400] hover:bg-[#e6be00] text-[#050505] font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md"
                   >
@@ -277,6 +279,7 @@ export default function CartDrawer() {
           </div>
         </div>
       </div>
+      )}
 
       {/* Checkout Modal from Drawer */}
       <CheckoutModal

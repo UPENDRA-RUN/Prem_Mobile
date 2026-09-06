@@ -86,6 +86,16 @@ router.post('/customer/register', (req, res) => {
     role: 'CUSTOMER'
   });
 
+  const cookieOptions = {
+    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+    httpOnly: false,
+    sameSite: 'lax',
+    path: '/'
+  };
+
+  res.cookie('premmobile_customer_token', token, cookieOptions);
+  res.cookie('premmobile_customer_user', JSON.stringify(user), cookieOptions);
+
   res.status(201).json({
     success: true,
     message: 'Account created successfully!',
@@ -156,17 +166,29 @@ router.post('/customer/login', (req, res) => {
     role: user.role
   });
 
+  const userData = {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    mobile: user.mobile,
+    role: user.role
+  };
+
+  const cookieOptions = {
+    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+    httpOnly: false,
+    sameSite: 'lax',
+    path: '/'
+  };
+
+  res.cookie('premmobile_customer_token', token, cookieOptions);
+  res.cookie('premmobile_customer_user', JSON.stringify(userData), cookieOptions);
+
   res.json({
     success: true,
     message: 'Logged in successfully!',
     token,
-    user: {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      mobile: user.mobile,
-      role: user.role
-    }
+    user: userData
   });
 });
 

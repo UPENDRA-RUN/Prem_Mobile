@@ -6,8 +6,8 @@ import { broadcastEvent } from '../events.js';
 
 const router = express.Router();
 
-const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || '';
-const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || '';
+const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || 'rzp_test_TY1sq2rCUuSbfs';
+const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || 'unMtcT3JuoKZ9g2znjQVXYpL';
 
 // 1. POST /api/payment/create-razorpay-order
 router.post('/create-razorpay-order', async (req, res) => {
@@ -62,135 +62,145 @@ router.post('/create-razorpay-order', async (req, res) => {
 
 // 2. POST /api/payment/verify-razorpay-payment
 router.post('/verify-razorpay-payment', (req, res) => {
-  const {
-    razorpay_order_id,
-    razorpay_payment_id,
-    razorpay_signature,
-    customerDetails,
-    items,
-    notes
-  } = req.body || {};
+  try {
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+      customerDetails,
+      items,
+      notes,
+      userId: bodyUserId
+    } = req.body || {};
 
-  const {
-    customerName,
-    mobile,
-    email,
-    address,
-    city,
-    state,
-    pincode
-  } = customerDetails || {};
-
-  if (!customerName || !mobile || !address || !Array.isArray(items) || items.length === 0) {
-    return res.status(400).json({ success: false, error: 'Incomplete order details' });
-  }
-
-  let subtotal = 0;
-  let totalDiscount = 0;
-  let isSundaySaleOrder = false;
-  const verifiedItems = [];
-
-  for (const item of items) {
-    const pId = Number(item.productId || item.id);
-    const qty = Math.max(1, parseInt(item.quantity, 10) || 1);
-
-    const serverPriceInfo = resolveServerProductPrice(pId);
-    if (serverPriceInfo) {
-      const regPrice = serverPriceInfo.regularPrice;
-      const finalPrice = serverPriceInfo.finalUnitPrice;
-      const salePrice = serverPriceInfo.isSundaySalePrice ? serverPriceInfo.salePrice : null;
-
-      if (serverPriceInfo.isSundaySalePrice) isSundaySaleOrder = true;
-
-      const itemRegularSubtotal = regPrice * qty;
-      const itemFinalSubtotal = finalPrice * qty;
-      const itemDiscount = Math.max(0, itemRegularSubtotal - itemFinalSubtotal);
-
-      subtotal += itemFinalSubtotal;
-      totalDiscount += itemDiscount;
-
-      verifiedItems.push({
-        productId: pId,
-        name: serverPriceInfo.name,
-        quantity: qty,
-        regularPrice: regPrice,
-        salePrice: salePrice,
-        finalPrice: finalPrice,
-        lineTotal: itemFinalSubtotal
-      });
-    }
-  }
-
-  const finalTotal = subtotal;
-  const orderNumber = 'PM-RZP-' + Date.now().toString().slice(-6) + '-' + Math.floor(100 + Math.random() * 900);
-  const now = new Date().toISOString();
-
-  const paymentRef = razorpay_payment_id || `pay_${Date.now()}`;
-  const notesText = `[Razorpay Paid: ${paymentRef}] ${notes || ''}`.trim();
-
-  // Create Order in DB as CONFIRMED
-  const orderInsert = db.prepare(`
-    INSERT INTO orders (
-      orderNumber, customerName, mobile, email, address, city, state, pincode,
-      subtotal, discount, total, status, notes, isSundaySaleOrder, createdAt
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'CONFIRMED', ?, ?, ?)
-  `);
-
-  const orderResult = orderInsert.run(
-    orderNumber,
-    customerName.trim(),
-    mobile.trim(),
-    email ? email.trim() : '',
-    address.trim(),
-    city.trim(),
-    state.trim(),
-    pincode.trim(),
-    subtotal,
-    totalDiscount,
-    finalTotal,
-    notesText,
-    isSundaySaleOrder ? 1 : 0,
-    now
-  );
-
-  const orderId = orderResult.lastInsertRowid;
-
-  // Insert Order Items
-  const itemInsert = db.prepare(`
-    INSERT INTO order_items (
-      orderId, productId, productNameSnapshot, quantity, regularPrice, salePrice, finalPrice
-    ) VALUES (?, ?, ?, ?, ?, ?, ?)
-  `);
-
-  for (const it of verifiedItems) {
-    itemInsert.run(
-      orderId,
-      it.productId,
-      it.name,
-      it.quantity,
-      it.regularPrice,
-      it.salePrice,
-      it.finalPrice
-    );
-  }
-
-  // Broadcast real-time order update to Admin Panel
-  broadcastEvent('ORDERS_UPDATED');
-
-  res.json({
-    success: true,
-    message: 'Payment verified & order confirmed successfully!',
-    paymentId: paymentRef,
-    order: {
-      id: orderId,
-      orderNumber,
+    const {
       customerName,
-      total: finalTotal,
-      paymentMethod: 'Razorpay',
-      paymentId: paymentRef,
-      createdAt: now
+      mobile,
+      email,
+      address,
+      city,
+      state,
+      pincode
+    } = customerDetails || {};
+
+    if (!customerName || !mobile || !address || !Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ success: false, error: 'Incomplete order details' });
     }
-  });
+
+    let subtotal = 0;
+    let totalDiscount = 0;
+    let isSundaySaleOrder = false;
+    const verifiedItems = [];
+
+    for (const item of items) {
+      const pId = Number(item.productId || item.id);
+      const qty = Math.max(1, parseInt(item.quantity, 10) || 1);
+
+      const serverPriceInfo = resolveServerProductPrice(pId);
+      if (serverPriceInfo) {
+        const regPrice = serverPriceInfo.regularPrice;
+        const finalPrice = serverPriceInfo.finalUnitPrice;
+        const salePrice = serverPriceInfo.isSundaySalePrice ? serverPriceInfo.salePrice : null;
+
+        if (serverPriceInfo.isSundaySalePrice) isSundaySaleOrder = true;
+
+        const itemRegularSubtotal = regPrice * qty;
+        const itemFinalSubtotal = finalPrice * qty;
+        const itemDiscount = Math.max(0, itemRegularSubtotal - itemFinalSubtotal);
+
+        subtotal += itemFinalSubtotal;
+        totalDiscount += itemDiscount;
+
+        verifiedItems.push({
+          productId: pId,
+          name: serverPriceInfo.name,
+          quantity: qty,
+          regularPrice: regPrice,
+          salePrice: salePrice,
+          finalPrice: finalPrice,
+          lineTotal: itemFinalSubtotal
+        });
+      }
+    }
+
+    const finalTotal = subtotal;
+    const orderNumber = 'PM-RZP-' + Date.now().toString().slice(-6) + '-' + Math.floor(100 + Math.random() * 900);
+    const now = new Date().toISOString();
+
+    const paymentRef = razorpay_payment_id || `pay_${Date.now()}`;
+    const notesText = `[Razorpay Paid: ${paymentRef}] ${notes || ''}`.trim();
+
+    // Create Order in DB as CONFIRMED
+    const orderInsert = db.prepare(`
+      INSERT INTO orders (
+        orderNumber, customerName, mobile, email, address, city, state, pincode,
+        subtotal, discount, total, status, notes, isSundaySaleOrder, createdAt, userId
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'CONFIRMED', ?, ?, ?, ?)
+    `);
+
+    const orderResult = orderInsert.run(
+      orderNumber,
+      customerName.trim(),
+      mobile.trim(),
+      email ? email.trim() : '',
+      address.trim(),
+      city.trim(),
+      state.trim(),
+      pincode.trim(),
+      subtotal,
+      totalDiscount,
+      finalTotal,
+      notesText,
+      isSundaySaleOrder ? 1 : 0,
+      now,
+      bodyUserId || null
+    );
+
+    const orderId = orderResult.lastInsertRowid;
+
+    // Insert Order Items
+    const itemInsert = db.prepare(`
+      INSERT INTO order_items (
+        orderId, productId, productNameSnapshot, quantity, regularPrice, salePrice, finalPrice
+      ) VALUES (?, ?, ?, ?, ?, ?, ?)
+    `);
+
+    for (const it of verifiedItems) {
+      itemInsert.run(
+        orderId,
+        it.productId,
+        it.name,
+        it.quantity,
+        it.regularPrice,
+        it.salePrice,
+        it.finalPrice
+      );
+    }
+
+    // Broadcast real-time order update to Admin Panel
+    broadcastEvent('ORDERS_UPDATED');
+
+    res.json({
+      success: true,
+      message: 'Payment verified & order confirmed successfully!',
+      paymentId: paymentRef,
+      order: {
+        id: orderId,
+        orderNumber,
+        customerName,
+        total: finalTotal,
+        paymentMethod: 'Razorpay',
+        paymentId: paymentRef,
+        createdAt: now
+      }
+    });
+  } catch (err) {
+    console.error('[Payment] Error verifying payment:', err);
+    res.status(500).json({
+      success: false,
+      error: err.message || 'Server error verifying payment.'
+    });
+  }
 });
 
 export default router;

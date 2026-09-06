@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useCustomerAuth } from '../context/CustomerAuthContext';
 import { formatCurrency } from '../utils/formatters';
 import { parseResponseJson } from '../utils/apiHelper';
 import {
@@ -37,6 +38,7 @@ const loadRazorpayScript = () => {
 export default function Checkout() {
   const navigate = useNavigate();
   const { cartItems, subtotal, finalTotal, clearCart } = useCart();
+  const { customerUser, customerToken, isAuthenticated: isCustomerAuthenticated } = useCustomerAuth();
 
   const [formData, setFormData] = useState({
     customerName: '',
@@ -53,30 +55,39 @@ export default function Checkout() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
 
-  // Check login state on mount & prefill profile
+  // Check login state on mount & prefill profile from customerUser / local profile
   React.useEffect(() => {
+    let userProf = null;
     try {
       const stored = localStorage.getItem('premmobile_user_profile');
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        setIsLoggedIn(true);
-        setFormData(prev => ({
-          ...prev,
-          customerName: parsed.fullName || prev.customerName,
-          mobile: parsed.phone || prev.mobile,
-          email: parsed.email || prev.email,
-          address: parsed.address || prev.address,
-          city: parsed.city || prev.city,
-          state: parsed.state || prev.state,
-          pincode: parsed.pincode || prev.pincode
-        }));
-      } else {
-        setIsLoggedIn(false);
-      }
-    } catch (e) {
+      if (stored) userProf = JSON.parse(stored);
+    } catch (e) {}
+
+    const name = customerUser?.name || userProf?.fullName || userProf?.name || '';
+    const mobile = customerUser?.mobile || userProf?.phone || userProf?.mobile || '';
+    const email = customerUser?.email || userProf?.email || '';
+    const address = customerUser?.address || userProf?.address || 'Pinto Park, Gwalior';
+    const city = customerUser?.city || userProf?.city || 'Gwalior';
+    const state = customerUser?.state || userProf?.state || 'Madhya Pradesh';
+    const pincode = customerUser?.pincode || userProf?.pincode || '474005';
+
+    if (isCustomerAuthenticated || Boolean(name || email || customerUser)) {
+      setIsLoggedIn(true);
+    } else {
       setIsLoggedIn(false);
     }
-  }, []);
+
+    setFormData(prev => ({
+      ...prev,
+      customerName: name || prev.customerName,
+      mobile: mobile || prev.mobile,
+      email: email || prev.email,
+      address: address || prev.address,
+      city: city || prev.city,
+      state: state || prev.state,
+      pincode: pincode || prev.pincode
+    }));
+  }, [customerUser, isCustomerAuthenticated]);
 
   if (cartItems.length === 0) {
     return (
@@ -161,9 +172,12 @@ export default function Checkout() {
       }
 
       // Step 1: Create Razorpay Order on server
+      const headers = { 'Content-Type': 'application/json' };
+      if (customerToken) headers['Authorization'] = `Bearer ${customerToken}`;
+
       const createRes = await fetch('/api/payment/create-razorpay-order', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           amount: finalTotal,
           receipt: `rcpt_${Date.now()}`
@@ -195,9 +209,12 @@ export default function Checkout() {
         handler: async function (response) {
           try {
             // Step 3: Verify payment on server & save order
+            const verifyHeaders = { 'Content-Type': 'application/json' };
+            if (customerToken) verifyHeaders['Authorization'] = `Bearer ${customerToken}`;
+
             const verifyRes = await fetch('/api/payment/verify-razorpay-payment', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: verifyHeaders,
               body: JSON.stringify({
                 razorpay_order_id: response.razorpay_order_id || createData.razorpayOrderId,
                 razorpay_payment_id: response.razorpay_payment_id,
@@ -207,7 +224,8 @@ export default function Checkout() {
                   productId: item.id,
                   quantity: item.quantity
                 })),
-                notes: 'Paid via Razorpay Online'
+                notes: 'Paid via Razorpay Online',
+                userId: customerUser?.id || null
               })
             });
 
@@ -258,12 +276,16 @@ export default function Checkout() {
         items: cartItems.map(item => ({
           productId: item.id,
           quantity: item.quantity
-        }))
+        })),
+        userId: customerUser?.id || null
       };
+
+      const reqHeaders = { 'Content-Type': 'application/json' };
+      if (customerToken) reqHeaders['Authorization'] = `Bearer ${customerToken}`;
 
       const res = await fetch('/api/orders', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: reqHeaders,
         body: JSON.stringify(payload)
       });
 

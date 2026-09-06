@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { parseResponseJson } from '../utils/apiHelper';
 import { storeConfig } from '../config/store';
 import { useCart } from '../context/CartContext';
+import { useCustomerAuth } from '../context/CustomerAuthContext';
 import { useRealtimeSync } from '../hooks/useRealtimeSync';
 import { formatCurrency } from '../utils/formatters';
 import DeleteAccountModal from '../components/common/DeleteAccountModal';
@@ -39,18 +40,39 @@ const LOCAL_STORAGE_KEY = 'premmobile_user_profile';
 
 export default function AccountSettings() {
   const { showToast } = useCart();
+  const { customerUser, customerToken } = useCustomerAuth();
   const [searchParams] = useSearchParams();
   const orderSuccessNo = searchParams.get('orderSuccess');
 
-  // Initial default state
-  const initialData = {
-    fullName: 'Rahul Sharma',
-    phone: '9893947477',
-    email: 'rahul.gwalior@gmail.com',
-    address: 'Flat 302, Pinto Park Chauraha, Jaderua Gate',
-    city: 'Gwalior (M.P.)',
-    pickupPreference: 'Pinto Park Store Pickup'
+  // Initial default state derived dynamically
+  const buildInitialData = () => {
+    try {
+      const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
+      if (stored) return JSON.parse(stored);
+    } catch (e) {}
+
+    if (customerUser) {
+      return {
+        fullName: customerUser.name || '',
+        phone: customerUser.mobile || '',
+        email: customerUser.email || '',
+        address: customerUser.address || 'Pinto Park, Gwalior',
+        city: customerUser.city || 'Gwalior',
+        pickupPreference: 'Pinto Park Store Pickup'
+      };
+    }
+
+    return {
+      fullName: '',
+      phone: '',
+      email: '',
+      address: 'Pinto Park, Gwalior',
+      city: 'Gwalior',
+      pickupPreference: 'Pinto Park Store Pickup'
+    };
   };
+
+  const initialData = buildInitialData();
 
   // State management
   const [profile, setProfile] = useState(initialData);
@@ -66,7 +88,7 @@ export default function AccountSettings() {
   const [isLoadingOrders, setIsLoadingOrders] = useState(true);
   const [expandedOrder, setExpandedOrder] = useState(null);
 
-  // Load profile from localStorage on mount
+  // Load profile from localStorage or customerUser on mount / update
   useEffect(() => {
     try {
       const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
@@ -74,18 +96,39 @@ export default function AccountSettings() {
         const parsed = JSON.parse(stored);
         setProfile(parsed);
         setSavedProfile(parsed);
+      } else if (customerUser) {
+        const userProf = {
+          fullName: customerUser.name || '',
+          phone: customerUser.mobile || '',
+          email: customerUser.email || '',
+          address: customerUser.address || 'Pinto Park, Gwalior',
+          city: customerUser.city || 'Gwalior',
+          pickupPreference: 'Pinto Park Store Pickup'
+        };
+        setProfile(userProf);
+        setSavedProfile(userProf);
       }
     } catch (e) {
       console.error('Failed to load profile', e);
     }
-  }, []);
+  }, [customerUser]);
 
   // Fetch customer orders from API
   const fetchMyOrders = useCallback(async () => {
-    if (!profile.phone && !profile.email) return;
+    const activeEmail = profile.email || customerUser?.email || '';
+    const activePhone = profile.phone || customerUser?.mobile || '';
+    if (!activePhone && !activeEmail && !customerToken) return;
+
     setIsLoadingOrders(true);
     try {
-      const res = await fetch(`/api/orders/my-orders?mobile=${encodeURIComponent(profile.phone || '')}&email=${encodeURIComponent(profile.email || '')}`);
+      const headers = {};
+      if (customerToken) {
+        headers['Authorization'] = `Bearer ${customerToken}`;
+      }
+      const res = await fetch(
+        `/api/orders/my-orders?mobile=${encodeURIComponent(activePhone)}&email=${encodeURIComponent(activeEmail)}`,
+        { headers }
+      );
       const data = await parseResponseJson(res);
       if (data.success) {
         setOrders(data.orders || []);
@@ -98,7 +141,7 @@ export default function AccountSettings() {
     } finally {
       setIsLoadingOrders(false);
     }
-  }, [profile.phone, profile.email]);
+  }, [profile.phone, profile.email, customerUser, customerToken]);
 
   useEffect(() => {
     fetchMyOrders();
