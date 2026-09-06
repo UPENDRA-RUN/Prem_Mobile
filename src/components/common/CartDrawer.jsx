@@ -236,7 +236,7 @@ export default function CartDrawer() {
                     className="w-full py-3 px-4 rounded-xl bg-[#FFD400] hover:bg-[#e6be00] text-[#050505] font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md"
                   >
                     <ShoppingBag className="w-4 h-4 text-[#050505]" />
-                    <span>CHECKOUT NOW ({formatCurrency(finalTotal)})</span>
+                    <span>PROCEED TO CHECKOUT ({formatCurrency(finalTotal)})</span>
                   </button>
 
                   {/* WhatsApp Order Button */}

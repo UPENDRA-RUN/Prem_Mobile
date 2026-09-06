@@ -24,7 +24,8 @@ import {
   Phone,
   MessageCircle,
   Tag,
-  Package
+  Package,
+  BarChart3
 } from 'lucide-react';
 import SearchModal from './SearchModal';
 
@@ -39,9 +40,11 @@ export default function Navbar() {
   const { totalItems, subtotal, setIsCartDrawerOpen } = useCart();
   const { wishlistCount } = useWishlist();
   const { isLive: isSundaySaleLive } = useSundaySale();
-  const { isAuthenticated: isAdmin } = useAdminAuth();
+  const { isAuthenticated: isAdmin, logout: adminLogout } = useAdminAuth();
   const { customerUser, isAuthenticated: isCustomer, logout: customerLogout } = useCustomerAuth();
   const location = useLocation();
+
+  const isUserAdmin = isAdmin || customerUser?.role === 'admin' || customerUser?.email === 'admin@premmobile.com' || customerUser?.isAdmin === true;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -346,7 +349,7 @@ export default function Navbar() {
             </button>
 
             {/* 2. User Account / Profile / Login */}
-            {isCustomer ? (
+            {(isCustomer || isUserAdmin || Boolean(customerUser)) ? (
               <div className="relative">
                 <button
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
@@ -354,13 +357,19 @@ export default function Navbar() {
                   title="My Account"
                   aria-label="My Account"
                 >
-                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#ffd000] text-black font-black text-[10px] sm:text-xs flex items-center justify-center flex-shrink-0 shadow-xs">
-                    {customerUser?.name ? customerUser.name[0].toUpperCase() : '👤'}
+                  <div className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full font-black text-[10px] sm:text-xs flex items-center justify-center flex-shrink-0 shadow-xs ${
+                    isUserAdmin ? 'bg-[#FFD400] text-[#050505]' : 'bg-[#ffd000] text-black'
+                  }`}>
+                    {customerUser?.name ? customerUser.name[0].toUpperCase() : (isUserAdmin ? 'A' : '👤')}
                   </div>
                   <div className="hidden min-[480px]:flex flex-col text-left">
-                    <span className="text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-wider leading-none">Customer</span>
+                    <span className={`text-[8px] sm:text-[9px] font-extrabold uppercase tracking-wider leading-none ${
+                      isUserAdmin ? 'text-amber-600' : 'text-slate-400'
+                    }`}>
+                      {isUserAdmin ? 'ADMIN' : 'CUSTOMER'}
+                    </span>
                     <span className="text-[11px] sm:text-xs font-black max-w-[65px] sm:max-w-[110px] truncate text-slate-900 leading-tight">
-                      {customerUser?.name || 'Customer'}
+                      {customerUser?.name || (isUserAdmin ? 'Prem Mobile Admin' : 'Customer')}
                     </span>
                   </div>
                   <ChevronDown className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-slate-500 hidden sm:block" />
@@ -372,29 +381,67 @@ export default function Navbar() {
                     onMouseLeave={() => setIsUserMenuOpen(false)}
                   >
                     <div className="px-4 py-2.5 border-b border-slate-100">
-                      <p className="text-xs font-black text-slate-900 truncate">{customerUser?.name}</p>
-                      <p className="text-[11px] text-slate-500 truncate">{customerUser?.email || customerUser?.mobile}</p>
+                      <p className="text-xs font-black text-slate-900 truncate">
+                        {customerUser?.name || (isUserAdmin ? 'Prem Mobile Admin' : 'User')}
+                      </p>
+                      <p className="text-[11px] text-slate-500 truncate">
+                        {customerUser?.email || (isUserAdmin ? 'admin@premmobile.com' : customerUser?.mobile || '')}
+                      </p>
                     </div>
-                    <Link
-                      to="/account"
-                      onClick={() => setIsUserMenuOpen(false)}
-                      className="flex items-center gap-2.5 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-[#e51b23] transition-colors"
-                    >
-                      <User className="w-4 h-4" />
-                      <span>My Profile</span>
-                    </Link>
-                    <Link
-                      to="/orders"
-                      onClick={() => setIsUserMenuOpen(false)}
-                      className="flex items-center gap-2.5 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-[#e51b23] transition-colors"
-                    >
-                      <ShoppingBag className="w-4 h-4" />
-                      <span>My Orders</span>
-                    </Link>
+
+                    {isUserAdmin ? (
+                      <>
+                        <Link
+                          to="/admin"
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="flex items-center gap-2.5 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-amber-50 hover:text-amber-900 transition-colors"
+                        >
+                          <ShieldCheck className="w-4 h-4 text-amber-600" />
+                          <span>Admin Dashboard</span>
+                        </Link>
+                        <Link
+                          to="/admin/analytics"
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="flex items-center gap-2.5 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-amber-50 hover:text-amber-900 transition-colors"
+                        >
+                          <BarChart3 className="w-4 h-4 text-emerald-600" />
+                          <span>Admin Analytics</span>
+                        </Link>
+                        <Link
+                          to="/account"
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="flex items-center gap-2.5 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-[#e51b23] transition-colors"
+                        >
+                          <User className="w-4 h-4" />
+                          <span>My Profile</span>
+                        </Link>
+                      </>
+                    ) : (
+                      <>
+                        <Link
+                          to="/account"
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="flex items-center gap-2.5 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-[#e51b23] transition-colors"
+                        >
+                          <User className="w-4 h-4" />
+                          <span>My Profile</span>
+                        </Link>
+                        <Link
+                          to="/orders"
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="flex items-center gap-2.5 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-[#e51b23] transition-colors"
+                        >
+                          <ShoppingBag className="w-4 h-4" />
+                          <span>My Orders</span>
+                        </Link>
+                      </>
+                    )}
+
                     <div className="border-t border-slate-100 my-1" />
                     <button
                       onClick={() => {
                         setIsUserMenuOpen(false);
+                        if (typeof adminLogout === 'function') adminLogout();
                         customerLogout();
                       }}
                       className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-bold text-red-600 hover:bg-red-50 transition-colors text-left cursor-pointer"
@@ -586,12 +633,25 @@ export default function Navbar() {
                 <Tag className="w-3.5 h-3.5 text-amber-700" />
               </Link>
 
-              {isCustomer && (
+              {(isCustomer || isUserAdmin) && (
                 <>
-                  <Link to="/orders" onClick={() => setIsMobileMenuOpen(false)} className="px-3.5 py-2.5 rounded-xl bg-blue-50 text-xs font-bold text-blue-900 flex items-center gap-2">
-                    <Package className="w-3.5 h-3.5 text-blue-700" />
-                    <span>MY ORDERS</span>
-                  </Link>
+                  {isUserAdmin ? (
+                    <>
+                      <Link to="/admin" onClick={() => setIsMobileMenuOpen(false)} className="px-3.5 py-2.5 rounded-xl bg-amber-50 text-xs font-bold text-amber-900 flex items-center gap-2">
+                        <ShieldCheck className="w-3.5 h-3.5 text-amber-700" />
+                        <span>ADMIN DASHBOARD</span>
+                      </Link>
+                      <Link to="/admin/analytics" onClick={() => setIsMobileMenuOpen(false)} className="px-3.5 py-2.5 rounded-xl bg-indigo-50 text-xs font-bold text-indigo-900 flex items-center gap-2">
+                        <BarChart3 className="w-3.5 h-3.5 text-indigo-700" />
+                        <span>ADMIN ANALYTICS</span>
+                      </Link>
+                    </>
+                  ) : (
+                    <Link to="/orders" onClick={() => setIsMobileMenuOpen(false)} className="px-3.5 py-2.5 rounded-xl bg-blue-50 text-xs font-bold text-blue-900 flex items-center gap-2">
+                      <Package className="w-3.5 h-3.5 text-blue-700" />
+                      <span>MY ORDERS</span>
+                    </Link>
+                  )}
                   <Link to="/account" onClick={() => setIsMobileMenuOpen(false)} className="px-3.5 py-2.5 rounded-xl bg-emerald-50 text-xs font-bold text-emerald-900 flex items-center gap-2">
                     <User className="w-3.5 h-3.5 text-emerald-700" />
                     <span>MY PROFILE</span>

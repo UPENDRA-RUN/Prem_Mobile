@@ -225,7 +225,7 @@ export default function WelcomeLogin({ defaultMode = 'customer_login' }) {
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFD400]/10 border border-[#FFD400]/30 text-[#FFD400] text-xs font-bold mb-3">
                 <Crown className="w-3.5 h-3.5" />
-                <span>Gwalior's #1 Smartphone Store</span>
+                <span>Gwalior's #1 Electronic Accessories Store</span>
               </div>
               <h1 className="text-3xl font-black tracking-tight leading-tight text-white">
                 One Login for <br />
