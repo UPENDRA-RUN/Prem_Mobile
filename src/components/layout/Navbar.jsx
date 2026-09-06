@@ -471,16 +471,18 @@ export default function Navbar() {
               )}
             </button>
 
-            {/* 5. Switch to Admin Button (Desktop & Tablet) */}
-            <Link
-              to={isAdmin ? "/admin/dashboard" : "/admin/login"}
-              className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-[#050505] hover:bg-slate-800 text-[#ffd000] border border-[#ffd000]/40 font-black text-xs uppercase tracking-wider transition-all shadow-xs shrink-0"
-              title={isAdmin ? "Go to Admin Dashboard" : "Switch to Admin Login"}
-            >
-              <ShieldCheck className="w-3.5 h-3.5 text-[#ffd000]" />
-              <span className="hidden xl:inline">{isAdmin ? 'ADMIN DASHBOARD' : 'SWITCH TO ADMIN'}</span>
-              <span className="xl:hidden">ADMIN</span>
-            </Link>
+            {/* 5. Switch to Admin Button (Only shown when Admin is logged in) */}
+            {isAdmin && (
+              <Link
+                to="/admin/dashboard"
+                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#050505] hover:bg-slate-800 text-[#ffd000] border border-[#ffd000]/40 font-black text-xs uppercase tracking-wider transition-all shadow-xs shrink-0"
+                title="Go to Admin Dashboard"
+              >
+                <ShieldCheck className="w-3.5 h-3.5 text-[#ffd000]" />
+                <span className="hidden xl:inline">ADMIN DASHBOARD</span>
+                <span className="xl:hidden">ADMIN</span>
+              </Link>
+            )}
 
             {/* 6. Mobile Hamburger Menu Toggle Button */}
             <button

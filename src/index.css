@@ -105,21 +105,21 @@
 
 /* Custom scrollbars */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--primitive-color-black-900);
+  background: #0f172a;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--primitive-color-yellow-500);
+  background: #cbd5e1;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--primitive-color-yellow-600);
+  background: #94a3b8;
 }
 
 /* Hide scrollbar utility */

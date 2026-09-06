@@ -344,7 +344,10 @@ export default function Footer() {
           {/* BOTTOM COPYRIGHT */}
           <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400">
             <p>
-              © 2026 <strong className="text-[#FFD400]">Prem Mobile</strong>. All Rights Reserved.
+              © 2026 <strong className="text-[#FFD400]">Prem Mobile</strong>. All Rights Reserved. •{' '}
+              <Link to="/login" className="hover:text-[#FFD400] transition-colors">
+                Admin Portal
+              </Link>
             </p>
             <p className="text-slate-500 text-center sm:text-right">
               Pinto Park, Jaderua Gate Ke Samne, Gwalior (M.P.) • “{storeConfig.tagline}”
