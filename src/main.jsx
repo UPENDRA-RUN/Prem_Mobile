@@ -36,28 +36,43 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   </React.StrictMode>
 );
 
-// Register Service Worker for PWA Offline Caching & Installation
+// Register Service Worker for PWA Offline Caching & Installation (Production Only)
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker
-      .register('/sw.js')
-      .then((reg) => {
-        console.log('[PWA] ServiceWorker registered successfully with scope:', reg.scope);
-        reg.onupdatefound = () => {
-          const installingWorker = reg.installing;
-          if (installingWorker) {
-            installingWorker.onstatechange = () => {
-              if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                console.log('[PWA] New deployment version detected! Reloading for fresh bundle...');
-                window.location.reload();
-              }
-            };
-          }
-        };
-      })
-      .catch((err) => {
-        console.warn('[PWA] ServiceWorker registration failed:', err);
+  if (import.meta.env.PROD) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker
+        .register('/sw.js')
+        .then((reg) => {
+          console.log('[PWA] ServiceWorker registered successfully with scope:', reg.scope);
+          reg.onupdatefound = () => {
+            const installingWorker = reg.installing;
+            if (installingWorker) {
+              installingWorker.onstatechange = () => {
+                if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  console.log('[PWA] New deployment version detected! Reloading for fresh bundle...');
+                  window.location.reload();
+                }
+              };
+            }
+          };
+        })
+        .catch((err) => {
+          console.warn('[PWA] ServiceWorker registration failed:', err);
+        });
+    });
+  } else {
+    // In development mode, unregister any existing service worker & clear caches to prevent stale cache white screens
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      for (const registration of registrations) {
+        registration.unregister().then(() => {
+          console.log('[PWA Dev] Unregistered existing ServiceWorker to ensure fresh Vite HMR');
+        });
+      }
+    });
+    if ('caches' in window) {
+      caches.keys().then((keys) => {
+        keys.forEach((key) => caches.delete(key));
       });
-  });
+    }
+  }
 }
-

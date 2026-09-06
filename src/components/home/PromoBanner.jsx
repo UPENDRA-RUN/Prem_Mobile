@@ -14,8 +14,8 @@ export default function PromoBanner() {
           
           <div className="relative aspect-[16/8] sm:aspect-[21/9] md:aspect-[24/9] w-full flex items-center justify-center overflow-hidden">
             <img
-              src="/images/sunday-sale.jpg"
-              alt="Sunday Special Sale - Prem Mobile Gwalior"
+              src="/images/sunday-shocking-sale.jpg"
+              alt="Sunday Shocking Sale - Prem Mobile Gwalior"
               className="w-full h-full object-cover sm:object-contain group-hover:scale-102 transition-transform duration-700"
             />
             

@@ -118,66 +118,16 @@ export default function FeaturedSection({ products }) {
 
           {/* Sunday Special Sale Sidebar Banner Card */}
           <div className="sm:col-span-2 md:col-span-3 lg:col-span-4 xl:col-span-2 flex flex-col">
-            <div className="relative w-full h-full min-h-[260px] rounded-2xl overflow-hidden bg-gradient-to-b from-[#0a0a0a] via-[#111111] to-[#1a0808] border-2 border-[#ffd000]/60 p-4 shadow-md flex flex-col justify-between text-white group">
-              
-              {/* Fiery Background Glow */}
-              <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#e51b23]/30 rounded-full blur-2xl pointer-events-none" />
-              <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-[#ffd000]/20 rounded-full blur-2xl pointer-events-none" />
-
-              {/* Title Typography */}
-              <div className="relative z-10 text-center space-y-0.5">
-                <div className="leading-tight">
-                  <span className="font-display font-black text-2xl text-[#ffd000] tracking-tight block drop-shadow-[0_2px_6px_rgba(255,208,0,0.4)]">
-                    SUNDAY
-                  </span>
-                  <span className="font-display font-black text-xl text-white tracking-tight block">
-                    SPECIAL
-                  </span>
-                  <span className="font-display font-black text-3xl text-[#e51b23] tracking-tight block drop-shadow-[0_2px_6px_rgba(229,27,35,0.6)]">
-                    SALE
-                  </span>
-                </div>
-
-                {/* Yellow Tag */}
-                <div className="pt-1">
-                  <span className="inline-block px-2.5 py-0.5 rounded-md bg-[#ffd000] text-[#050505] text-[10px] font-black uppercase tracking-wider shadow-sm">
-                    LIMITED TIME OFFER
-                  </span>
-                </div>
-              </div>
-
-              {/* Checklist */}
-              <div className="relative z-10 space-y-1 py-1 text-left">
-                <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-200">
-                  <CheckCircle2 className="w-3 h-3 text-[#ffd000] flex-shrink-0" />
-                  <span>BEST PRICES EVER</span>
-                </div>
-                <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-200">
-                  <CheckCircle2 className="w-3 h-3 text-[#ffd000] flex-shrink-0" />
-                  <span>100% ORIGINAL PRODUCTS</span>
-                </div>
-                <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-200">
-                  <CheckCircle2 className="w-3 h-3 text-[#ffd000] flex-shrink-0" />
-                  <span>LOWEST PRICE GUARANTEE</span>
-                </div>
-                <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-200">
-                  <CheckCircle2 className="w-3 h-3 text-[#ffd000] flex-shrink-0" />
-                  <span>FAST DELIVERY & SUPPORT</span>
-                </div>
-              </div>
-
-              {/* Red SHOP NOW Button */}
-              <div className="relative z-10 pt-0.5">
-                <Link
-                  to="/sunday-sale"
-                  className="w-full py-2 px-3 rounded-md bg-[#e51b23] hover:bg-[#cc141c] text-white font-black text-xs uppercase tracking-wider text-center block shadow-md transition-transform hover:scale-102"
-                >
-                  SHOP NOW
-                </Link>
-              </div>
-
-
-            </div>
+            <Link
+              to="/sunday-sale"
+              className="relative w-full h-full min-h-[260px] rounded-2xl overflow-hidden border-2 border-[#ffd000]/60 shadow-lg group block transition-transform hover:scale-[1.02] bg-black"
+            >
+              <img
+                src="/images/sunday-shocking-sale.jpg"
+                alt="Sunday Shocking Sale - Prem Mobile Gwalior"
+                className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+              />
+            </Link>
           </div>
 
         </div>

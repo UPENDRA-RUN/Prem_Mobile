@@ -41,16 +41,6 @@ export default function HeroSlider() {
       link: '/shop',
       badge: 'OFFICIAL FLAGSHIP STORE'
     },
-    {
-      id: 'sunday-sale',
-      type: 'landscape-image',
-      title: 'Sunday Special Sale - Up to 70% OFF',
-      image: '/images/sunday-sale.jpg',
-      alt: 'Sunday Special Sale Prem Mobile Gwalior',
-      whatsappTopic: 'Sunday Special Sale Deals',
-      link: '/sunday-sale',
-      badge: 'SUNDAY MEGA DHAMAKA'
-    },
 
     {
       id: 'boat-deal',
