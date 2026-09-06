@@ -5,7 +5,6 @@ import { ShieldCheck } from 'lucide-react';
 
 // Layout Components
 import SundaySaleBanner from './components/layout/SundaySaleBanner';
-import AnnouncementBar from './components/layout/AnnouncementBar';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import FloatingActions from './components/layout/FloatingActions';
@@ -147,10 +146,7 @@ export default function App() {
           {/* 1. SUNDAY SALE PROMO BANNER */}
           <SundaySaleBanner />
 
-          {/* 2. TOP ANNOUNCEMENT BAR */}
-          <AnnouncementBar />
-
-          {/* 3. STICKY NAVBAR */}
+          {/* 2. STICKY NAVBAR */}
           <Navbar />
 
           {/* 4. MAIN ROUTED VIEW */}

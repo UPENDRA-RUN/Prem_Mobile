@@ -1,84 +1,64 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Heart, ShoppingBag, MessageCircle, Scale } from 'lucide-react';
+import { Heart, ShoppingBag, MessageCircle, Star } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
-import { useCompare } from '../../context/CompareContext';
 import { formatCurrency } from '../../utils/formatters';
 import { openProductWhatsApp } from '../../utils/whatsapp';
-import RatingStars from '../common/RatingStars';
 import HighlightText from '../common/HighlightText';
 import QuickEnquiryModal from './QuickEnquiryModal';
 
 export default function ProductCard({ product, searchQuery = '' }) {
   const { addToCart } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
-  const { isInCompare, toggleCompare } = useCompare();
   const [isEnquiryModalOpen, setIsEnquiryModalOpen] = useState(false);
 
   const isLiked = isInWishlist(product.id);
-  const isCompared = isInCompare(product.id);
+  const currentPrice = product.price ?? product.currentPrice ?? product.regularPrice ?? 0;
+  const origPrice = product.originalPrice ?? product.regularPrice ?? 0;
 
   return (
     <>
-      <div className="group relative bg-white rounded-2xl sm:rounded-3xl border border-slate-200 p-3 sm:p-4 shadow-sm hover:shadow-card-hover hover:border-[#FFD400] transition-all duration-300 flex flex-col justify-between hover:-translate-y-1">
+      <div className="group relative bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 p-2.5 min-[380px]:p-3 sm:p-4 shadow-sm hover:shadow-card-hover hover:border-[#FFD400] transition-all duration-300 flex flex-col justify-between hover:-translate-y-0.5">
         
-        {/* Top Badges & Actions */}
+        {/* TOP SECTION: IMAGE & METADATA */}
         <div>
-          <div className="relative aspect-square w-full rounded-xl sm:rounded-2xl bg-[#F6F6F6] overflow-hidden mb-3 p-2 flex items-center justify-center border border-slate-100">
+          
+          {/* 1:1 SQUARE ASPECT RATIO IMAGE CONTAINER */}
+          <div className="relative aspect-square w-full rounded-xl sm:rounded-2xl bg-[#f8fafc] overflow-hidden mb-2 sm:mb-2.5 p-2 flex items-center justify-center border border-slate-100/80">
             
             {/* Red Discount Badge */}
             {product.discount > 0 && (
-              <span className="absolute top-2.5 left-2.5 z-10 px-2 py-0.5 rounded-md bg-[#E31B23] text-white font-black text-[10px] sm:text-xs shadow-xs tracking-tight">
+              <span className="absolute top-2 left-2 z-10 px-1.5 min-[380px]:px-2 py-0.5 rounded-md bg-[#e51b23] text-white font-black text-[10px] sm:text-xs shadow-xs tracking-tight">
                 -{product.discount}%
               </span>
             )}
 
-            {/* Custom Tag */}
+            {/* Custom Tag (if any) */}
             {product.tag && (
-              <span className="absolute bottom-2.5 left-2.5 z-10 px-2 py-0.5 rounded-md bg-[#050505] text-[#FFD400] font-bold text-[9px] sm:text-[10px] uppercase tracking-wider">
+              <span className="absolute bottom-2 left-2 z-10 px-1.5 py-0.5 rounded bg-black text-[#FFD400] font-bold text-[8.5px] sm:text-[9.5px] uppercase tracking-wider">
                 {product.tag}
               </span>
             )}
 
-            {/* Top Right Buttons: Wishlist & Compare */}
-            <div className="absolute top-2.5 right-2.5 z-10 flex items-center gap-1.5">
-              {/* Compare Button */}
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  toggleCompare(product);
-                }}
-                className={`w-8 h-8 rounded-full flex items-center justify-center transition-all shadow-xs ${
-                  isCompared
-                    ? 'bg-[#050505] text-[#FFD400] scale-105'
-                    : 'bg-white/90 text-slate-400 hover:text-[#050505] hover:bg-white'
-                }`}
-                title={isCompared ? 'In Compare list' : 'Add to Compare'}
-              >
-                <Scale className="w-3.5 h-3.5" />
-              </button>
+            {/* Top Right Wishlist Heart Button (Touch-Friendly) */}
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleWishlist(product);
+              }}
+              className={`absolute top-2 right-2 z-10 w-7 h-7 min-[380px]:w-8 min-[380px]:h-8 rounded-full flex items-center justify-center transition-all shadow-xs ${
+                isLiked
+                  ? 'bg-red-50 text-[#e51b23] scale-105'
+                  : 'bg-white/95 text-slate-400 hover:text-[#e51b23] hover:bg-white'
+              }`}
+              aria-label="Toggle Wishlist"
+            >
+              <Heart className={`w-3.5 h-3.5 min-[380px]:w-4 min-[380px]:h-4 ${isLiked ? 'fill-[#e51b23] text-[#e51b23]' : ''}`} />
+            </button>
 
-              {/* Wishlist Button */}
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  toggleWishlist(product);
-                }}
-                className={`w-8 h-8 rounded-full flex items-center justify-center transition-all shadow-xs ${
-                  isLiked
-                    ? 'bg-red-50 text-[#E31B23] scale-110'
-                    : 'bg-white/90 text-slate-400 hover:text-[#E31B23] hover:bg-white'
-                }`}
-                aria-label="Toggle Wishlist"
-              >
-                <Heart className={`w-4 h-4 ${isLiked ? 'fill-[#E31B23]' : ''}`} />
-              </button>
-            </div>
-
-            {/* Product Image */}
+            {/* Product Image (Fixed 1:1 Aspect, contain mode, no crop) */}
             <Link to={`/product/${product.id}`} className="w-full h-full flex items-center justify-center">
               <img
                 src={product.image || '/images/prem-main.jpg'}
@@ -88,72 +68,82 @@ export default function ProductCard({ product, searchQuery = '' }) {
                   e.currentTarget.onerror = null;
                   e.currentTarget.src = '/images/prem-main.jpg';
                 }}
-                className="w-full h-full object-contain mix-blend-multiply group-hover:scale-108 transition-transform duration-500"
+                className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-300"
               />
             </Link>
           </div>
 
-          {/* Product Meta */}
+          {/* PRODUCT META */}
           <div className="space-y-1">
-            <div className="flex items-center justify-between gap-1">
-              <span className="text-[11px] font-black text-[#E31B23] uppercase tracking-wider">
+            
+            {/* Brand Name */}
+            {product.brand && (
+              <span className="block text-[10px] min-[380px]:text-[11px] font-black text-[#e51b23] uppercase tracking-wider truncate">
                 <HighlightText text={product.brand} query={searchQuery} />
               </span>
-              <RatingStars rating={product.rating} showText={false} size="sm" />
-            </div>
+            )}
 
+            {/* Product Title (Strict 2-line limit with readable typography) */}
             <Link
               to={`/product/${product.id}`}
-              className="block group-hover:text-[#E31B23] transition-colors"
+              className="block group-hover:text-[#e51b23] transition-colors"
             >
-              <h3 className="font-bold text-xs sm:text-sm text-[#050505] line-clamp-2 leading-snug h-8 sm:h-9">
+              <h3 className="font-bold text-[12px] min-[380px]:text-[13px] sm:text-sm text-[#050505] line-clamp-2 leading-snug min-h-[32px] sm:min-h-[38px]">
                 <HighlightText text={product.name} query={searchQuery} />
               </h3>
             </Link>
 
-            {/* Price Area */}
-            <div className="flex items-baseline gap-2 pt-1">
-              <span className="text-base sm:text-lg font-black font-display text-[#050505]">
-                {formatCurrency(product.price ?? product.currentPrice ?? product.regularPrice ?? 0)}
+            {/* Rating Stars */}
+            <div className="flex items-center gap-1 pt-0.5">
+              <div className="flex text-[#ffd000]">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className="w-2.5 h-2.5 min-[380px]:w-3 min-[380px]:h-3 fill-[#ffd000] text-[#ffd000]"
+                  />
+                ))}
+              </div>
+              <span className="text-[10px] min-[380px]:text-[11px] text-slate-500 font-medium">
+                ({product.reviewsCount || 128})
               </span>
-              {((product.originalPrice ?? product.regularPrice ?? 0) > (product.price ?? product.currentPrice ?? 0)) && (
-                <span className="text-xs text-slate-400 line-through font-medium">
-                  {formatCurrency(product.originalPrice ?? product.regularPrice)}
+            </div>
+
+            {/* Price Area */}
+            <div className="flex items-baseline gap-1.5 min-[380px]:gap-2 pt-1">
+              <span className="text-[14px] min-[380px]:text-[16px] sm:text-lg font-black font-display text-[#050505]">
+                {formatCurrency(currentPrice)}
+              </span>
+              {origPrice > currentPrice && (
+                <span className="text-[11px] min-[380px]:text-xs text-slate-400 line-through font-medium">
+                  {formatCurrency(origPrice)}
                 </span>
               )}
             </div>
 
-            {/* Stock & Review Count */}
-            <div className="flex items-center justify-between text-[10px] pt-1">
-              <span className="font-bold text-emerald-600">
-                ● In Stock ({product.stock ?? 10} units)
-              </span>
-              <span className="text-slate-400 font-medium">⭐ 4.8 (120)</span>
-            </div>
           </div>
         </div>
 
-        {/* Action Buttons: Yellow Cart CTA + WhatsApp */}
-        <div className="mt-3 pt-3 border-t border-slate-100 grid grid-cols-2 gap-1.5 sm:gap-2">
-          {/* Yellow Add to Cart CTA */}
+        {/* BOTTOM ACTION BUTTONS: TOUCH-FRIENDLY & CLEAN */}
+        <div className="mt-2.5 pt-2 border-t border-slate-100 flex flex-col min-[380px]:grid min-[380px]:grid-cols-2 gap-1.5">
+          {/* Add to Cart CTA */}
           <button
             onClick={() => addToCart(product, 1)}
-            className="py-2 px-2 sm:px-3 rounded-xl bg-[#FFD400] hover:bg-[#e6be00] text-[#050505] text-xs font-black uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all shadow-xs hover:shadow-md"
+            className="w-full py-2 px-1.5 min-[380px]:px-2 rounded-xl bg-[#ffd000] active:bg-[#e6bd00] hover:bg-[#ffcb05] text-[#050505] text-[11px] sm:text-xs font-black uppercase tracking-wider flex items-center justify-center gap-1 transition-all shadow-xs active:scale-95"
           >
-            <ShoppingBag className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Add to Cart</span>
-            <span className="sm:hidden">Cart</span>
+            <ShoppingBag className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">Add to Cart</span>
           </button>
 
-          {/* Enquire Button */}
+          {/* WhatsApp Enquire Button */}
           <button
             onClick={() => openProductWhatsApp(product)}
-            className="py-2 px-2 sm:px-3 rounded-xl bg-[#050505] hover:bg-[#1f1f1f] text-[#FFD400] text-xs font-bold flex items-center justify-center gap-1.5 transition-all border border-[#FFD400]/40"
+            className="w-full py-2 px-1.5 min-[380px]:px-2 rounded-xl bg-[#050505] active:bg-slate-800 hover:bg-[#1f1f1f] text-[#ffd000] text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1 transition-all border border-[#ffd000]/40 active:scale-95"
           >
-            <MessageCircle className="w-3.5 h-3.5 fill-[#FFD400]" />
-            <span>Enquire</span>
+            <MessageCircle className="w-3.5 h-3.5 fill-[#ffd000] shrink-0" />
+            <span className="truncate">Enquire</span>
           </button>
         </div>
+
       </div>
 
       {/* Quick Enquiry Modal */}

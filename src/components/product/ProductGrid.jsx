@@ -10,12 +10,12 @@ export default function ProductGrid({
 }) {
   if (products.length === 0) {
     return (
-      <div className="py-16 text-center bg-white rounded-3xl border border-slate-200 p-8 shadow-xs">
-        <div className="w-16 h-16 rounded-2xl bg-amber-50 text-[#050505] flex items-center justify-center mx-auto mb-4 border border-amber-200">
-          <PackageOpen className="w-8 h-8 text-[#050505]" />
+      <div className="py-12 sm:py-16 text-center bg-white rounded-2xl sm:rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-xs">
+        <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-amber-50 text-[#050505] flex items-center justify-center mx-auto mb-3 border border-amber-200">
+          <PackageOpen className="w-7 h-7 sm:w-8 sm:h-8 text-[#050505]" />
         </div>
-        <h4 className="text-lg font-bold text-[#050505]">No Products Found</h4>
-        <p className="text-sm text-slate-500 mt-1 max-w-md mx-auto">
+        <h4 className="text-base sm:text-lg font-bold text-[#050505]">No Products Found</h4>
+        <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-md mx-auto">
           {emptyMessage}
         </p>
       </div>
@@ -23,7 +23,7 @@ export default function ProductGrid({
   }
 
   return (
-    <div className={`grid ${columns} gap-3 sm:gap-5`}>
+    <div className={`grid ${columns} gap-2.5 min-[380px]:gap-3 sm:gap-4 md:gap-5`}>
       {products.map((product) => (
         <ProductCard key={product.id} product={product} searchQuery={searchQuery} />
       ))}

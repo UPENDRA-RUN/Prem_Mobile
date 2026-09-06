@@ -5,12 +5,11 @@ import { Grid3X3 } from 'lucide-react';
 
 export default function CategoryBar() {
   return (
-    <section className="relative z-20 -mt-4 sm:-mt-8 px-2.5 min-[360px]:px-3 sm:px-6 max-w-[1500px] mx-auto">
-      <div
-        className="bg-white rounded-2xl sm:rounded-[20px] shadow-category border border-[#dedede] px-2.5 sm:px-6 py-2.5 sm:py-4 flex items-center justify-between overflow-x-auto no-scrollbar"
-        style={{ minHeight: '120px' }}
-      >
-        <div className="flex items-center justify-between w-full gap-2.5 sm:gap-6 min-w-max lg:min-w-0">
+    <section className="relative z-20 -mt-3 sm:-mt-6 px-3 sm:px-6 max-w-[1500px] mx-auto">
+      <div className="bg-white rounded-2xl sm:rounded-[22px] shadow-category border border-[#dedede] p-2.5 sm:p-4 overflow-hidden">
+        
+        {/* Horizontal Swipeable Track */}
+        <div className="flex items-start gap-3 sm:gap-6 overflow-x-auto no-scrollbar scroll-smooth py-1 px-1">
           {categories.map((cat, index) => {
             const isLast = index === 11 || cat.slug === 'view-all';
 
@@ -18,16 +17,15 @@ export default function CategoryBar() {
               <Link
                 key={cat.id}
                 to={cat.slug === 'view-all' ? '/categories' : `/shop?category=${encodeURIComponent(cat.name)}`}
-                className="group flex flex-col items-center justify-center flex-1 transition-transform duration-200 hover:-translate-y-1"
-                style={{ minWidth: '68px' }}
+                className="group flex flex-col items-center justify-start flex-shrink-0 transition-transform duration-200 hover:-translate-y-1 active:scale-95 text-center w-[72px] min-[380px]:w-[78px] sm:w-[92px]"
               >
-                {/* Circle Container */}
+                {/* Large Circle Container */}
                 {isLast ? (
-                  <div className="w-[60px] h-[60px] sm:w-[75px] sm:h-[75px] rounded-full bg-[#ffd000] text-[#050505] flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform mb-1.5 sm:mb-2">
+                  <div className="w-[62px] h-[62px] min-[380px]:w-[68px] min-[380px]:h-[68px] sm:w-[78px] sm:h-[78px] rounded-full bg-[#ffd000] text-[#050505] flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform mb-1.5 border-2 border-black/10">
                     <Grid3X3 className="w-6 h-6 sm:w-8 sm:h-8 text-[#050505]" />
                   </div>
                 ) : (
-                  <div className="w-[60px] h-[60px] sm:w-[75px] sm:h-[75px] rounded-full bg-[#f4f4f4] p-1.5 flex items-center justify-center overflow-hidden border border-slate-200/60 group-hover:border-[#ffd000] shadow-xs group-hover:scale-105 transition-all mb-1.5 sm:mb-2">
+                  <div className="w-[62px] h-[62px] min-[380px]:w-[68px] min-[380px]:h-[68px] sm:w-[78px] sm:h-[78px] rounded-full bg-[#f6f6f6] p-1.5 flex items-center justify-center overflow-hidden border-2 border-slate-200/80 group-hover:border-[#ffd000] shadow-xs group-hover:scale-105 transition-all mb-1.5">
                     <img
                       src={cat.image}
                       alt={cat.name}
@@ -37,14 +35,15 @@ export default function CategoryBar() {
                   </div>
                 )}
 
-                {/* Category Title */}
-                <span className="font-bold text-[11px] sm:text-[14px] text-[#050505] group-hover:text-[#e51b23] transition-colors text-center leading-tight max-w-[76px] truncate">
+                {/* Readable Category Title - 2 lines max, never clipped with single-line cutoff */}
+                <span className="font-bold text-[11px] sm:text-[13px] text-[#050505] group-hover:text-[#e51b23] transition-colors leading-tight line-clamp-2 h-7 flex items-center justify-center">
                   {isLast ? 'VIEW ALL' : cat.name}
                 </span>
               </Link>
             );
           })}
         </div>
+
       </div>
     </section>
   );

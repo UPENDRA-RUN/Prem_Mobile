@@ -1,0 +1,73 @@
+export const heroSlides = [
+  {
+    id: 'main-hero',
+    type: 'landscape-image',
+    title: 'Prem Mobile Gwalior',
+    tagline: 'Deal Aise Jo Deewana Bana De 🔥',
+    subtitle: 'Mobiles, Earbuds, Smartwatches, Chargers & Fast Electronics at Pinto Park',
+    image: '/images/prem-hero-hd.jpg',
+    alt: 'Prem Mobile Gwalior Official Hero Banner',
+    whatsappTopic: 'Prem Mobile Main Deals & Offers',
+    link: '/shop',
+    badge: 'OFFICIAL FLAGSHIP STORE',
+    price: 'Best Deals',
+    originalPrice: '',
+    discount: 'GUARANTEED SAVINGS'
+  },
+  {
+    id: 'boat-deal',
+    type: 'landscape-product',
+    title: 'boAt Bassheads 90C Type-C',
+    tagline: 'Deal Aise Jo Deewana Bana De 🔥',
+    subtitle: 'Super Extra Bass with 3.5mm / Type-C Jack, HD Mic & Comfort Fit Earbuds',
+    price: '₹350',
+    originalPrice: '₹999',
+    discount: '65% OFF',
+    badge: 'BESTSELLER DEAL',
+    image: '/images/boat-basshead.jpg',
+    link: '/product/5',
+    whatsappTopic: 'boAt Bassheads 90C @ Rs 350 Special Deal'
+  },
+  {
+    id: 'agaro-deal',
+    type: 'landscape-product',
+    title: 'AGARO Grooming & Lifestyle Tech',
+    tagline: 'Deal Aise Jo Deewana Bana De 🔥',
+    subtitle: 'Premium Trimmers, Hair Dryers, Foot Massagers & Multi-grooming Kits with Warranty',
+    price: 'Up to 40% OFF',
+    originalPrice: 'Best Rates',
+    discount: 'SAVE UP TO 40%',
+    badge: 'PREMIUM QUALITY',
+    image: '/images/agaro-products.jpg',
+    link: '/shop?category=Gadgets',
+    whatsappTopic: 'AGARO Grooming Products Offer'
+  },
+  {
+    id: 'egg-boiler-deal',
+    type: 'landscape-product',
+    title: 'Automatic Electric Egg Boiler',
+    tagline: 'Deal Aise Jo Deewana Bana De 🔥',
+    subtitle: 'Boil 7 Eggs in 6 Mins • Instant Auto Cut-Off • Food-Grade Stainless Steel Design',
+    price: '₹380',
+    originalPrice: '₹799',
+    discount: '52% OFF',
+    badge: 'HOT SELLER GADGET',
+    image: '/images/egg-boiler.jpg',
+    link: '/shop?category=Gadgets',
+    whatsappTopic: 'Electric Egg Boiler @ Rs 380 Deal'
+  },
+  {
+    id: 'moto-vlogging-deal',
+    type: 'landscape-product',
+    title: 'Moto Vlogging Chest Harness Mount',
+    tagline: 'Deal Aise Jo Deewana Bana De 🔥',
+    subtitle: 'Ride & Record in 4K • Dual Universal Mount for Action Cam & Smartphone',
+    price: '₹499',
+    originalPrice: '₹999',
+    discount: '50% OFF',
+    badge: 'BIKER ESSENTIAL',
+    image: '/images/moto-vlogging.jpg',
+    link: '/product/21',
+    whatsappTopic: 'Moto Vlogging Chest Harness Mount @ Rs 499'
+  }
+];
