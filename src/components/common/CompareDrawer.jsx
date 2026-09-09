@@ -41,7 +41,7 @@ export default function CompareDrawer() {
             </div>
             <div>
               <span className="font-bold text-xs block leading-none">Compare Items</span>
-              <span className="text-[10px] text-slate-400 font-medium">{compareCount} of 4 selected</span>
+              <span className="text-[10px] text-slate-400 font-medium">{compareCount} of 2 selected</span>
             </div>
           </div>
 
@@ -85,7 +85,7 @@ export default function CompareDrawer() {
             to="/compare"
             className="flex-1 sm:flex-initial px-5 py-2.5 rounded-xl bg-[#FFD400] hover:bg-[#e6be00] text-[#050505] font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg transition hover:scale-102"
           >
-            <span>COMPARE NOW ({compareCount}/4)</span>
+            <span>COMPARE NOW ({compareCount}/2)</span>
             <ArrowRight className="w-4 h-4 stroke-[2.5]" />
           </Link>
         </div>

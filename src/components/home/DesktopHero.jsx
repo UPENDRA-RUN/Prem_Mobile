@@ -54,7 +54,7 @@ export default function DesktopHero() {
               <img
                 src={activeSlideData.image}
                 alt={activeSlideData.alt}
-                className="w-full h-full object-cover object-center group-hover:scale-[1.01] transition-transform duration-700 ease-out"
+                className="w-full h-full object-cover object-center transform-gpu backface-hidden [image-rendering:-webkit-optimize-contrast]"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
             </div>
@@ -118,11 +118,11 @@ export default function DesktopHero() {
 
               {/* Right Product Showcase Poster */}
               <div className="col-span-5 flex items-center justify-center relative h-full">
-                <div className="relative h-full max-h-[340px] aspect-[4/3] rounded-2xl overflow-hidden border-2 border-[#ffd000]/60 shadow-[0_8px_25px_rgba(255,208,0,0.25)] bg-black group-hover:scale-102 transition-transform duration-500 flex items-center justify-center">
+                <div className="relative h-full max-h-[340px] aspect-[4/3] rounded-2xl overflow-hidden border-2 border-[#ffd000]/60 shadow-[0_8px_25px_rgba(255,208,0,0.25)] bg-black flex items-center justify-center">
                   <img
                     src={activeSlideData.image}
                     alt={activeSlideData.title}
-                    className="w-full h-full object-contain p-2"
+                    className="w-full h-full object-contain p-2 transform-gpu backface-hidden [image-rendering:-webkit-optimize-contrast]"
                   />
                 </div>
               </div>

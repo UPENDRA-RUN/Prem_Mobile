@@ -225,28 +225,89 @@ export default function AdminOrders() {
                 </div>
               </div>
 
-              {/* ITEMS SNAPSHOT */}
+              {/* ITEMS SNAPSHOT & PACKAGING CHECKLIST */}
               <div className="space-y-2">
                 <span className="text-xs font-black text-slate-400 uppercase tracking-wider">Ordered Items</span>
-                <div className="divide-y divide-slate-100 border border-slate-100 rounded-2xl overflow-hidden">
-                  {order.items?.map((item) => (
-                    <div key={item.id} className="p-3 flex items-center justify-between text-xs bg-white">
-                      <div className="flex-1">
-                        <span className="font-bold text-slate-800">{item.productNameSnapshot}</span>
-                        <span className="text-slate-400 ml-2">× {item.quantity}</span>
-                      </div>
-                      <div className="text-right">
-                        <span className="font-black text-slate-900">
-                          {formatCurrency(item.finalPrice * item.quantity)}
-                        </span>
-                        {item.salePrice && item.salePrice < item.regularPrice && (
-                          <span className="text-[10px] text-emerald-600 block">
-                            Sunday Deal (Reg: {formatCurrency(item.regularPrice)})
-                          </span>
+                <div className="divide-y divide-slate-100 border border-slate-200 rounded-2xl overflow-hidden">
+                  {order.items?.map((item) => {
+                    const isCombo = Boolean(item.isCombo || String(item.productNameSnapshot || '').includes('COMBO'));
+                    let bundleList = [];
+                    if (item.bundledItems) {
+                      try {
+                        bundleList = typeof item.bundledItems === 'string' ? JSON.parse(item.bundledItems) : item.bundledItems;
+                      } catch (e) {}
+                    }
+
+                    return (
+                      <div key={item.id || item.productNameSnapshot} className="p-3 sm:p-4 bg-white space-y-2">
+                        <div className="flex items-center justify-between text-xs sm:text-sm">
+                          <div className="flex flex-wrap items-center gap-2 flex-1 min-w-0">
+                            {isCombo && (
+                              <span className="px-2.5 py-0.5 rounded-full bg-[#FFD400] text-[#050505] text-[10px] font-black uppercase tracking-wider flex items-center gap-1 shrink-0 shadow-xs border border-amber-400">
+                                🎁 ORDERED COMBO
+                              </span>
+                            )}
+                            <span className="font-black text-slate-900">{item.productNameSnapshot}</span>
+                            <span className="text-slate-500 font-bold">× {item.quantity}</span>
+                          </div>
+                          {(() => {
+                            const unitPrice = (item.finalPrice !== null && item.finalPrice !== undefined && Number(item.finalPrice) > 0)
+                              ? Number(item.finalPrice)
+                              : ((item.salePrice !== null && item.salePrice !== undefined && Number(item.salePrice) > 0)
+                                  ? Number(item.salePrice)
+                                  : Number(item.regularPrice || 0));
+                            const lineTotal = unitPrice * (item.quantity || 1);
+                            const isDiscounted = item.regularPrice > unitPrice && item.regularPrice > 0;
+
+                            return (
+                              <div className="text-right shrink-0 ml-2">
+                                <span className="font-black text-slate-900 text-sm block">
+                                  {formatCurrency(lineTotal)}
+                                </span>
+                                <span className="text-[10px] text-slate-500 font-medium block">
+                                  ({formatCurrency(unitPrice)} × {item.quantity})
+                                </span>
+                                {isDiscounted && (
+                                  <span className="text-[10px] text-emerald-600 block font-bold">
+                                    Special Deal (MRP: {formatCurrency(item.regularPrice)})
+                                  </span>
+                                )}
+                              </div>
+                            );
+                          })()}
+                        </div>
+
+                        {/* COMBO PACKAGING CHECKLIST FOR ADMIN FULFILLMENT */}
+                        {isCombo && (
+                          <div className="p-3.5 rounded-2xl bg-amber-50/90 border-2 border-amber-300 text-xs text-amber-950 space-y-2 shadow-2xs my-1">
+                            <div className="flex items-center justify-between border-b border-amber-200/80 pb-1.5">
+                              <span className="font-black uppercase tracking-wider text-[11px] text-amber-900 flex items-center gap-1.5">
+                                📦 PACKAGING CHECKLIST (Items to include in parcel):
+                              </span>
+                              <span className="text-[10px] font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-md">
+                                Combo Pack
+                              </span>
+                            </div>
+
+                            {Array.isArray(bundleList) && bundleList.length > 0 ? (
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-0.5">
+                                {bundleList.map((bItem, bIdx) => (
+                                  <div key={bIdx} className="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border border-amber-200/90 font-bold text-slate-900 text-xs shadow-2xs">
+                                    <span className="w-4 h-4 rounded-full bg-emerald-500 text-white font-black text-[10px] flex items-center justify-center shrink-0 shadow-xs">✓</span>
+                                    <span>Add {bItem.quantity || 1}× {bItem.name || bItem.customItemName} to package</span>
+                                  </div>
+                                ))}
+                              </div>
+                            ) : (
+                              <p className="text-xs text-amber-800 font-medium italic">
+                                Bundled items specified for this combo package. Check combo item details in catalog.
+                              </p>
+                            )}
+                          </div>
                         )}
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 

@@ -17,9 +17,14 @@ if (!fs.existsSync(dataDir)) {
 const dbPath = path.join(dataDir, 'prem_mobile.db');
 export const db = new DatabaseSync(dbPath);
 
-// Enable WAL mode for high performance
+// Enable WAL mode & performance PRAGMAs for high-speed queries
 try {
-  db.exec('PRAGMA journal_mode = WAL;');
+  db.exec(`
+    PRAGMA journal_mode = WAL;
+    PRAGMA synchronous = NORMAL;
+    PRAGMA temp_store = MEMORY;
+    PRAGMA cache_size = -64000;
+  `);
 } catch (e) {
   // Ignored if in-memory or not supported
 }
@@ -234,8 +239,25 @@ export function initDatabase() {
 
     const orderCols = db.prepare("PRAGMA table_info(orders)").all().map(c => c.name);
     if (!orderCols.includes('userId')) db.exec('ALTER TABLE orders ADD COLUMN userId INTEGER;');
+
+    const orderItemCols = db.prepare("PRAGMA table_info(order_items)").all().map(c => c.name);
+    if (!orderItemCols.includes('isCombo')) db.exec('ALTER TABLE order_items ADD COLUMN isCombo INTEGER NOT NULL DEFAULT 0;');
+    if (!orderItemCols.includes('bundledItems')) db.exec('ALTER TABLE order_items ADD COLUMN bundledItems TEXT;');
   } catch (e) {
     console.warn('[DB] Migration warning:', e.message);
+  }
+
+  // Create Indexes for high-performance sub-millisecond queries
+  try {
+    db.exec(`
+      CREATE INDEX IF NOT EXISTS idx_products_category ON products(category);
+      CREATE INDEX IF NOT EXISTS idx_products_active ON products(isActive);
+      CREATE INDEX IF NOT EXISTS idx_orders_user ON orders(userId);
+      CREATE INDEX IF NOT EXISTS idx_reviews_product ON reviews(productId);
+      CREATE INDEX IF NOT EXISTS idx_coupons_code ON coupons(code);
+    `);
+  } catch (e) {
+    console.warn('[DB] Index creation warning:', e.message);
   }
 
   // Ensure default admin account exists and has updated credentials

@@ -47,10 +47,7 @@ export default function AdminReviews() {
     }
   }, [adminToken]);
 
-  // Real-time synchronization for reviews
-  useRealtimeSync(['REVIEWS_UPDATED', 'ORDER_CREATED', 'PRODUCTS_UPDATED'], () => {
-    fetchReviews(true);
-  });
+  useRealtimeSync(() => fetchReviews(true), ['REVIEWS_UPDATED', 'ORDER_CREATED', 'PRODUCTS_UPDATED']);
 
   useEffect(() => {
     fetchReviews();

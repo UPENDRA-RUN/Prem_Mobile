@@ -40,12 +40,12 @@ export default function FeaturedSection({ products = [] }) {
           <div className="pt-2">
             <Link
               to="/sunday-sale"
-              className="relative w-full rounded-2xl overflow-hidden border-2 border-[#ffd000] shadow-lg group block transition-transform active:scale-[0.99] bg-black"
+              className="relative w-full rounded-2xl overflow-hidden border-2 border-[#ffd000] shadow-lg group block bg-black p-2"
             >
               <img
                 src="/images/sunday-shocking-sale.jpg"
                 alt="Sunday Shocking Sale - Prem Mobile Gwalior"
-                className="w-full h-auto max-h-[220px] object-cover object-center group-hover:scale-102 transition-transform duration-500"
+                className="w-full h-auto max-h-[280px] object-contain object-center transform-gpu backface-hidden [image-rendering:-webkit-optimize-contrast] mx-auto"
               />
             </Link>
           </div>
@@ -54,7 +54,7 @@ export default function FeaturedSection({ products = [] }) {
         {/* ========================================================= */}
         {/* 2. DESKTOP LAYOUT (>= 1024px): 6 CARDS + SIDEBAR BANNER */}
         {/* ========================================================= */}
-        <div className="hidden lg:grid lg:grid-cols-12 gap-4 items-stretch">
+        <div className="hidden lg:grid lg:grid-cols-12 gap-4 items-start">
           
           {/* 6 Product Cards in 3x2 or 6-col grid */}
           <div className="lg:col-span-9 grid grid-cols-3 gap-4">
@@ -64,16 +64,34 @@ export default function FeaturedSection({ products = [] }) {
           </div>
 
           {/* Sunday Special Sale Sidebar Banner Card */}
-          <div className="lg:col-span-3 flex flex-col">
+          <div className="lg:col-span-3 sticky top-24">
             <Link
               to="/sunday-sale"
-              className="relative w-full h-full min-h-[360px] rounded-2xl sm:rounded-3xl overflow-hidden border-2 border-[#ffd000]/70 shadow-lg group block transition-transform hover:scale-[1.02] bg-black"
+              className="relative w-full rounded-3xl overflow-hidden border-2 border-[#ffd000] shadow-xl group flex flex-col p-4 bg-gradient-to-b from-black via-[#0d0d0d] to-black hover:border-[#ffd000] transition-all space-y-3"
             >
-              <img
-                src="/images/sunday-shocking-sale.jpg"
-                alt="Sunday Shocking Sale - Prem Mobile Gwalior"
-                className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
-              />
+              <div className="space-y-1 text-center">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E31B23] text-white font-black text-[11px] uppercase tracking-wider shadow-sm">
+                  🔥 SUNDAY DHAMAKA
+                </span>
+                <h4 className="font-display font-black text-base lg:text-lg text-white tracking-tight">
+                  Sunday Special Sale
+                </h4>
+              </div>
+
+              <div className="relative w-full aspect-[1024/895] overflow-hidden rounded-2xl bg-black/60 border border-white/10 p-1">
+                <img
+                  src="/images/sunday-shocking-sale.jpg"
+                  alt="Sunday Shocking Sale - Prem Mobile Gwalior"
+                  className="w-full h-full object-contain transform-gpu backface-hidden [image-rendering:-webkit-optimize-contrast]"
+                />
+              </div>
+
+              <div className="w-full">
+                <div className="w-full py-2.5 px-3 rounded-xl bg-[#ffd000] text-black font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-md group-hover:bg-[#ffcb05] transition-colors">
+                  <span>EXPLORE ALL DEALS</span>
+                  <span className="text-sm font-bold">→</span>
+                </div>
+              </div>
             </Link>
           </div>
 

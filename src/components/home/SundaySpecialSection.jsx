@@ -77,11 +77,11 @@ export default function SundaySpecialSection() {
 
             {/* Visual Image Column */}
             <div className="lg:col-span-6 flex items-center justify-center">
-              <div className="relative w-full rounded-2xl overflow-hidden border-2 border-[#FFD400] shadow-2xl bg-black group">
+              <div className="relative w-full rounded-2xl overflow-hidden border-2 border-[#FFD400] shadow-2xl bg-black p-2 group">
                 <img
                   src="/images/sunday-shocking-sale.jpg"
                   alt="Sunday Shocking Sale - Prem Mobile"
-                  className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500"
+                  className="w-full h-full object-contain max-h-[360px] transform-gpu backface-hidden [image-rendering:-webkit-optimize-contrast] mx-auto"
                 />
               </div>
             </div>

@@ -169,6 +169,37 @@ export default function AdminSundaySale() {
     }));
   };
 
+  const handleApplyPresetDiscount = (productId, regularPrice, percent) => {
+    const calculatedSalePrice = Math.max(1, Math.round(regularPrice * (1 - percent / 100)));
+    setProductsConfig(prev => ({
+      ...prev,
+      [productId]: {
+        included: true,
+        salePrice: calculatedSalePrice
+      }
+    }));
+  };
+
+  const handleBulkAction = (action, percent = 20) => {
+    setProductsConfig(prev => {
+      const next = { ...prev };
+      for (const p of saleState.candidateProducts || []) {
+        if (action === 'select_all') {
+          next[p.id] = {
+            included: true,
+            salePrice: next[p.id]?.salePrice || Math.round(p.regularPrice * 0.8)
+          };
+        } else if (action === 'deselect_all') {
+          next[p.id] = { ...next[p.id], included: false };
+        } else if (action === 'apply_bulk_percent') {
+          const calculated = Math.max(1, Math.round(p.regularPrice * (1 - percent / 100)));
+          next[p.id] = { included: true, salePrice: calculated };
+        }
+      }
+      return next;
+    });
+  };
+
   // Custom product handlers
   const handleCustomProdDeviceUpload = async (e) => {
     const file = e.target.files?.[0];
@@ -508,19 +539,54 @@ export default function AdminSundaySale() {
         {/* TAB 1: CATALOG PRODUCTS */}
         {activeTab === 'catalog' && (
           <div className="space-y-4">
-            {/* Search */}
-            <div className="relative">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search products by name or category..."
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs font-medium focus:bg-white focus:outline-none focus:border-[#050505]"
-              />
-              {searchQuery && (
-                <button onClick={() => setSearchQuery('')} className="absolute right-3.5 top-3 text-slate-400 hover:text-slate-600 font-bold text-xs">✕</button>
-              )}
+            {/* Search & Bulk Action Bar */}
+            <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+              <div className="relative flex-1">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search products by name or category..."
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs font-medium focus:bg-white focus:outline-none focus:border-[#050505]"
+                />
+                {searchQuery && (
+                  <button onClick={() => setSearchQuery('')} className="absolute right-3.5 top-3 text-slate-400 hover:text-slate-600 font-bold text-xs">✕</button>
+                )}
+              </div>
+
+              {/* Fast Bulk Action Toolbar */}
+              <div className="flex flex-wrap items-center gap-1.5 p-1 bg-slate-100 rounded-xl border border-slate-200 text-[11px] font-bold">
+                <span className="px-2 text-[10px] text-slate-500 uppercase tracking-wider font-extrabold">Fast Presets:</span>
+                <button
+                  type="button"
+                  onClick={() => handleBulkAction('select_all')}
+                  className="px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-slate-800 hover:bg-slate-50 transition-colors shadow-xs"
+                >
+                  Select All
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleBulkAction('apply_bulk_percent', 20)}
+                  className="px-2.5 py-1 rounded-lg bg-amber-400 text-slate-900 font-black hover:bg-amber-300 transition-colors shadow-xs"
+                >
+                  Apply 20% OFF
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleBulkAction('apply_bulk_percent', 30)}
+                  className="px-2.5 py-1 rounded-lg bg-[#e51b23] text-white font-black hover:bg-[#c91219] transition-colors shadow-xs"
+                >
+                  Apply 30% OFF
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleBulkAction('deselect_all')}
+                  className="px-2 py-1 rounded-lg bg-white border border-slate-200 text-slate-500 hover:text-slate-700 transition-colors"
+                >
+                  Clear
+                </button>
+              </div>
             </div>
 
             {/* Products Table */}
@@ -532,7 +598,7 @@ export default function AdminSundaySale() {
                     <th className="p-3">Product</th>
                     <th className="p-3">Category</th>
                     <th className="p-3">Regular Price</th>
-                    <th className="p-3 w-44">Sale Price (₹)</th>
+                    <th className="p-3 w-64">Sale Price & Presets</th>
                     <th className="p-3">Discount</th>
                   </tr>
                 </thead>
@@ -564,25 +630,53 @@ export default function AdminSundaySale() {
                         <td className="p-3 font-bold text-slate-800">{formatCurrency(regPrice)}</td>
                         <td className="p-3">
                           {conf.included ? (
-                            <div className="flex items-center gap-1.5 max-w-[140px]">
-                              <span className="text-slate-400 font-bold">₹</span>
-                              <input
-                                type="number"
-                                min="1"
-                                value={conf.salePrice}
-                                onChange={(e) => handlePriceChange(product.id, e.target.value)}
-                                className="w-full px-2.5 py-1.5 rounded-lg bg-white border-2 border-amber-400 text-slate-900 font-black text-sm focus:outline-none focus:border-[#e51b23]"
-                              />
+                            <div className="space-y-1.5">
+                              <div className="flex items-center gap-1.5 max-w-[150px]">
+                                <span className="text-slate-400 font-bold">₹</span>
+                                <input
+                                  type="number"
+                                  min="1"
+                                  value={conf.salePrice}
+                                  onChange={(e) => handlePriceChange(product.id, e.target.value)}
+                                  className="w-full px-2.5 py-1 rounded-lg bg-white border-2 border-amber-400 text-slate-900 font-black text-sm focus:outline-none focus:border-[#e51b23]"
+                                />
+                              </div>
+                              {/* 1-Click Discount Presets */}
+                              <div className="flex items-center gap-1">
+                                {[10, 20, 30, 50].map(pct => (
+                                  <button
+                                    key={pct}
+                                    type="button"
+                                    onClick={() => handleApplyPresetDiscount(product.id, regPrice, pct)}
+                                    className="px-1.5 py-0.5 rounded bg-slate-100 hover:bg-amber-400 hover:text-slate-900 text-[10px] font-black text-slate-600 transition-colors border border-slate-200"
+                                    title={`Set ${pct}% discount`}
+                                  >
+                                    -{pct}%
+                                  </button>
+                                ))}
+                              </div>
                             </div>
                           ) : (
-                            <span className="text-slate-400 italic">Not included</span>
+                            <div className="flex items-center gap-2">
+                              <span className="text-slate-400 italic">Not included</span>
+                              <button
+                                type="button"
+                                onClick={() => handleApplyPresetDiscount(product.id, regPrice, 20)}
+                                className="px-2 py-1 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 text-[10px] font-black uppercase transition-colors"
+                              >
+                                + Add @ -20%
+                              </button>
+                            </div>
                           )}
                         </td>
                         <td className="p-3">
                           {conf.included && discount > 0 ? (
-                            <span className="px-2 py-1 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 font-black text-[11px]">
-                              {discount}% OFF (Save ₹{savings})
+                            <span className="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 font-black text-[11px] inline-flex items-center gap-1">
+                              <span>🔥 {discount}% OFF</span>
+                              <span className="text-emerald-500 font-medium">(Save ₹{savings})</span>
                             </span>
+                          ) : conf.included ? (
+                            <span className="text-amber-600 font-bold text-[11px]">Regular Price</span>
                           ) : (
                             <span className="text-slate-400">—</span>
                           )}

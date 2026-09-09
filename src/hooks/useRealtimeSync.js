@@ -1,15 +1,33 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 /**
  * Custom React Hook for Real-Time Event Synchronization.
  * Listens to Server-Sent Events (/api/events) and calls the callback whenever
  * a database mutation occurs (e.g. PRODUCTS_UPDATED, ORDERS_UPDATED, SALE_UPDATED).
- * Also runs a periodic polling check as a safety net.
+ * Flexibly accepts (callback, eventTypes, pollInterval) OR (eventTypes, callback, pollInterval).
  */
-export function useRealtimeSync(onUpdate, eventTypes = ['PRODUCTS_UPDATED'], pollIntervalMs = 15000) {
+export function useRealtimeSync(arg1, arg2, arg3 = 15000) {
+  let callback = typeof arg1 === 'function' ? arg1 : typeof arg2 === 'function' ? arg2 : () => {};
+  let eventTypes = Array.isArray(arg1) ? arg1 : Array.isArray(arg2) ? arg2 : ['PRODUCTS_UPDATED'];
+  let pollIntervalMs = typeof arg3 === 'number' ? arg3 : 15000;
+
+  const callbackRef = useRef(callback);
+  const eventTypesRef = useRef(eventTypes);
+
+  useEffect(() => {
+    callbackRef.current = callback;
+    eventTypesRef.current = eventTypes;
+  }, [callback, eventTypes]);
+
   useEffect(() => {
     let eventSource = null;
     let pollTimer = null;
+
+    const triggerUpdate = () => {
+      if (typeof callbackRef.current === 'function') {
+        callbackRef.current(true); // Pass true for silent background update
+      }
+    };
 
     const setupSSE = () => {
       try {
@@ -18,8 +36,8 @@ export function useRealtimeSync(onUpdate, eventTypes = ['PRODUCTS_UPDATED'], pol
         eventSource.onmessage = (event) => {
           try {
             const data = JSON.parse(event.data);
-            if (data && eventTypes.includes(data.type)) {
-              onUpdate(true); // Pass true for silent background update
+            if (data && eventTypesRef.current && eventTypesRef.current.includes(data.type)) {
+              triggerUpdate();
             }
           } catch (e) {
             // Ignore parse errors
@@ -39,16 +57,14 @@ export function useRealtimeSync(onUpdate, eventTypes = ['PRODUCTS_UPDATED'], pol
     setupSSE();
 
     if (pollIntervalMs > 0) {
-      pollTimer = setInterval(() => {
-        onUpdate(true); // Pass true for silent background update
-      }, pollIntervalMs);
+      pollTimer = setInterval(triggerUpdate, pollIntervalMs);
     }
 
     return () => {
       if (eventSource) eventSource.close();
       if (pollTimer) clearInterval(pollTimer);
     };
-  }, [onUpdate, pollIntervalMs]);
+  }, [pollIntervalMs]);
 }
 
 export default useRealtimeSync;

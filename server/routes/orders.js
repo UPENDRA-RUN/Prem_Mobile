@@ -65,41 +65,107 @@ router.post('/', (req, res) => {
 
     // SERVER-SIDE PRICE AND STOCK VERIFICATION
     for (const item of items) {
-      const pId = Number(item.productId || item.id);
+      const isComboItem = Boolean(
+        item.isCombo ||
+        (item.category && item.category === 'Combo Pack') ||
+        String(item.id || item.productId).startsWith('combo-')
+      );
+
       const qty = Math.max(1, parseInt(item.quantity, 10) || 1);
 
-      const serverPriceInfo = resolveServerProductPrice(pId);
-      if (!serverPriceInfo) {
-        return res.status(400).json({
-          success: false,
-          error: `Product #${pId} is unavailable or out of stock.`
+      if (isComboItem) {
+        let pId = 0;
+        let name = item.name || 'Combo Pack';
+        let regPrice = Number(item.regularPrice || item.price || 0);
+        let finalPrice = Number(item.price || item.finalPrice || 0);
+        let bundledItemsJson = null;
+
+        const rawBundled = item.bundledItems || item.items;
+        if (rawBundled && Array.isArray(rawBundled) && rawBundled.length > 0) {
+          bundledItemsJson = JSON.stringify(rawBundled);
+        } else {
+          const numericComboId = parseInt(String(item.id || item.productId).replace(/\D/g, ''), 10);
+          if (numericComboId) {
+            const comboRow = db.prepare('SELECT * FROM combos WHERE id = ?').get(numericComboId);
+            if (comboRow) {
+              pId = comboRow.id;
+              name = comboRow.name;
+              regPrice = Number(comboRow.regularPrice || comboRow.comboPrice);
+              finalPrice = Number(comboRow.comboPrice);
+
+              const comboItemsFromDb = db.prepare(`
+                SELECT ci.quantity, ci.customItemName, p.name as productName 
+                FROM combo_items ci
+                LEFT JOIN products p ON ci.productId = p.id
+                WHERE ci.comboId = ?
+              `).all(numericComboId);
+
+              if (comboItemsFromDb.length > 0) {
+                const list = comboItemsFromDb.map(c => ({
+                  name: c.productName || c.customItemName || 'Item',
+                  quantity: c.quantity || 1
+                }));
+                bundledItemsJson = JSON.stringify(list);
+              }
+            }
+          }
+        }
+
+        const itemRegularSubtotal = regPrice * qty;
+        const itemFinalSubtotal = finalPrice * qty;
+        const itemDiscount = Math.max(0, itemRegularSubtotal - itemFinalSubtotal);
+
+        subtotal += itemFinalSubtotal;
+        totalDiscount += itemDiscount;
+
+        verifiedItems.push({
+          productId: pId,
+          name: name.startsWith('🎁') ? name : `🎁 ${name}`,
+          quantity: qty,
+          regularPrice: regPrice,
+          salePrice: finalPrice < regPrice ? finalPrice : null,
+          finalPrice: finalPrice,
+          lineTotal: itemFinalSubtotal,
+          isCombo: 1,
+          bundledItems: bundledItemsJson
+        });
+      } else {
+        const pId = Number(item.productId || item.id);
+        const serverPriceInfo = resolveServerProductPrice(pId);
+        if (!serverPriceInfo) {
+          return res.status(400).json({
+            success: false,
+            error: `Product #${pId} is unavailable or out of stock.`
+          });
+        }
+
+        const regPrice = serverPriceInfo.regularPrice;
+        const finalPrice = serverPriceInfo.finalUnitPrice;
+        const salePrice = serverPriceInfo.isSundaySalePrice ? serverPriceInfo.salePrice : null;
+
+        if (serverPriceInfo.isSundaySalePrice) {
+          isSundaySaleOrder = true;
+        }
+
+        const itemRegularSubtotal = regPrice * qty;
+        const itemFinalSubtotal = finalPrice * qty;
+        const itemDiscount = Math.max(0, itemRegularSubtotal - itemFinalSubtotal);
+
+        subtotal += itemFinalSubtotal;
+        totalDiscount += itemDiscount;
+
+        verifiedItems.push({
+          productId: pId,
+          name: serverPriceInfo.name,
+          quantity: qty,
+          regularPrice: regPrice,
+          salePrice: salePrice,
+          finalPrice: finalPrice,
+          lineTotal: itemFinalSubtotal,
+          isCombo: 0,
+          bundledItems: null
         });
       }
-
-      const regPrice = serverPriceInfo.regularPrice;
-      const finalPrice = serverPriceInfo.finalUnitPrice;
-      const salePrice = serverPriceInfo.isSundaySalePrice ? serverPriceInfo.salePrice : null;
-
-      if (serverPriceInfo.isSundaySalePrice) {
-        isSundaySaleOrder = true;
-      }
-
-      const itemRegularSubtotal = regPrice * qty;
-      const itemFinalSubtotal = finalPrice * qty;
-      const itemDiscount = Math.max(0, itemRegularSubtotal - itemFinalSubtotal);
-
-      subtotal += itemFinalSubtotal;
-      totalDiscount += itemDiscount;
-
-      verifiedItems.push({
-        productId: pId,
-        name: serverPriceInfo.name,
-        quantity: qty,
-        regularPrice: regPrice,
-        salePrice: salePrice,
-        finalPrice: finalPrice,
-        lineTotal: itemFinalSubtotal
-      });
     }
 
     // Process Coupon Discount if provided
@@ -164,8 +230,8 @@ router.post('/', (req, res) => {
     // Insert Order Items
     const itemInsert = db.prepare(`
       INSERT INTO order_items (
-        orderId, productId, productNameSnapshot, quantity, regularPrice, salePrice, finalPrice
-      ) VALUES (?, ?, ?, ?, ?, ?, ?)
+        orderId, productId, productNameSnapshot, quantity, regularPrice, salePrice, finalPrice, isCombo, bundledItems
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
 
     for (const it of verifiedItems) {
@@ -176,7 +242,9 @@ router.post('/', (req, res) => {
         it.quantity,
         it.regularPrice,
         it.salePrice,
-        it.finalPrice
+        it.finalPrice,
+        it.isCombo ? 1 : 0,
+        it.bundledItems || null
       );
     }
 

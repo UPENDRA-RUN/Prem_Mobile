@@ -274,7 +274,14 @@ export default function Checkout() {
                 customerDetails: formData,
                 items: cartItems.map(item => ({
                   productId: item.id,
-                  quantity: item.quantity
+                  id: item.id,
+                  quantity: item.quantity,
+                  name: item.name,
+                  category: item.category,
+                  price: item.price || item.salePrice || item.regularPrice,
+                  regularPrice: item.regularPrice || item.originalPrice || item.price,
+                  isCombo: Boolean(item.isCombo || (item.category && item.category === 'Combo Pack') || String(item.id).startsWith('combo-')),
+                  bundledItems: item.bundledItems || item.items || null
                 })),
                 notes: 'Paid via Razorpay Online',
                 userId: customerUser?.id || null,
@@ -328,7 +335,14 @@ export default function Checkout() {
         pincode: formData.pincode,
         items: cartItems.map(item => ({
           productId: item.id,
-          quantity: item.quantity
+          id: item.id,
+          quantity: item.quantity,
+          name: item.name,
+          category: item.category,
+          price: item.price || item.salePrice || item.regularPrice,
+          regularPrice: item.regularPrice || item.originalPrice || item.price,
+          isCombo: Boolean(item.isCombo || (item.category && item.category === 'Combo Pack') || String(item.id).startsWith('combo-')),
+          bundledItems: item.bundledItems || item.items || null
         })),
         userId: customerUser?.id || null,
         couponCode: appliedCoupon?.code || null
@@ -348,6 +362,18 @@ export default function Checkout() {
       if (!res.ok || !data.success) {
         throw new Error(data.error || 'Failed to place order. Please try again.');
       }
+
+      try {
+        localStorage.setItem('premmobile_user_profile', JSON.stringify({
+          fullName: formData.customerName,
+          phone: formData.mobile,
+          email: formData.email,
+          address: formData.address,
+          city: formData.city,
+          state: formData.state,
+          pincode: formData.pincode
+        }));
+      } catch (e) {}
 
       clearCart();
       navigate(`/account?orderSuccess=${data.order.orderNumber}`);
@@ -640,27 +666,78 @@ export default function Checkout() {
               </h2>
 
               {/* Items List */}
-              <div className="divide-y divide-slate-100 max-h-72 overflow-y-auto pr-1">
-                {cartItems.map((item) => (
-                  <div key={item.cartItemId || item.id} className="py-3 flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-lg bg-slate-50 border border-slate-200 p-1 flex-shrink-0 flex items-center justify-center">
-                      <img
-                        src={item.image || '/images/prem-main.jpg'}
-                        alt={item.name}
-                        className="max-h-full max-w-full object-contain"
-                      />
+              <div className="divide-y divide-slate-100 max-h-[460px] overflow-y-auto pr-1 space-y-3">
+                {cartItems.map((item) => {
+                  const isCombo = Boolean(
+                    item.isCombo ||
+                    (item.category && item.category === 'Combo Pack') ||
+                    String(item.id || '').startsWith('combo-') ||
+                    String(item.name || '').toLowerCase().includes('combo')
+                  );
+
+                  let bundleList = [];
+                  if (item.bundledItems) {
+                    try {
+                      bundleList = typeof item.bundledItems === 'string' ? JSON.parse(item.bundledItems) : item.bundledItems;
+                    } catch (e) {
+                      bundleList = item.bundledItems;
+                    }
+                  } else if (item.items && Array.isArray(item.items)) {
+                    bundleList = item.items;
+                  }
+
+                  return (
+                    <div key={item.cartItemId || item.id} className="pt-3 first:pt-0 space-y-2">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                          <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-200 p-1 shrink-0 flex items-center justify-center">
+                            <img
+                              src={item.image || '/images/prem-main.jpg'}
+                              alt={item.name}
+                              className="max-h-full max-w-full object-contain"
+                            />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              {isCombo && (
+                                <span className="px-2 py-0.5 rounded-full bg-[#FFD400] text-[#050505] text-[9.5px] font-black uppercase tracking-wider border border-amber-400">
+                                  🎁 COMBO
+                                </span>
+                              )}
+                              <h4 className="text-xs font-bold text-[#050505] truncate max-w-[180px] sm:max-w-xs">{item.name}</h4>
+                            </div>
+                            <p className="text-[11px] text-slate-500 font-medium mt-0.5">
+                              Qty: <strong className="text-slate-800 font-bold">{item.quantity}</strong> × {formatCurrency(item.price)}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="text-right shrink-0">
+                          <span className="text-xs font-black text-[#050505] block">
+                            {formatCurrency(item.price * item.quantity)}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* COMBO BUNDLE INCLUDED ITEMS BOX */}
+                      {isCombo && Array.isArray(bundleList) && bundleList.length > 0 && (
+                        <div className="p-3 rounded-2xl bg-amber-50/90 border border-amber-300/80 space-y-1.5 text-xs">
+                          <span className="text-[10px] font-black text-amber-900 uppercase tracking-wider block flex items-center gap-1">
+                            <span>📦 INCLUDED IN THIS COMBO BUNDLE:</span>
+                          </span>
+                          <div className="space-y-1 pt-0.5">
+                            {bundleList.map((bItem, bIdx) => (
+                              <div key={bIdx} className="flex items-center gap-1.5 text-[11px] font-bold text-slate-800 bg-white px-2.5 py-1 rounded-lg border border-amber-200/90 shadow-2xs">
+                                <span className="w-3.5 h-3.5 rounded-full bg-emerald-500 text-white font-black text-[9px] flex items-center justify-center shrink-0">✓</span>
+                                <span className="truncate">{bItem.quantity || 1}× {bItem.name || bItem.customItemName}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-xs font-bold text-[#050505] truncate">{item.name}</h4>
-                      <p className="text-[11px] text-slate-500">
-                        Qty: {item.quantity} × {formatCurrency(item.price)}
-                      </p>
-                    </div>
-                    <div className="text-xs font-black text-[#050505]">
-                      {formatCurrency(item.price * item.quantity)}
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               {/* PROMO COUPON CODE SECTION */}

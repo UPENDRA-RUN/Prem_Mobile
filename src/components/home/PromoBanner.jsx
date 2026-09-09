@@ -16,7 +16,7 @@ export default function PromoBanner() {
             <img
               src="/images/sunday-shocking-sale.jpg"
               alt="Sunday Shocking Sale - Prem Mobile Gwalior"
-              className="w-full h-full object-cover sm:object-contain group-hover:scale-102 transition-transform duration-700"
+              className="w-full h-full object-cover sm:object-contain transform-gpu backface-hidden [image-rendering:-webkit-optimize-contrast]"
             />
             
             {/* Subtle Gradient & Hover Buttons Overlay */}

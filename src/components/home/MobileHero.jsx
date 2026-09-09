@@ -91,7 +91,7 @@ export default function MobileHero() {
           <img
             src={activeSlide.image}
             alt={activeSlide.title}
-            className="w-full h-full object-contain rounded-lg transition-transform duration-500 hover:scale-102"
+            className="w-full h-full object-contain rounded-lg transform-gpu backface-hidden [image-rendering:-webkit-optimize-contrast]"
           />
         </div>
 

@@ -227,17 +227,15 @@ export default function CartDrawer() {
 
                 {/* Buttons */}
                 <div className="space-y-2 pt-1">
-                  {/* Checkout Button */}
-                  <button
-                    onClick={() => {
-                      setIsCheckoutOpen(true);
-                      setIsCartDrawerOpen(false);
-                    }}
+                  {/* Checkout Button - Navigates directly to full /checkout page */}
+                  <Link
+                    to="/checkout"
+                    onClick={() => setIsCartDrawerOpen(false)}
                     className="w-full py-3 px-4 rounded-xl bg-[#FFD400] hover:bg-[#e6be00] text-[#050505] font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md"
                   >
                     <ShoppingBag className="w-4 h-4 text-[#050505]" />
                     <span>PROCEED TO CHECKOUT ({formatCurrency(finalTotal)})</span>
-                  </button>
+                  </Link>
 
                   {/* WhatsApp Order Button */}
                   <button

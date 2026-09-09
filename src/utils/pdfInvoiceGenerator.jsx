@@ -44,7 +44,7 @@ function buildGSTInvoiceHTML(order) {
   const normalizedItems = rawItems.map((item, idx) => {
     const title = item.productNameSnapshot || item.name || `Electronic Accessory #${idx + 1}`;
     const qty = parseInt(item.quantity, 10) || 1;
-    const unitPrice = parseFloat(item.finalPrice || item.price || 0);
+    const unitPrice = parseFloat(item.finalPrice || item.salePrice || item.price || item.regularPrice || 0);
     const lineTotal = unitPrice * qty;
     const taxableValue = Math.round((lineTotal / 1.18) * 100) / 100;
     const gstAmount = Math.round((lineTotal - taxableValue) * 100) / 100;

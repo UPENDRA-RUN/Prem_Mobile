@@ -633,6 +633,22 @@ export default function ProductDetails() {
                       <span>WHATSAPP</span>
                     </button>
                   </div>
+
+                  {/* PROMINENT COMPARE PRODUCT ACTION BUTTON */}
+                  <button
+                    type="button"
+                    onClick={() => toggleCompare(product)}
+                    className={`w-full py-2.5 px-3 rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 border transition-all cursor-pointer ${
+                      isInCompare(product.id)
+                        ? 'bg-[#050505] text-[#FFD400] border-[#050505] shadow-xs'
+                        : 'bg-slate-100 text-slate-800 border-slate-200 hover:bg-slate-200'
+                    }`}
+                  >
+                    <Scale className="w-4 h-4" />
+                    <span>
+                      {isInCompare(product.id) ? '✓ IN COMPARE LIST (Click to Remove)' : 'ADD TO COMPARE LIST ⚖️'}
+                    </span>
+                  </button>
                 </div>
 
                 {/* FEEDBACK BANNER ON ADDITION */}

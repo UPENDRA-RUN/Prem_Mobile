@@ -277,9 +277,25 @@ export default function AdminProducts() {
                       {p.category}
                     </td>
 
-                    {/* Regular Price */}
-                    <td className="py-4 px-4 text-xs font-black text-[#E31B23]">
-                      {formatCurrency(p.regularPrice)}
+                    {/* Selling Price & Regular Price */}
+                    <td className="py-4 px-4 text-xs">
+                      {(() => {
+                        const sellingPrice = p.offerPrice ?? p.price ?? p.currentPrice ?? p.salePrice ?? p.regularPrice;
+                        const isDiscounted = p.regularPrice > sellingPrice && sellingPrice > 0;
+                        return (
+                          <div>
+                            <span className="font-black text-slate-900 text-sm">{formatCurrency(sellingPrice)}</span>
+                            {isDiscounted && (
+                              <div className="flex items-center gap-1 mt-0.5">
+                                <span className="text-[10px] text-slate-400 line-through font-medium">{formatCurrency(p.regularPrice)}</span>
+                                <span className="text-[9px] font-black text-emerald-700 bg-emerald-50 border border-emerald-200 px-1 rounded">
+                                  -{p.discount || Math.round(((p.regularPrice - sellingPrice) / p.regularPrice) * 100)}%
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })()}
                     </td>
 
                     {/* Stock */}

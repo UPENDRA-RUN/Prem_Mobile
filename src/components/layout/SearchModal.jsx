@@ -62,6 +62,18 @@ export default function SearchModal({ isOpen, onClose }) {
   const inputRef = useRef(null);
   const navigate = useNavigate();
 
+  // Global Ctrl+K / Cmd+K shortcut listener
+  useEffect(() => {
+    const handleGlobalKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        window.dispatchEvent(new CustomEvent('open-search-modal'));
+      }
+    };
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+  }, []);
+
   // Focus & lock scroll on open
   useEffect(() => {
     if (isOpen) {

@@ -62,9 +62,7 @@ export default function AdminCoupons() {
     }
   }, [adminToken]);
 
-  useRealtimeSync(['COUPONS_UPDATED', 'ORDER_CREATED'], () => {
-    fetchCoupons(true);
-  });
+  useRealtimeSync(() => fetchCoupons(true), ['COUPONS_UPDATED', 'ORDER_CREATED']);
 
   useEffect(() => {
     fetchCoupons();

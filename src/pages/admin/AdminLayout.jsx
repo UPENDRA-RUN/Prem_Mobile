@@ -32,23 +32,43 @@ export default function AdminLayout() {
     window.location.href = '/login';
   };
 
-  const navItems = [
-    { to: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { to: '/admin/analytics', label: 'Analytics & Insights', icon: BarChart3, badge: '📊' },
-    { to: '/admin/coupons', label: 'Promo Coupons', icon: Ticket, badge: '🎟️' },
-    { to: '/admin/reviews', label: 'Customer Reviews', icon: Star, badge: '⭐' },
-    { to: '/admin/products', label: 'Manage Products & Images', icon: Package, badge: '📦' },
-    { to: '/admin/combos', label: 'Combos & Bundle Packs', icon: Layers, badge: '🎁' },
-    { to: '/admin/orders', label: 'Store Orders', icon: ShoppingCart, badge: '🛒' },
-    { to: '/admin/sale', label: 'Sunday & Custom Sales', icon: Flame, badge: '🔥' },
-    { to: '/admin/settings', label: 'Store Settings & Danger Zone', icon: Settings, badge: '⚙️' }
+  const navSections = [
+    {
+      title: 'OVERVIEW & ANALYTICS',
+      items: [
+        { to: '/admin/dashboard', label: 'Dashboard Overview', icon: LayoutDashboard },
+        { to: '/admin/analytics', label: 'Revenue & Insights', icon: BarChart3, badge: '📊' }
+      ]
+    },
+    {
+      title: 'STORE & CATALOG',
+      items: [
+        { to: '/admin/orders', label: 'Store Orders', icon: ShoppingCart, badge: '🛒' },
+        { to: '/admin/products', label: 'Products & Inventory', icon: Package, badge: '📦' },
+        { to: '/admin/combos', label: 'Combos & Packs', icon: Layers, badge: '🎁' }
+      ]
+    },
+    {
+      title: 'MARKETING & DEALS',
+      items: [
+        { to: '/admin/sale', label: 'Sunday & Flash Sales', icon: Flame, badge: '🔥' },
+        { to: '/admin/coupons', label: 'Promo Coupons', icon: Ticket, badge: '🎟️' },
+        { to: '/admin/reviews', label: 'Customer Reviews', icon: Star, badge: '⭐' }
+      ]
+    },
+    {
+      title: 'SETTINGS',
+      items: [
+        { to: '/admin/settings', label: 'Store Settings', icon: Settings, badge: '⚙️' }
+      ]
+    }
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row font-sans text-slate-900">
+    <div className="h-screen w-full bg-slate-50 flex flex-col md:flex-row font-sans text-slate-900 overflow-hidden">
       
       {/* MOBILE TOP BAR */}
-      <div className="md:hidden bg-white text-slate-900 px-5 py-3.5 flex items-center justify-between border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+      <div className="md:hidden bg-white text-slate-900 px-5 py-3.5 flex items-center justify-between border-b border-slate-200 sticky top-0 z-50 shadow-sm shrink-0">
         <Link to="/admin/dashboard" className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-[#E31B23] flex items-center justify-center shadow">
             <Smartphone className="w-4 h-4 text-white" />
@@ -75,13 +95,13 @@ export default function AdminLayout() {
         />
       )}
 
-      {/* SIDEBAR (Desktop Sticky & Mobile Drawer) */}
+      {/* SIDEBAR (Desktop Fixed & Mobile Drawer) */}
       <aside
-        className={`fixed md:sticky top-0 left-0 h-screen w-72 bg-white text-slate-700 flex flex-col justify-between border-r border-slate-200 z-40 transition-transform duration-200 shadow-sm shrink-0 overflow-y-auto scrollbar-thin ${
+        className={`fixed md:relative inset-y-0 left-0 h-full w-72 bg-white text-slate-700 flex flex-col justify-between border-r border-slate-200 z-40 transition-transform duration-200 shadow-sm shrink-0 overflow-hidden ${
           isMobileNavOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         }`}
       >
-        <div className="flex-1 flex flex-col min-h-0 overflow-y-auto">
+        <div className="flex-1 flex flex-col min-h-0 overflow-y-auto scrollbar-thin">
           {/* LOGO */}
           <div className="p-5 border-b border-slate-200 flex items-center justify-between shrink-0">
             <Link to="/admin/dashboard" className="flex items-center gap-3">
@@ -106,7 +126,7 @@ export default function AdminLayout() {
             </button>
           </div>
 
-          {/* PRIMARY CALL TO ACTION: ADD PRODUCT & MANAGE IMAGES */}
+          {/* PRIMARY CALL TO ACTION: ADD PRODUCT */}
           <div className="p-4 space-y-2 shrink-0">
             <Link
               to="/admin/products/new"
@@ -116,44 +136,43 @@ export default function AdminLayout() {
               <PlusCircle className="w-4 h-4 fill-white text-[#E31B23]" />
               <span>ADD NEW PRODUCT</span>
             </Link>
-
-            <Link
-              to="/admin/products"
-              onClick={() => setIsMobileNavOpen(false)}
-              className="w-full py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-colors"
-            >
-              <Package className="w-3.5 h-3.5 text-[#E31B23]" />
-              <span>MANAGE PRODUCTS & IMAGES</span>
-            </Link>
           </div>
 
-          {/* NAV LINKS */}
-          <nav className="p-4 space-y-1.5 flex-1 overflow-y-auto">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  onClick={() => setIsMobileNavOpen(false)}
-                  className={({ isActive }) =>
-                    `flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-bold uppercase tracking-wider transition-all ${
-                      isActive
-                        ? 'bg-slate-900 text-white shadow-md font-black scale-102'
-                        : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 border border-transparent'
-                    }`
-                  }
-                >
-                  <Icon className="w-4 h-4 flex-shrink-0" />
-                  <span className="flex-1 truncate">{item.label}</span>
-                </NavLink>
-              );
-            })}
+          {/* CATEGORIZED NAV LINKS */}
+          <nav className="p-4 space-y-5 flex-1 overflow-y-auto">
+            {navSections.map((section, idx) => (
+              <div key={idx} className="space-y-1.5">
+                <span className="px-3 text-[10px] font-black text-slate-400 uppercase tracking-wider block">
+                  {section.title}
+                </span>
+                {section.items.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <NavLink
+                      key={item.to}
+                      to={item.to}
+                      onClick={() => setIsMobileNavOpen(false)}
+                      className={({ isActive }) =>
+                        `flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold uppercase tracking-wider transition-all ${
+                          isActive
+                            ? 'bg-slate-900 text-white shadow-md font-black scale-102'
+                            : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 border border-transparent'
+                        }`
+                      }
+                    >
+                      <Icon className="w-4 h-4 flex-shrink-0" />
+                      <span className="flex-1 truncate">{item.label}</span>
+                      {item.badge && <span className="text-xs">{item.badge}</span>}
+                    </NavLink>
+                  );
+                })}
+              </div>
+            ))}
           </nav>
         </div>
 
         {/* BOTTOM USER & ACTIONS */}
-        <div className="p-4 border-t border-slate-200 space-y-3 shrink-0 bg-white sticky bottom-0 z-10">
+        <div className="p-4 border-t border-slate-200 space-y-3 shrink-0 bg-white">
           <div className="px-3.5 py-2.5 rounded-2xl bg-slate-100 border border-slate-200 flex items-center gap-3">
             <div className="w-8 h-8 rounded-full bg-[#E31B23] text-white font-black text-xs flex items-center justify-center shadow-sm">
               {adminUser?.name ? adminUser.name[0].toUpperCase() : 'A'}
@@ -186,8 +205,10 @@ export default function AdminLayout() {
       </aside>
 
       {/* MAIN CONTENT AREA */}
-      <main className="flex-1 min-w-0 p-3.5 sm:p-6 lg:p-8 max-w-[1600px] w-full mx-auto bg-slate-50">
-        <Outlet />
+      <main className="flex-1 min-w-0 h-full overflow-y-auto p-3.5 sm:p-6 lg:p-8 bg-slate-50">
+        <div className="max-w-[1600px] w-full mx-auto pb-12">
+          <Outlet />
+        </div>
       </main>
 
     </div>

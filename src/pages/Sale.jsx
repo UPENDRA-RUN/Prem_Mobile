@@ -21,11 +21,22 @@ import {
 export default function Sale() {
   const { isLive, status, sale, items, message, isLoading } = useSale();
   const { addToCart, setIsCartDrawerOpen } = useCart();
+  const [selectedCategory, setSelectedCategory] = React.useState('ALL');
 
   const handleAddSaleItem = (item) => {
     addToCart(item, 1, {});
     setIsCartDrawerOpen(true);
   };
+
+  const categories = React.useMemo(() => {
+    const set = new Set(items.map(i => i.category).filter(Boolean));
+    return ['ALL', ...Array.from(set)];
+  }, [items]);
+
+  const filteredItems = React.useMemo(() => {
+    if (selectedCategory === 'ALL') return items;
+    return items.filter(i => i.category === selectedCategory);
+  }, [items, selectedCategory]);
 
   if (isLoading) {
     return (
@@ -214,22 +225,38 @@ export default function Sale() {
 
       {/* 2. LIVE PRODUCTS GRID */}
       <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 space-y-6">
-        <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-3">
           <div>
             <h2 className="font-display font-black text-lg sm:text-xl text-[#050505]">
-              Featured Sale Products ({items.length})
+              Featured Sunday Deals ({filteredItems.length})
             </h2>
             <p className="text-xs text-slate-500">
               Special prices applied automatically at checkout.
             </p>
           </div>
-          <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 sm:px-3 py-1 rounded-full">
-            In Stock
-          </span>
+
+          {/* Category Filter Pills */}
+          {categories.length > 2 && (
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 max-w-full">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors ${
+                    selectedCategory === cat
+                      ? 'bg-[#050505] text-[#ffd000] shadow-xs'
+                      : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
+                  }`}
+                >
+                  {cat === 'ALL' ? '🔥 All Deals' : cat}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-          {items.map((item) => (
+          {filteredItems.map((item) => (
             <div
               key={item.id}
               className="bg-white rounded-3xl border-2 border-amber-200/80 p-4 sm:p-5 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between relative group"
@@ -241,21 +268,21 @@ export default function Sale() {
               </span>
 
               {/* Product Image */}
-              <Link to={`/product/${item.id}`} className="block relative aspect-square mb-3 sm:mb-4 overflow-hidden rounded-2xl bg-slate-50 flex items-center justify-center p-3 sm:p-4">
+              <Link to={item.isCustom ? '#' : `/product/${item.id}`} className="block relative aspect-square mb-3 sm:mb-4 overflow-hidden rounded-2xl bg-slate-50 flex items-center justify-center p-3 sm:p-4">
                 <img
-                  src={item.image}
+                  src={item.image || '/images/prem-main.jpg'}
                   alt={item.name}
-                  className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-300"
+                  className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-300 transform-gpu backface-hidden [image-rendering:-webkit-optimize-contrast]"
                 />
               </Link>
 
               {/* Product Info */}
               <div className="space-y-1.5 sm:space-y-2">
                 <span className="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
-                  {item.category} • {item.brand}
+                  {item.category || 'Special Deal'} • {item.brand || 'Prem Mobile'}
                 </span>
 
-                <Link to={`/product/${item.id}`} className="font-display font-black text-xs sm:text-sm text-[#050505] hover:text-[#e51b23] transition-colors line-clamp-2 block leading-snug">
+                <Link to={item.isCustom ? '#' : `/product/${item.id}`} className="font-display font-black text-xs sm:text-sm text-[#050505] hover:text-[#e51b23] transition-colors line-clamp-2 block leading-snug">
                   {item.name}
                 </Link>
 
@@ -265,14 +292,18 @@ export default function Sale() {
                     <span className="text-xl sm:text-2xl font-black font-display text-[#e51b23]">
                       {formatCurrency(item.salePrice)}
                     </span>
-                    <span className="text-xs sm:text-sm text-slate-400 line-through">
-                      {formatCurrency(item.regularPrice)}
-                    </span>
+                    {item.regularPrice > item.salePrice && (
+                      <span className="text-xs sm:text-sm text-slate-400 line-through">
+                        {formatCurrency(item.regularPrice)}
+                      </span>
+                    )}
                   </div>
 
-                  <span className="text-[10px] sm:text-[11px] font-bold text-emerald-600 block mt-0.5">
-                    Save {formatCurrency(item.savings)} today
-                  </span>
+                  {item.savings > 0 && (
+                    <span className="text-[10px] sm:text-[11px] font-bold text-emerald-600 block mt-0.5">
+                      Save {formatCurrency(item.savings)} today
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -286,13 +317,13 @@ export default function Sale() {
                   <span>ADD TO CART</span>
                 </button>
 
-                <Link
-                  to={`/product/${item.id}`}
-                  className="py-2.5 px-2 rounded-xl bg-[#050505] hover:bg-slate-800 text-white font-bold text-[11px] sm:text-xs uppercase tracking-wider flex items-center justify-center gap-1 transition-colors text-center"
+                <button
+                  onClick={() => openGeneralWhatsApp(`Hi Prem Mobile! I want to order Sunday Sale Deal: ${item.name} for ₹${item.salePrice}`)}
+                  className="py-2.5 px-2 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold text-[11px] sm:text-xs uppercase tracking-wider flex items-center justify-center gap-1 transition-colors text-center"
                 >
-                  <span>VIEW DETAILS</span>
-                  <ArrowRight className="w-3 h-3" />
-                </Link>
+                  <MessageCircle className="w-3.5 h-3.5 fill-white" />
+                  <span>WHATSAPP</span>
+                </button>
               </div>
 
             </div>

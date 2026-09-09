@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Heart, ShoppingBag, MessageCircle, Star } from 'lucide-react';
+import { Heart, ShoppingBag, MessageCircle, Star, Scale } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
+import { useCompare } from '../../context/CompareContext';
 import { formatCurrency } from '../../utils/formatters';
 import { openProductWhatsApp } from '../../utils/whatsapp';
 import HighlightText from '../common/HighlightText';
@@ -11,9 +12,11 @@ import QuickEnquiryModal from './QuickEnquiryModal';
 export default function ProductCard({ product, searchQuery = '' }) {
   const { addToCart } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
+  const { isInCompare, toggleCompare } = useCompare();
   const [isEnquiryModalOpen, setIsEnquiryModalOpen] = useState(false);
 
   const isLiked = isInWishlist(product.id);
+  const isCompared = isInCompare(product.id);
   const currentPrice = product.price ?? product.currentPrice ?? product.regularPrice ?? 0;
   const origPrice = product.originalPrice ?? product.regularPrice ?? 0;
 
@@ -41,22 +44,42 @@ export default function ProductCard({ product, searchQuery = '' }) {
               </span>
             )}
 
-            {/* Top Right Wishlist Heart Button (Touch-Friendly) */}
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                toggleWishlist(product);
-              }}
-              className={`absolute top-2 right-2 z-10 w-7 h-7 min-[380px]:w-8 min-[380px]:h-8 rounded-full flex items-center justify-center transition-all shadow-xs ${
-                isLiked
-                  ? 'bg-red-50 text-[#e51b23] scale-105'
-                  : 'bg-white/95 text-slate-400 hover:text-[#e51b23] hover:bg-white'
-              }`}
-              aria-label="Toggle Wishlist"
-            >
-              <Heart className={`w-3.5 h-3.5 min-[380px]:w-4 min-[380px]:h-4 ${isLiked ? 'fill-[#e51b23] text-[#e51b23]' : ''}`} />
-            </button>
+            {/* Top Right Action Overlay (Wishlist + Compare) */}
+            <div className="absolute top-2 right-2 z-10 flex flex-col gap-1.5">
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  toggleWishlist(product);
+                }}
+                className={`w-7 h-7 min-[380px]:w-8 min-[380px]:h-8 rounded-full flex items-center justify-center transition-all shadow-xs ${
+                  isLiked
+                    ? 'bg-red-50 text-[#e51b23] scale-105'
+                    : 'bg-white/95 text-slate-400 hover:text-[#e51b23] hover:bg-white'
+                }`}
+                aria-label="Toggle Wishlist"
+                title="Wishlist"
+              >
+                <Heart className={`w-3.5 h-3.5 min-[380px]:w-4 min-[380px]:h-4 ${isLiked ? 'fill-[#e51b23] text-[#e51b23]' : ''}`} />
+              </button>
+
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  toggleCompare(product);
+                }}
+                className={`w-7 h-7 min-[380px]:w-8 min-[380px]:h-8 rounded-full flex items-center justify-center transition-all shadow-xs ${
+                  isCompared
+                    ? 'bg-[#050505] text-[#FFD400] scale-105'
+                    : 'bg-white/95 text-slate-400 hover:text-[#050505] hover:bg-white'
+                }`}
+                aria-label="Toggle Compare"
+                title={isCompared ? 'In Compare' : 'Add to Compare'}
+              >
+                <Scale className="w-3.5 h-3.5 min-[380px]:w-4 min-[380px]:h-4" />
+              </button>
+            </div>
 
             {/* Product Image (Fixed 1:1 Aspect, contain mode, no crop) */}
             <Link to={`/product/${product.id}`} className="w-full h-full flex items-center justify-center">
@@ -68,7 +91,7 @@ export default function ProductCard({ product, searchQuery = '' }) {
                   e.currentTarget.onerror = null;
                   e.currentTarget.src = '/images/prem-main.jpg';
                 }}
-                className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-300"
+                className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-300 transform-gpu backface-hidden [image-rendering:-webkit-optimize-contrast]"
               />
             </Link>
           </div>

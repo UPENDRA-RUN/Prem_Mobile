@@ -42,7 +42,13 @@ export default function MobileNavbar() {
   const { isLive: isSundaySaleLive } = useSundaySale();
   const { isAuthenticated: isAdmin, logout: adminLogout } = useAdminAuth();
   const { customerUser, isAuthenticated: isCustomer, logout: customerLogout } = useCustomerAuth();
-  const { triggerInstall } = usePwaInstall();
+  const { canInstall, isInstalled, isIos, triggerInstall } = usePwaInstall();
+
+  React.useEffect(() => {
+    const handleOpen = () => setIsSearchOpen(true);
+    window.addEventListener('open-search-modal', handleOpen);
+    return () => window.removeEventListener('open-search-modal', handleOpen);
+  }, []);
 
   const isUserAdmin = Boolean(isAdmin) || customerUser?.role === 'ADMIN' || customerUser?.role === 'admin' || customerUser?.isAdmin === true;
 
@@ -277,11 +283,8 @@ export default function MobileNavbar() {
               </>
             )}
 
-            <Link to="/about" onClick={() => setIsMobileMenuOpen(false)} className="px-3.5 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-xs font-bold text-[#050505]">
-              ABOUT US
-            </Link>
-            <Link to="/contact" onClick={() => setIsMobileMenuOpen(false)} className="px-3.5 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-xs font-bold text-[#050505]">
-              CONTACT STORE
+            <Link to="/about" onClick={() => setIsMobileMenuOpen(false)} className="col-span-2 px-3.5 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-xs font-bold text-[#050505] text-center">
+              ABOUT US & CONTACT STORE
             </Link>
           </div>
 
@@ -296,18 +299,20 @@ export default function MobileNavbar() {
               <span>EXPLORE ALL PRODUCTS</span>
             </Link>
 
-            {/* PWA Install App CTA Button */}
-            <button
-              type="button"
-              onClick={() => {
-                setIsMobileMenuOpen(false);
-                triggerInstall();
-              }}
-              className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#e51b23] to-red-700 text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm"
-            >
-              <Download className="w-4 h-4 text-white" />
-              <span>INSTALL PREM MOBILE APP 📲</span>
-            </button>
+            {/* PWA Install App CTA Button - Only shown when app is NOT installed and device can install */}
+            {!isInstalled && (canInstall || isIos) && (
+              <button
+                type="button"
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  triggerInstall();
+                }}
+                className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#e51b23] to-red-700 text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-transform"
+              >
+                <Download className="w-4 h-4 text-white" />
+                <span>INSTALL PREM MOBILE APP 📲</span>
+              </button>
+            )}
 
             {/* Switch to Admin option */}
             <Link

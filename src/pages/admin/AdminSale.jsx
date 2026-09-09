@@ -1002,8 +1002,8 @@ export default function AdminSale() {
                     <th className="p-3">Product</th>
                     <th className="p-3">Category</th>
                     <th className="p-3">Regular Price</th>
-                    <th className="p-3">Sale Price (₹)</th>
-                    <th className="p-3">Discount</th>
+                    <th className="p-3 w-48">Sale Price (₹)</th>
+                    <th className="p-3 w-56">Discount</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
@@ -1045,16 +1045,31 @@ export default function AdminSale() {
                         <td className="p-3 font-bold text-slate-800">{formatCurrency(p.regularPrice)}</td>
                         <td className="p-3">
                           {isSelected ? (
-                            <div className="flex items-center gap-1.5 max-w-[140px]">
-                              <span className="text-slate-400 font-bold">₹</span>
-                              <input
-                                type="number"
-                                min="1"
-                                max={p.regularPrice - 1}
-                                value={currentSalePrice}
-                                onChange={(e) => handlePriceChange(p.id, e.target.value)}
-                                className="w-full px-2.5 py-1.5 rounded-lg bg-white border-2 border-amber-400 text-slate-900 font-black text-sm focus:outline-none focus:border-[#e51b23]"
-                              />
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-1.5 max-w-[140px]">
+                                <span className="text-slate-400 font-bold">₹</span>
+                                <input
+                                  type="number"
+                                  min="1"
+                                  max={p.regularPrice - 1}
+                                  value={currentSalePrice}
+                                  onChange={(e) => handlePriceChange(p.id, e.target.value)}
+                                  className="w-full px-2.5 py-1.5 rounded-lg bg-white border-2 border-amber-400 text-slate-900 font-black text-sm focus:outline-none focus:border-[#e51b23]"
+                                />
+                              </div>
+                              <div className="flex items-center gap-1">
+                                {[20, 30, 40, 50].map(pct => (
+                                  <button
+                                    key={pct}
+                                    type="button"
+                                    onClick={() => handlePriceChange(p.id, Math.round(p.regularPrice * (1 - pct / 100)))}
+                                    className="px-1.5 py-0.5 rounded bg-slate-100 hover:bg-amber-400 hover:text-slate-900 text-[10px] font-black text-slate-600 transition-colors border border-slate-200"
+                                    title={`Set ${pct}% discount`}
+                                  >
+                                    -{pct}%
+                                  </button>
+                                ))}
+                              </div>
                             </div>
                           ) : (
                             <span className="text-slate-400 italic">Not included</span>
@@ -1062,9 +1077,12 @@ export default function AdminSale() {
                         </td>
                         <td className="p-3">
                           {isSelected && discountPercent > 0 ? (
-                            <span className="px-2 py-1 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 font-black text-[11px]">
-                              {discountPercent}% OFF (Save ₹{savings})
+                            <span className="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 font-black text-[11px] inline-flex items-center gap-1.5 whitespace-nowrap shadow-2xs">
+                              <span>🔥 {discountPercent}% OFF</span>
+                              <span className="text-emerald-600 font-bold">(Save ₹{savings})</span>
                             </span>
+                          ) : isSelected ? (
+                            <span className="text-amber-600 font-bold text-[11px] whitespace-nowrap">Regular Price</span>
                           ) : (
                             <span className="text-slate-400">—</span>
                           )}
