@@ -279,37 +279,46 @@ router.post('/', (req, res) => {
   }
 });
 
-// Customer: GET /api/orders/my-orders
+// Customer: GET /api/orders/my-orders (Retrieve logged-in user's orders or guest order lookup)
 router.get('/my-orders', (req, res) => {
-  const authHeader = req.headers.authorization;
-  const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
-  const payload = token ? verifyToken(token) : null;
-  const queryMobile = req.query.mobile ? String(req.query.mobile).replace(/\D/g, '') : null;
-  const queryEmail = req.query.email ? String(req.query.email).trim().toLowerCase() : null;
+  try {
+    const authHeader = req.headers.authorization;
+    const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+    const payload = token ? verifyToken(token) : null;
+    const queryMobile = req.query.mobile ? String(req.query.mobile).replace(/\D/g, '') : null;
+    const queryEmail = req.query.email ? String(req.query.email).trim().toLowerCase() : null;
 
-  let query = 'SELECT * FROM orders WHERE 1=0';
-  const params = [];
+    let query = 'SELECT * FROM orders WHERE 1=0';
+    const params = [];
 
-  if (payload && payload.userId) {
-    query = 'SELECT * FROM orders WHERE userId = ? OR email = ? OR mobile = ? ORDER BY id DESC';
-    params.push(payload.userId, payload.email || '', payload.mobile || '');
-  } else if (queryMobile || queryEmail) {
-    query = 'SELECT * FROM orders WHERE (mobile = ? OR email = ?) ORDER BY id DESC';
-    params.push(queryMobile || '', queryEmail || '');
-  } else {
-    return res.status(401).json({ success: false, error: 'Authentication required to view orders' });
+    if (payload && (payload.userId || payload.adminId)) {
+      query = 'SELECT * FROM orders WHERE userId = ? OR (length(?) > 0 AND lower(email) = ?) OR (length(?) > 0 AND replace(mobile, "-", "") = ?) ORDER BY id DESC';
+      params.push(
+        payload.userId || payload.adminId,
+        payload.email || '', (payload.email || '').toLowerCase(),
+        payload.mobile || '', (payload.mobile || '').replace(/\D/g, '')
+      );
+    } else if (queryMobile || queryEmail) {
+      query = 'SELECT * FROM orders WHERE (length(?) > 0 AND replace(mobile, "-", "") LIKE ?) OR (length(?) > 0 AND lower(email) = ?) ORDER BY id DESC';
+      params.push(queryMobile || '', `%${queryMobile}%`, queryEmail || '', queryEmail || '');
+    } else {
+      return res.status(401).json({ success: false, error: 'Authentication required to view orders' });
+    }
+
+    const orders = db.prepare(query).all(...params);
+    const fullOrders = orders.map(order => {
+      const items = db.prepare('SELECT * FROM order_items WHERE orderId = ?').all(order.id);
+      return { ...order, items };
+    });
+
+    res.json({
+      success: true,
+      orders: fullOrders
+    });
+  } catch (err) {
+    console.error('Error fetching customer orders:', err);
+    res.status(500).json({ success: false, error: 'Failed to fetch orders' });
   }
-
-  const orders = db.prepare(query).all(...params);
-  const fullOrders = orders.map(order => {
-    const items = db.prepare('SELECT * FROM order_items WHERE orderId = ?').all(order.id);
-    return { ...order, items };
-  });
-
-  res.json({
-    success: true,
-    orders: fullOrders
-  });
 });
 
 // Admin: GET /api/admin/orders
@@ -364,55 +373,12 @@ router.put('/admin/:id/status', requireAdmin, (req, res) => {
   });
 });
 
-// Admin: DELETE /api/admin/orders/purge-all (Purge all orders)
-router.delete('/admin/purge-all', requireAdmin, (req, res) => {
-  db.prepare('DELETE FROM order_items').run();
-  db.prepare('DELETE FROM orders').run();
-
-  broadcastEvent('ORDERS_UPDATED');
-
-  res.json({
-    success: true,
-    message: 'All store orders purged successfully'
-  });
-});
-
-// Customer: GET /api/orders/my-orders?mobile=xxx&email=xxx
-router.get('/my-orders', (req, res) => {
-  const { mobile, email } = req.query || {};
-  const cleanMobile = (mobile || '').replace(/\D/g, '');
-  const cleanEmail = (email || '').trim().toLowerCase();
-
-  if (!cleanMobile && !cleanEmail) {
-    return res.json({ success: true, orders: [] });
-  }
-
-  const orders = db.prepare(`
-    SELECT * FROM orders 
-    WHERE (length(?) > 0 AND replace(mobile, '-', '') LIKE ?) 
-       OR (length(?) > 0 AND lower(email) = ?) 
-    ORDER BY id DESC
-  `).all(cleanMobile, `%${cleanMobile}%`, cleanEmail, cleanEmail);
-
-  const fullOrders = orders.map(order => {
-    const items = db.prepare('SELECT * FROM order_items WHERE orderId = ?').all(order.id);
-    return {
-      ...order,
-      items
-    };
-  });
-
-  res.json({
-    success: true,
-    orders: fullOrders
-  });
-});
-
 // Admin: DELETE /api/orders/admin/purge-all (Purge all orders)
 router.delete('/admin/purge-all', requireAdmin, (req, res) => {
   try {
     db.prepare('DELETE FROM order_items').run();
     db.prepare('DELETE FROM orders').run();
+
     broadcastEvent('ORDERS_UPDATED');
 
     res.json({

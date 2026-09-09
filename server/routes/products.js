@@ -129,20 +129,6 @@ router.get('/', (req, res) => {
   });
 });
 
-// Admin: DELETE /api/products/clear-all (Purge all sample products)
-router.delete('/clear-all', requireAdmin, (req, res) => {
-  db.prepare('DELETE FROM sunday_sale_items').run();
-  db.prepare('DELETE FROM sale_items').run();
-  db.prepare('DELETE FROM products').run();
-
-  broadcastEvent('PRODUCTS_UPDATED');
-
-  res.json({
-    success: true,
-    message: 'All sample products purged successfully. Ready for custom inventory.'
-  });
-});
-
 // Public: GET /api/products/:id
 router.get('/:id', (req, res) => {
   const { id } = req.params;
