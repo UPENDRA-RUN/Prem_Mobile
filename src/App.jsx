@@ -98,12 +98,28 @@ function ProtectedAdminRoute({ children }) {
   return children;
 }
 
-// Scroll to top helper
+// Scroll to top helper & dynamic canonical URL updater
 function ScrollToTop() {
   const { pathname } = useLocation();
 
   useEffect(() => {
     window.scrollTo(0, 0);
+
+    // Update canonical link URL to match current page route exactly
+    try {
+      let link = document.getElementById('canonical-link') || document.querySelector("link[rel='canonical']");
+      if (!link) {
+        link = document.createElement('link');
+        link.id = 'canonical-link';
+        link.rel = 'canonical';
+        document.head.appendChild(link);
+      }
+      const origin = window.location ? window.location.origin : 'https://prem-mobile-kappa.vercel.app';
+      const cleanPath = pathname === '/' ? '/' : pathname;
+      link.setAttribute('href', `${origin}${cleanPath}`);
+    } catch (e) {
+      // Ignored in non-browser environments
+    }
   }, [pathname]);
 
   return null;

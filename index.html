@@ -19,8 +19,19 @@
     </script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     
-    <!-- Canonical URL -->
-    <link rel="canonical" href="https://prem-mobile-kappa.vercel.app/" />
+    <!-- Canonical URL (Dynamically updated to match exact page URL to prevent Canonicalised warnings) -->
+    <link id="canonical-link" rel="canonical" href="https://prem-mobile-kappa.vercel.app/" />
+    <script>
+      (function() {
+        try {
+          var link = document.getElementById('canonical-link');
+          if (link && window.location) {
+            var fullUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
+            link.setAttribute('href', fullUrl);
+          }
+        } catch (e) {}
+      })();
+    </script>
 
     <!-- PWA & Mobile Web App Meta Tags -->
     <link rel="manifest" href="/manifest.json" />
@@ -70,23 +81,27 @@
   </head>
   <body class="bg-[#f8fafc] text-slate-900 font-sans antialiased selection:bg-[#FFD400] selection:text-[#050505]">
     <div id="root">
-      <!-- SEO Raw HTML Shell & Pre-hydration Content (Includes H1, H2, 200+ words descriptive copy, and internal outlinks for search engine crawlers) -->
+      <!-- SEO Raw HTML Shell & Pre-hydration Content -->
       <header style="padding: 16px; text-align: center; background: #050505; color: #ffffff;">
         <h1 style="font-size: 24px; font-weight: 800; color: #e51b23; margin: 0 0 8px 0;">
           Prem Mobile — Gwalior's #1 Electronics & Mobile Accessories Store
         </h1>
         <h2 style="font-size: 16px; font-weight: 600; color: #ffd400; margin: 0;">
-          Deal Aise Jo Deewana Bana De 🔥 — Smartphones, Earbuds, Smartwatches & Accessories
+          Deal Aise Jo Deewana Bana De 🔥 — Mobiles & Accessories
         </h2>
       </header>
 
       <main style="padding: 24px; max-width: 900px; margin: 0 auto; color: #334155; line-height: 1.6; font-family: system-ui, -apple-system, sans-serif;">
         <p>
-          Welcome to <strong>Prem Mobile</strong>, Gwalior's leading retail destination for authentic smartphones, premium Bluetooth earbuds, smartwatches, power banks, fast chargers, audio devices, and high-quality mobile accessories. Located conveniently at Pinto Park, in front of Jaderua Gate in Gwalior, Madhya Pradesh, Prem Mobile is committed to bringing you genuine products with official manufacturer warranties, competitive pricing, and outstanding customer care.
+          Welcome to <strong>Prem Mobile</strong>. We are Gwalior's top store for smartphones, earbuds, smartwatches, and chargers. You can find us at Pinto Park in front of Jaderua Gate, Gwalior. We sell genuine products with brand warranties and low prices.
         </p>
 
         <p>
-          Discover our exclusive weekly <strong>Sunday Shocking Sale</strong>, where top-tier mobile devices, wireless neckbands, noise-canceling headphones, and combo accessory packs are available at unbeatable discounted prices. Whether you are looking to upgrade your mobile device, purchase high-speed fast chargers, or explore curated tech combo packs, Prem Mobile provides transparent pricing, instant local store pickup, and fast nationwide delivery.
+          Check out our <strong>Sunday Sale</strong> every week. Get huge discounts on mobile phones, wireless neckbands, and tech combo packs. We offer clear pricing, quick store pickup, and fast delivery across India.
+        </p>
+
+        <p>
+          Why buy from Prem Mobile? We offer genuine brand products, transparent prices, instant store pickup, and friendly support. Visit our Gwalior shop today or order online.
         </p>
 
         <!-- Search Crawler Navigation & Internal Outlinks -->
