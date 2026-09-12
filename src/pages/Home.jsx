@@ -12,6 +12,7 @@ import { fetchLaravelProducts } from '../api/laravel';
 import { useRealtimeSync } from '../hooks/useRealtimeSync';
 import { storeConfig } from '../config/store';
 import { openGeneralWhatsApp } from '../utils/whatsapp';
+import SEO from '../components/common/SEO';
 import { Flame, ArrowRight, Sparkles, Smartphone, Headphones, Watch } from 'lucide-react';
 
 export default function Home() {
@@ -54,6 +55,12 @@ export default function Home() {
 
   return (
     <div className="bg-[#f5f5f5] text-[#050505] min-h-screen">
+      <SEO
+        title="Prem Mobile | Mobiles & Electronics Store Gwalior"
+        description="Buy smartphones, earbuds, smartwatches, power banks & mobile accessories at best prices at Prem Mobile Pinto Park Gwalior."
+        path="/"
+      />
+      <h1 className="sr-only">Prem Mobile — Mobiles & Electronics Store Gwalior</h1>
       
       {/* 1. BLACK / GOLD HERO SECTION */}
       <HeroSlider />

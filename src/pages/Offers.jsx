@@ -5,6 +5,7 @@ import { fetchLaravelProducts } from '../api/laravel';
 import { storeConfig } from '../config/store';
 import ProductGrid from '../components/product/ProductGrid';
 import { openGeneralWhatsApp } from '../utils/whatsapp';
+import SEO from '../components/common/SEO';
 import { Flame, MessageCircle, ArrowRight, Sparkles } from 'lucide-react';
 
 export default function Offers() {
@@ -20,6 +21,11 @@ export default function Offers() {
 
   return (
     <div className="py-8 sm:py-12 bg-[#050505] text-white min-h-screen">
+      <SEO
+        title="Special Promotional Offers & Coupons | Prem Mobile"
+        description="Discover active coupon codes, seasonal sales, and cashback deals at Prem Mobile Pinto Park Gwalior."
+        path="/offers"
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         
         {/* Top Banner */}

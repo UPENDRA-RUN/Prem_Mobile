@@ -14,6 +14,7 @@ import RatingStars from '../components/common/RatingStars';
 import QuickEnquiryModal from '../components/product/QuickEnquiryModal';
 import ProductGrid from '../components/product/ProductGrid';
 import FrequentlyBoughtTogether from '../components/product/FrequentlyBoughtTogether';
+import SEO from '../components/common/SEO';
 import {
   Heart,
   ShoppingBag,
@@ -320,6 +321,12 @@ export default function ProductDetails() {
 
   return (
     <div className="py-3 sm:py-5 bg-[#F6F6F6] min-h-screen">
+      <SEO
+        title={`${product.name} | Prem Mobile Gwalior`}
+        description={`Buy ${product.name} at best price in Gwalior. ${product.description ? product.description.slice(0, 120) : '100% Genuine product with store warranty at Prem Mobile Pinto Park.'}`}
+        path={`/product/${product.id}`}
+        image={product.image}
+      />
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 space-y-4">
         
         {/* Compact Breadcrumb & Back */}

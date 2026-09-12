@@ -5,6 +5,7 @@ import { useCart } from '../context/CartContext';
 import { formatCurrency, formatDateDDMMYYYY } from '../utils/formatters';
 import { openGeneralWhatsApp } from '../utils/whatsapp';
 import CountdownTimer from '../components/common/CountdownTimer';
+import SEO from '../components/common/SEO';
 import {
   Flame,
   Clock,
@@ -53,6 +54,11 @@ export default function Sale() {
   if (!isLive) {
     return (
       <div className="py-12 sm:py-16 bg-[#f8fafc] min-h-[80vh]">
+        <SEO
+          title="Sunday Shocking Sale | Heavy Discounts | Prem Mobile Gwalior"
+          description="Don't miss out on weekly Sunday Sale deals at Prem Mobile Gwalior. Exclusive price drops on smartphones, earbuds, and accessories."
+          path="/sunday-sale"
+        />
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-8">
           
           {/* OFFLINE NOTICE HERO */}
@@ -179,6 +185,11 @@ export default function Sale() {
   // ==========================================
   return (
     <div className="py-8 sm:py-12 bg-[#f8fafc] min-h-screen space-y-10">
+      <SEO
+        title="Sunday Shocking Sale LIVE | Heavy Discounts | Prem Mobile Gwalior"
+        description="Sunday Sale is LIVE now at Prem Mobile Gwalior! Grab heavy price drops on smartphones, earbuds, smartwatches, and fast chargers."
+        path="/sunday-sale"
+      />
       
       {/* 1. LIVE HERO BANNER */}
       <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8">

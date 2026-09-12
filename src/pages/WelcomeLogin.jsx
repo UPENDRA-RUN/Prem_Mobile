@@ -3,6 +3,7 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { parseResponseJson } from '../utils/apiHelper';
 import { useCustomerAuth } from '../context/CustomerAuthContext';
 import { useAdminAuth } from '../context/AdminAuthContext';
+import SEO from '../components/common/SEO';
 import {
   Eye,
   EyeOff,
@@ -183,6 +184,11 @@ export default function WelcomeLogin({ defaultMode = 'customer_login' }) {
 
   return (
     <div className="min-h-screen bg-[#07090e] text-white flex flex-col justify-between font-sans relative overflow-x-hidden selection:bg-[#FFD400] selection:text-black">
+      <SEO
+        title={view === 'signup' ? "Create Account | Prem Mobile Gwalior" : "Customer Login & Account | Prem Mobile Gwalior"}
+        description="Sign in to your Prem Mobile account to manage orders, wishlist, saved shipping addresses, and support tickets."
+        path={view === 'signup' ? "/signup" : "/login"}
+      />
       
       {/* BACKGROUND DECORATIVE GLOW EFFECTS */}
       <div className="fixed inset-0 pointer-events-none z-0">

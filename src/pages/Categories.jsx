@@ -3,10 +3,16 @@ import { Link } from 'react-router-dom';
 import { categories } from '../data/categories';
 import { ArrowRight, Flame, Layers } from 'lucide-react';
 import { storeConfig } from '../config/store';
+import SEO from '../components/common/SEO';
 
 export default function Categories() {
   return (
     <div className="py-8 sm:py-12 bg-[#f5f5f5] min-h-screen">
+      <SEO
+        title="Product Categories | Prem Mobile Gwalior"
+        description="Explore mobile categories including 5G Smartphones, Audio & Earbuds, Smartwatches, Chargers & Accessories at Prem Mobile Gwalior."
+        path="/categories"
+      />
       <div className="max-w-[1500px] mx-auto px-3.5 sm:px-6 space-y-8 sm:space-y-10">
         
         {/* Banner Header */}

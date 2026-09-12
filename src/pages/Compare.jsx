@@ -6,6 +6,7 @@ import { extractSpecifications } from '../utils/specExtractor';
 import { parseResponseJson } from '../utils/apiHelper';
 import { formatCurrency } from '../utils/formatters';
 import { openProductWhatsApp } from '../utils/whatsapp';
+import SEO from '../components/common/SEO';
 import {
   Scale,
   ArrowLeft,
@@ -81,6 +82,11 @@ export default function Compare() {
   if (compareItems.length === 0) {
     return (
       <div className="py-16 sm:py-24 bg-[#F6F6F6] min-h-screen">
+        <SEO
+          title="Product Specification Comparison | Prem Mobile Gwalior"
+          description="Compare smartphones, earbuds, smartwatches, and chargers side-by-side on Prem Mobile Gwalior."
+          path="/compare"
+        />
         <div className="max-w-4xl mx-auto px-4 text-center space-y-6">
           <div className="w-20 h-20 rounded-3xl bg-white border border-slate-200 text-[#E31B23] flex items-center justify-center mx-auto shadow-md">
             <Scale className="w-10 h-10" />
@@ -105,6 +111,11 @@ export default function Compare() {
 
   return (
     <div className="py-6 sm:py-10 bg-[#F6F6F6] min-h-screen">
+      <SEO
+        title={`Comparing ${compareItems.length} Products | Prem Mobile Gwalior`}
+        description="Compare smartphones, earbuds, smartwatches, and chargers side-by-side on Prem Mobile Gwalior."
+        path="/compare"
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         
         {/* Header Bar */}

@@ -3,12 +3,18 @@ import { Link } from 'react-router-dom';
 import { Smartphone, Home, HelpCircle, ArrowLeft } from 'lucide-react';
 import { storeConfig } from '../config/store';
 import SupportModal from '../components/common/SupportModal';
+import SEO from '../components/common/SEO';
 
 export default function NotFound() {
   const [isSupportOpen, setIsSupportOpen] = useState(false);
 
   return (
     <>
+      <SEO
+        title="404 Page Not Found | Prem Mobile Gwalior"
+        description="The requested page could not be found on Prem Mobile Gwalior."
+        path="/404"
+      />
       <div className="py-24 bg-slate-50 min-h-[75vh] flex items-center justify-center">
         <div className="max-w-md mx-auto px-4 text-center space-y-6">
           <div className="w-20 h-20 rounded-3xl bg-[#050505] text-[#FFD400] border-2 border-[#FFD400]/40 flex items-center justify-center mx-auto shadow-xl">

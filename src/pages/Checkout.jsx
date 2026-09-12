@@ -4,6 +4,7 @@ import { useCart } from '../context/CartContext';
 import { useCustomerAuth } from '../context/CustomerAuthContext';
 import { formatCurrency } from '../utils/formatters';
 import { parseResponseJson } from '../utils/apiHelper';
+import SEO from '../components/common/SEO';
 import {
   ShoppingBag,
   ShieldCheck,
@@ -387,6 +388,11 @@ export default function Checkout() {
 
   return (
     <div className="bg-[#f8fafc] min-h-screen py-8 sm:py-14">
+      <SEO
+        title="Secure Checkout | Prem Mobile Gwalior"
+        description="Complete your order securely with Prem Mobile Gwalior."
+        path="/checkout"
+      />
       <div className="max-w-5xl mx-auto px-3.5 sm:px-6 space-y-6 sm:space-y-8">
         
         {/* HEADER */}

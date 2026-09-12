@@ -17,6 +17,7 @@ import {
   Navigation
 } from 'lucide-react';
 import { openGeneralWhatsApp } from '../utils/whatsapp';
+import SEO from '../components/common/SEO';
 
 export default function About() {
   const [formData, setFormData] = useState({ name: '', phone: '', message: '' });
@@ -58,6 +59,11 @@ export default function About() {
 
   return (
     <div className="py-8 sm:py-12 bg-[#050505] text-white min-h-screen">
+      <SEO
+        title="About Prem Mobile Gwalior | Trusted Electronics Retailer"
+        description="Learn about Prem Mobile located at Pinto Park, Gwalior. 100% genuine products, official warranty, and best offline deals."
+        path="/about"
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         
         {/* Hero Section */}

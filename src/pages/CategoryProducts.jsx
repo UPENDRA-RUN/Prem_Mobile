@@ -5,6 +5,7 @@ import { categories } from '../data/categories';
 import ProductGrid from '../components/product/ProductGrid';
 import { ArrowLeft, ArrowRight, Flame } from 'lucide-react';
 import { storeConfig } from '../config/store';
+import SEO from '../components/common/SEO';
 
 export default function CategoryProducts() {
   const { category: categoryParam } = useParams();
@@ -36,6 +37,11 @@ export default function CategoryProducts() {
 
   return (
     <div className="py-8 sm:py-12 bg-[#f5f5f5] min-h-screen">
+      <SEO
+        title={`${categoryName} | Prem Mobile Gwalior`}
+        description={`Shop top-rated ${categoryName} products at best prices in Gwalior at Prem Mobile Pinto Park.`}
+        path={`/categories/${categoryParam}`}
+      />
       <div className="max-w-[1500px] mx-auto px-3.5 sm:px-6">
         
         {/* Back Link */}

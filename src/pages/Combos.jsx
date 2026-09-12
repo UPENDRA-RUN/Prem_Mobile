@@ -3,6 +3,7 @@ import { parseResponseJson } from '../utils/apiHelper';
 import { useCart } from '../context/CartContext';
 import { formatCurrency } from '../utils/formatters';
 import { openGeneralWhatsApp } from '../utils/whatsapp';
+import SEO from '../components/common/SEO';
 import {
   Layers,
   ShoppingBag,
@@ -69,6 +70,11 @@ export default function Combos() {
 
   return (
     <div className="py-8 sm:py-12 bg-[#f8fafc] min-h-screen space-y-10">
+      <SEO
+        title="Super Combo Bundle Offers | Prem Mobile Gwalior"
+        description="Save big with Prem Mobile combo packs in Gwalior. Combine smartphones with earbuds, chargers, power banks, and smartwatches."
+        path="/combos"
+      />
       
       {/* HERO BANNER */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

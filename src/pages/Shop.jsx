@@ -6,6 +6,7 @@ import { categories } from '../data/categories';
 import ProductGrid from '../components/product/ProductGrid';
 import FilterSidebar from '../components/product/FilterSidebar';
 import HighlightText from '../components/common/HighlightText';
+import SEO from '../components/common/SEO';
 import {
   Search,
   SlidersHorizontal,
@@ -193,6 +194,11 @@ export default function Shop() {
 
   return (
     <div className="py-6 sm:py-10 bg-[#F6F6F6] min-h-screen">
+      <SEO
+        title="Shop Smartphones & Accessories | Prem Mobile Gwalior"
+        description="Browse authentic smartphones, Bluetooth earbuds, smartwatches, power banks, and fast chargers at best prices at Prem Mobile Gwalior."
+        path="/shop"
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         
         {/* Page Banner */}

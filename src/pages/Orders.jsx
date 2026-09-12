@@ -3,6 +3,7 @@ import { parseResponseJson } from '../utils/apiHelper';
 import { Link } from 'react-router-dom';
 import { useCustomerAuth } from '../context/CustomerAuthContext';
 import { formatCurrency } from '../utils/formatters';
+import SEO from '../components/common/SEO';
 import {
   Package,
   Calendar,
@@ -84,6 +85,11 @@ export default function Orders() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-8">
+      <SEO
+        title="My Orders & History | Prem Mobile Gwalior"
+        description="Track your past and live mobile product orders placed at Prem Mobile Gwalior."
+        path="/orders"
+      />
       
       {/* HEADER */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200 pb-6">

@@ -8,6 +8,7 @@ import { useRealtimeSync } from '../hooks/useRealtimeSync';
 import { formatCurrency } from '../utils/formatters';
 import DeleteAccountModal from '../components/common/DeleteAccountModal';
 import SupportModal from '../components/common/SupportModal';
+import SEO from '../components/common/SEO';
 import {
   User,
   Phone,
@@ -198,6 +199,11 @@ export default function AccountSettings() {
 
   return (
     <div className="py-8 sm:py-12 bg-[#F6F6F6] min-h-screen">
+      <SEO
+        title="Account Settings & Profile | Prem Mobile Gwalior"
+        description="Manage your Prem Mobile account profile, saved addresses, and store pickup preferences."
+        path="/account"
+      />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         
         {/* Page Banner Header */}

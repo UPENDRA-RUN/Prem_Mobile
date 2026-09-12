@@ -3,6 +3,7 @@ import { useSearchParams, Link } from 'react-router-dom';
 import { CheckCircle2, ShoppingBag, ArrowRight, MessageCircle, MapPin, Phone } from 'lucide-react';
 import { storeConfig } from '../config/store';
 import { openGeneralWhatsApp } from '../utils/whatsapp';
+import SEO from '../components/common/SEO';
 
 export default function OrderSuccess() {
   const [searchParams] = useSearchParams();
@@ -14,6 +15,11 @@ export default function OrderSuccess() {
 
   return (
     <div className="bg-[#f8fafc] min-h-[80vh] py-16 sm:py-24 flex items-center justify-center">
+      <SEO
+        title="Order Confirmed | Prem Mobile Gwalior"
+        description="Thank you for your order at Prem Mobile Gwalior."
+        path="/order-success"
+      />
       <div className="max-w-lg mx-auto px-6 text-center space-y-6">
         
         <div className="w-24 h-24 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-lg animate-bounce">

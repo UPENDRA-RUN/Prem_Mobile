@@ -7,6 +7,7 @@ import { storeConfig } from '../config/store';
 import SuggestedAddons from '../components/cart/SuggestedAddons';
 import VariantEditModal from '../components/cart/VariantEditModal';
 import CheckoutModal from '../components/cart/CheckoutModal';
+import SEO from '../components/common/SEO';
 import {
   ShoppingBag,
   Trash2,
@@ -63,6 +64,11 @@ export default function Cart() {
   if (cartItems.length === 0) {
     return (
       <div className="py-16 sm:py-24 bg-[#F6F6F6] min-h-[75vh] flex items-center justify-center">
+        <SEO
+          title="Shopping Cart | Prem Mobile Gwalior"
+          description="Review items in your Prem Mobile cart, calculate savings, and proceed to secure checkout."
+          path="/cart"
+        />
         <div className="text-center max-w-md mx-auto px-4 space-y-6">
           <div className="w-24 h-24 rounded-3xl bg-white border-2 border-[#FFD400] text-[#050505] flex items-center justify-center mx-auto shadow-lg relative">
             <ShoppingBag className="w-12 h-12 text-[#050505]" />
@@ -99,6 +105,11 @@ export default function Cart() {
 
   return (
     <div className="py-8 sm:py-12 bg-[#F6F6F6] min-h-screen">
+      <SEO
+        title={`Shopping Cart (${totalItems} items) | Prem Mobile Gwalior`}
+        description="Review items in your Prem Mobile cart, calculate savings, and proceed to secure checkout."
+        path="/cart"
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         
         {/* Banner */}

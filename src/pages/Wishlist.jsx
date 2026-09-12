@@ -6,6 +6,7 @@ import { formatCurrency } from '../utils/formatters';
 import { openProductWhatsApp } from '../utils/whatsapp';
 import { storeConfig } from '../config/store';
 import RatingStars from '../components/common/RatingStars';
+import SEO from '../components/common/SEO';
 import { Heart, ShoppingBag, MessageCircle, Trash2, ArrowRight, Sparkles, Flame } from 'lucide-react';
 
 export default function Wishlist() {
@@ -14,6 +15,11 @@ export default function Wishlist() {
 
   return (
     <div className="py-8 sm:py-12 bg-[#F6F6F6] min-h-screen">
+      <SEO
+        title={`My Saved Wishlist (${wishlist.length}) | Prem Mobile Gwalior`}
+        description="View and manage your saved products and favorite electronics on Prem Mobile."
+        path="/wishlist"
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         
         {/* Header */}

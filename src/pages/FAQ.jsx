@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { faqCategories, faqQuestions } from '../data/faq';
 import { storeConfig } from '../config/store';
 import { openGeneralWhatsApp } from '../utils/whatsapp';
+import SEO from '../components/common/SEO';
 import {
   Search,
   HelpCircle,
@@ -75,6 +76,11 @@ export default function FAQ() {
 
   return (
     <div className="py-8 sm:py-12 bg-[#F6F6F6] min-h-screen">
+      <SEO
+        title="Frequently Asked Questions (FAQ) | Prem Mobile Gwalior"
+        description="Find answers to common questions about store warranty, payment methods, Sunday sale, home delivery, and store location."
+        path="/faq"
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         
         {/* HERO BANNER & SEARCH */}
