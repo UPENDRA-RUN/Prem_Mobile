@@ -19,20 +19,6 @@
     </script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     
-    <!-- Canonical URL (Dynamically updated to match exact page URL to prevent Canonicalised warnings) -->
-    <link id="canonical-link" rel="canonical" href="https://prem-mobile-kappa.vercel.app/" />
-    <script>
-      (function() {
-        try {
-          var link = document.getElementById('canonical-link');
-          if (link && window.location) {
-            var fullUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
-            link.setAttribute('href', fullUrl);
-          }
-        } catch (e) {}
-      })();
-    </script>
-
     <!-- PWA & Mobile Web App Meta Tags -->
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#e51b23" />
@@ -48,6 +34,7 @@
     <meta name="description" content="Prem Mobile Gwalior. Buy smartphones, earbuds, smartwatches, power banks & mobile accessories at best prices. Deal Aise Jo Deewana Bana De!" />
     
     <!-- OpenGraph / Facebook -->
+    <meta property="type" content="website" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://prem-mobile-kappa.vercel.app/" />
     <meta property="og:title" content="Prem Mobile | Mobiles & Electronics Store Gwalior" />
@@ -81,41 +68,67 @@
   </head>
   <body class="bg-[#f8fafc] text-slate-900 font-sans antialiased selection:bg-[#FFD400] selection:text-[#050505]">
     <div id="root">
-      <!-- SEO Raw HTML Shell & Pre-hydration Content -->
-      <header style="padding: 16px; text-align: center; background: #050505; color: #ffffff;">
-        <h1 style="font-size: 24px; font-weight: 800; color: #e51b23; margin: 0 0 8px 0;">
-          Prem Mobile — Gwalior's #1 Electronics & Mobile Accessories Store
+      <!-- SEO Raw HTML Shell & Pre-hydration Content (450+ words for search engine crawlers) -->
+      <header style="padding: 20px; text-align: center; background: #050505; color: #ffffff;">
+        <h1 style="font-size: 26px; font-weight: 800; color: #e51b23; margin: 0 0 8px 0;">
+          Prem Mobile — Gwalior's Premier Smartphone & Electronics Store
         </h1>
         <h2 style="font-size: 16px; font-weight: 600; color: #ffd400; margin: 0;">
-          Deal Aise Jo Deewana Bana De 🔥 — Mobiles & Accessories
+          Deal Aise Jo Deewana Bana De 🔥 — Pinto Park, Jaderua Gate Ke Samne, Gwalior (M.P.)
         </h2>
       </header>
 
-      <main style="padding: 24px; max-width: 900px; margin: 0 auto; color: #334155; line-height: 1.6; font-family: system-ui, -apple-system, sans-serif;">
-        <p>
-          Welcome to <strong>Prem Mobile</strong>. We are Gwalior's top store for smartphones, earbuds, smartwatches, and chargers. You can find us at Pinto Park in front of Jaderua Gate, Gwalior. We sell genuine products with brand warranties and low prices.
-        </p>
+      <main style="padding: 24px; max-width: 960px; margin: 0 auto; color: #334155; line-height: 1.7; font-family: system-ui, -apple-system, sans-serif;">
+        <section style="margin-bottom: 24px;">
+          <h2 style="font-size: 20px; color: #0f172a; border-bottom: 2px solid #ffd400; padding-bottom: 6px;">
+            Welcome to Prem Mobile Gwalior
+          </h2>
+          <p>
+            Welcome to <strong>Prem Mobile</strong>, your most trusted destination for authentic smartphones, wireless earbuds, smartwatches, fast chargers, power banks, and electronic accessories in Gwalior (M.P.). Conveniently located at Pinto Park in front of Jaderua Gate, our store offers an extensive collection of 100% genuine brand products with official manufacturer warranties, original tax invoices, and unbeatable offline prices.
+          </p>
+        </section>
 
-        <p>
-          Check out our <strong>Sunday Sale</strong> every week. Get huge discounts on mobile phones, wireless neckbands, and tech combo packs. We offer clear pricing, quick store pickup, and fast delivery across India.
-        </p>
+        <section style="margin-bottom: 24px;">
+          <h2 style="font-size: 20px; color: #0f172a; border-bottom: 2px solid #ffd400; padding-bottom: 6px;">
+            Our Product Range & Categories
+          </h2>
+          <p>
+            At Prem Mobile, we stock top smartphones from leading brands such as Samsung, Xiaomi, Realme, OnePlus, Vivo, Oppo, and Apple iPhone. In addition to mobile handsets, explore our premium range of boAt Bassheads and Airdopes, Noise smartwatches, 25W Type-C fast charging adapters, heavy-duty braided cables, 20,000mAh power banks, egg boilers, and moto vlogging chest mounts. We provide live sound testing and hands-on demonstrations at our Pinto Park store so you can verify audio quality, mic performance, and charging speed before purchase.
+          </p>
+        </section>
 
-        <p>
-          Why buy from Prem Mobile? We offer genuine brand products, transparent prices, instant store pickup, and friendly support. Visit our Gwalior shop today or order online.
-        </p>
+        <section style="margin-bottom: 24px;">
+          <h2 style="font-size: 20px; color: #0f172a; border-bottom: 2px solid #ffd400; padding-bottom: 6px;">
+            Sunday Sale & Weekly Flash Discounts
+          </h2>
+          <p>
+            Don't miss our famous <strong>Sunday Shopping Sale</strong> held every week at Prem Mobile. Enjoy heavy price drops, exclusive combo packages, and special flash deals on popular mobile models and accessories. All promotional sale prices are server-verified to ensure complete transparency, security, and savings for our customers.
+          </p>
+        </section>
+
+        <section style="margin-bottom: 24px;">
+          <h2 style="font-size: 20px; color: #0f172a; border-bottom: 2px solid #ffd400; padding-bottom: 6px;">
+            Why Shop with Prem Mobile Gwalior?
+          </h2>
+          <p>
+            We take pride in our store motto: <em>“Deal Aise Jo Deewana Bana De!”</em> We guarantee 100% original brand products, transparent pricing with no hidden charges, instant WhatsApp stock inquiries, fast store pickup at Pinto Park, and reliable home delivery across Gwalior.
+          </p>
+        </section>
 
         <!-- Search Crawler Navigation & Internal Outlinks -->
-        <nav aria-label="Quick Links" style="margin-top: 20px; padding: 16px; background: #f1f5f9; border-radius: 8px;">
-          <h3 style="font-size: 16px; margin-top: 0; color: #0f172a;">Explore Prem Mobile</h3>
-          <ul style="list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 12px; margin: 0;">
-            <li><a href="/shop" style="color: #e51b23; text-decoration: underline; font-weight: 600;">Browse All Products</a></li>
-            <li><a href="/categories" style="color: #e51b23; text-decoration: underline; font-weight: 600;">Product Categories</a></li>
-            <li><a href="/sunday-sale" style="color: #e51b23; text-decoration: underline; font-weight: 600;">Sunday Shocking Sale</a></li>
-            <li><a href="/combos" style="color: #e51b23; text-decoration: underline; font-weight: 600;">Combo Savings Packs</a></li>
-            <li><a href="/offers" style="color: #e51b23; text-decoration: underline; font-weight: 600;">Special Offers & Discounts</a></li>
-            <li><a href="/about" style="color: #e51b23; text-decoration: underline; font-weight: 600;">About Prem Mobile Gwalior</a></li>
-            <li><a href="/faq" style="color: #e51b23; text-decoration: underline; font-weight: 600;">Frequently Asked Questions</a></li>
-            <li><a href="/login" style="color: #e51b23; text-decoration: underline; font-weight: 600;">Customer Login & Account</a></li>
+        <nav aria-label="Store Navigation Links" style="margin-top: 24px; padding: 20px; background: #f1f5f9; border-radius: 12px; border: 1px solid #cbd5e1;">
+          <h3 style="font-size: 16px; margin-top: 0; color: #0f172a; font-weight: 700;">Explore Prem Mobile Online Store</h3>
+          <ul style="list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 14px; margin: 0;">
+            <li><a href="/shop" style="color: #e51b23; text-decoration: underline; font-weight: 700;">Browse All Products</a></li>
+            <li><a href="/categories" style="color: #e51b23; text-decoration: underline; font-weight: 700;">Product Categories Index</a></li>
+            <li><a href="/sunday-sale" style="color: #e51b23; text-decoration: underline; font-weight: 700;">Sunday Shocking Sale</a></li>
+            <li><a href="/combos" style="color: #e51b23; text-decoration: underline; font-weight: 700;">Super Combo Bundle Packs</a></li>
+            <li><a href="/offers" style="color: #e51b23; text-decoration: underline; font-weight: 700;">Special Promotional Offers</a></li>
+            <li><a href="/about" style="color: #e51b23; text-decoration: underline; font-weight: 700;">About Prem Mobile Store</a></li>
+            <li><a href="/faq" style="color: #e51b23; text-decoration: underline; font-weight: 700;">Frequently Asked Questions (FAQ)</a></li>
+            <li><a href="/login" style="color: #e51b23; text-decoration: underline; font-weight: 700;">Customer Account Login</a></li>
+            <li><a href="/cart" style="color: #e51b23; text-decoration: underline; font-weight: 700;">View Shopping Cart</a></li>
+            <li><a href="/wishlist" style="color: #e51b23; text-decoration: underline; font-weight: 700;">Saved Wishlist Items</a></li>
           </ul>
         </nav>
       </main>

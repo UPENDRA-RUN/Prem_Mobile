@@ -190,7 +190,7 @@ export default function App() {
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/order-success" element={<OrderSuccess />} />
-                <Route path="/sale" element={<Sale />} />
+                <Route path="/sale" element={<Navigate to="/sunday-sale" replace />} />
                 <Route path="/sunday-sale" element={<SundaySale />} />
                 <Route path="/combos" element={<Combos />} />
                 <Route path="/offers" element={<Offers />} />
