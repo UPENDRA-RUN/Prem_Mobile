@@ -105,10 +105,10 @@ export default function DesktopNavbar() {
           </NavLink>
 
           <NavLink
-            to="/products"
+            to="/shop"
             className={({ isActive }) =>
               `relative text-[11px] min-[1280px]:text-[12px] min-[1400px]:text-[13px] min-[1536px]:text-[14px] font-extrabold tracking-wide uppercase transition-colors py-2 flex flex-col items-center flex-shrink-0 whitespace-nowrap ${
-                isActive || location.pathname === '/shop' || location.pathname === '/products'
+                isActive || location.pathname === '/shop'
                   ? 'text-[#e51b23]'
                   : 'text-[#050505] hover:text-[#e51b23]'
               }`
@@ -117,7 +117,7 @@ export default function DesktopNavbar() {
             {({ isActive }) => (
               <>
                 <span>PRODUCTS</span>
-                {(isActive || location.pathname === '/shop' || location.pathname === '/products') && (
+                {(isActive || location.pathname === '/shop') && (
                   <span className="absolute -bottom-2 w-full h-[3px] bg-[#e51b23] rounded-full" />
                 )}
               </>
@@ -132,7 +132,7 @@ export default function DesktopNavbar() {
             <Link
               to="/categories"
               className={`text-[11px] min-[1280px]:text-[12px] min-[1400px]:text-[13px] min-[1536px]:text-[14px] font-extrabold tracking-wide uppercase transition-colors flex items-center gap-0.5 min-[1280px]:gap-1 ${
-                location.pathname.startsWith('/categories') || location.pathname.startsWith('/category')
+                location.pathname.startsWith('/categories')
                   ? 'text-[#e51b23]'
                   : 'text-[#050505] hover:text-[#e51b23]'
               }`}
@@ -143,28 +143,28 @@ export default function DesktopNavbar() {
 
             {isCategoryDropdownOpen && (
               <div className="absolute top-full left-0 w-56 bg-white rounded-2xl shadow-2xl border border-slate-200 py-2 z-50 animate-fade-in">
-                <Link to="/category/smartphones" className="block px-4 py-2 text-xs font-bold text-[#050505] hover:bg-slate-50 hover:text-[#e51b23]">
+                <Link to="/categories/smartphones" className="block px-4 py-2 text-xs font-bold text-[#050505] hover:bg-slate-50 hover:text-[#e51b23]">
                   Smartphones
                 </Link>
-                <Link to="/category/earbuds" className="block px-4 py-2 text-xs font-bold text-[#050505] hover:bg-slate-50 hover:text-[#e51b23]">
+                <Link to="/categories/earbuds" className="block px-4 py-2 text-xs font-bold text-[#050505] hover:bg-slate-50 hover:text-[#e51b23]">
                   Earbuds
                 </Link>
-                <Link to="/category/headphones" className="block px-4 py-2 text-xs font-bold text-[#050505] hover:bg-slate-50 hover:text-[#e51b23]">
+                <Link to="/categories/headphones" className="block px-4 py-2 text-xs font-bold text-[#050505] hover:bg-slate-50 hover:text-[#e51b23]">
                   Headphones
                 </Link>
-                <Link to="/category/smartwatches" className="block px-4 py-2 text-xs font-bold text-[#050505] hover:bg-slate-50 hover:text-[#e51b23]">
+                <Link to="/categories/smartwatches" className="block px-4 py-2 text-xs font-bold text-[#050505] hover:bg-slate-50 hover:text-[#e51b23]">
                   Smartwatches
                 </Link>
-                <Link to="/category/power-banks" className="block px-4 py-2 text-xs font-bold text-[#050505] hover:bg-slate-50 hover:text-[#e51b23]">
+                <Link to="/categories/power-banks" className="block px-4 py-2 text-xs font-bold text-[#050505] hover:bg-slate-50 hover:text-[#e51b23]">
                   Power Banks
                 </Link>
-                <Link to="/category/chargers" className="block px-4 py-2 text-xs font-bold text-[#050505] hover:bg-slate-50 hover:text-[#e51b23]">
+                <Link to="/categories/chargers" className="block px-4 py-2 text-xs font-bold text-[#050505] hover:bg-slate-50 hover:text-[#e51b23]">
                   Chargers
                 </Link>
-                <Link to="/category/covers" className="block px-4 py-2 text-xs font-bold text-[#050505] hover:bg-slate-50 hover:text-[#e51b23]">
+                <Link to="/categories/covers" className="block px-4 py-2 text-xs font-bold text-[#050505] hover:bg-slate-50 hover:text-[#e51b23]">
                   Mobile Covers
                 </Link>
-                <Link to="/category/gadgets" className="block px-4 py-2 text-xs font-bold text-[#050505] hover:bg-slate-50 hover:text-[#e51b23]">
+                <Link to="/categories/gadgets" className="block px-4 py-2 text-xs font-bold text-[#050505] hover:bg-slate-50 hover:text-[#e51b23]">
                   Gadgets & Home Tech
                 </Link>
                 <div className="border-t border-slate-100 my-1" />
@@ -176,7 +176,7 @@ export default function DesktopNavbar() {
           </div>
 
           <NavLink
-            to="/sale"
+            to="/sunday-sale"
             className={({ isActive }) =>
               `relative text-[11px] min-[1280px]:text-[12px] min-[1400px]:text-[13px] min-[1536px]:text-[14px] font-extrabold tracking-wide uppercase transition-colors py-2 flex items-center gap-0.5 min-[1280px]:gap-1 flex-shrink-0 whitespace-nowrap ${
                 isActive
@@ -189,21 +189,15 @@ export default function DesktopNavbar() {
           >
             {({ isActive }) => (
               <>
-                <div className="flex items-center gap-0.5 min-[1280px]:gap-1">
-                  {isSundaySaleLive ? (
-                    <span className="flex items-center gap-1 px-1.5 min-[1280px]:px-2 py-0.5 rounded-full bg-[#e51b23] text-white text-[9.5px] min-[1280px]:text-[10px] min-[1400px]:text-[11px] font-black animate-pulse shadow-sm">
-                      <Flame className="w-3 h-3 fill-white" />
-                      <span>SALE LIVE</span>
-                    </span>
-                  ) : (
-                    <div className="flex items-center gap-0.5 min-[1280px]:gap-1">
-                      <span>SALE</span>
-                      <Flame className="w-3 h-3 min-[1280px]:w-3.5 min-[1280px]:h-3.5 text-[#e51b23]" />
-                    </div>
-                  )}
-                </div>
+                <span>SUNDAY SALE</span>
+                {isSundaySaleLive && (
+                  <span className="flex h-2 w-2 relative">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#e51b23] opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#e51b23]"></span>
+                  </span>
+                )}
                 {isActive && (
-                  <span className="absolute -bottom-2 left-0 w-full h-[3px] bg-[#e51b23] rounded-full" />
+                  <span className="absolute -bottom-2 w-full h-[3px] bg-[#e51b23] rounded-full" />
                 )}
               </>
             )}
@@ -212,19 +206,17 @@ export default function DesktopNavbar() {
           <NavLink
             to="/combos"
             className={({ isActive }) =>
-              `relative text-[11px] min-[1280px]:text-[12px] min-[1400px]:text-[13px] min-[1536px]:text-[14px] font-extrabold tracking-wide uppercase transition-colors py-2 flex flex-col items-center flex-shrink-0 whitespace-nowrap ${
-                isActive
-                  ? 'text-[#e51b23]'
-                  : 'text-[#050505] hover:text-[#e51b23]'
+              `relative text-[11px] min-[1280px]:text-[12px] min-[1400px]:text-[13px] min-[1536px]:text-[14px] font-extrabold tracking-wide uppercase transition-colors py-2 flex items-center gap-0.5 min-[1280px]:gap-1 flex-shrink-0 whitespace-nowrap ${
+                isActive ? 'text-[#e51b23]' : 'text-[#050505] hover:text-[#e51b23]'
               }`
             }
           >
             {({ isActive }) => (
               <>
-                <div className="flex items-center gap-0.5 min-[1280px]:gap-1">
-                  <span>COMBOS</span>
-                  <span className="text-[11px] min-[1280px]:text-xs">🎁</span>
-                </div>
+                <span>COMBOS</span>
+                <span className="px-1.5 py-0.5 text-[9px] font-black bg-[#ffd000] text-[#050505] rounded-md tracking-normal uppercase">
+                  DEALS
+                </span>
                 {isActive && (
                   <span className="absolute -bottom-2 w-full h-[3px] bg-[#e51b23] rounded-full" />
                 )}
@@ -235,10 +227,8 @@ export default function DesktopNavbar() {
           <NavLink
             to="/offers"
             className={({ isActive }) =>
-              `relative text-[11px] min-[1280px]:text-[12px] min-[1400px]:text-[13px] min-[1536px]:text-[14px] font-extrabold tracking-wide uppercase transition-colors py-2 flex flex-col items-center flex-shrink-0 whitespace-nowrap ${
-                isActive
-                  ? 'text-[#e51b23]'
-                  : 'text-[#050505] hover:text-[#e51b23]'
+              `relative text-[11px] min-[1280px]:text-[12px] min-[1400px]:text-[13px] min-[1536px]:text-[14px] font-extrabold tracking-wide uppercase transition-colors py-2 flex items-center gap-0.5 min-[1280px]:gap-1 flex-shrink-0 whitespace-nowrap ${
+                isActive ? 'text-[#e51b23]' : 'text-[#050505] hover:text-[#e51b23]'
               }`
             }
           >
@@ -256,7 +246,7 @@ export default function DesktopNavbar() {
             to="/about"
             className={({ isActive }) =>
               `relative text-[11px] min-[1280px]:text-[12px] min-[1400px]:text-[13px] min-[1536px]:text-[14px] font-extrabold tracking-wide uppercase transition-colors py-2 flex flex-col items-center flex-shrink-0 whitespace-nowrap ${
-                isActive || location.pathname === '/contact'
+                isActive
                   ? 'text-[#e51b23]'
                   : 'text-[#050505] hover:text-[#e51b23]'
               }`
@@ -265,7 +255,7 @@ export default function DesktopNavbar() {
             {({ isActive }) => (
               <>
                 <span>ABOUT</span>
-                {(isActive || location.pathname === '/contact') && (
+                {isActive && (
                   <span className="absolute -bottom-2 w-full h-[3px] bg-[#e51b23] rounded-full" />
                 )}
               </>

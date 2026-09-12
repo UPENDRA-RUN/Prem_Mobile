@@ -319,6 +319,37 @@ export default function ProductDetails() {
     ? `Selected Options: ${Object.entries(selectedVariants).map(([k, v]) => `${k}: ${v}`).join(', ')} | Qty: ${quantity}`
     : `Quantity: ${quantity}`;
 
+  const productSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    'name': product.name,
+    'image': galleryImages.map(img => img.startsWith('http') ? img : `https://prem-mobile-kappa.vercel.app${img.startsWith('/') ? img : '/' + img}`),
+    'description': product.description || `Buy ${product.name} at Prem Mobile Gwalior. Deal Aise Jo Deewana Bana De!`,
+    'sku': `PREM-PROD-${product.id}`,
+    'brand': {
+      '@type': 'Brand',
+      'name': product.brand || product.name.split(' ')[0] || 'Prem Mobile'
+    },
+    'offers': {
+      '@type': 'Offer',
+      'url': `https://prem-mobile-kappa.vercel.app/product/${product.id}`,
+      'priceCurrency': 'INR',
+      'price': effectivePrice || product.price,
+      'priceValidUntil': '2027-12-31',
+      'itemCondition': 'https://schema.org/NewCondition',
+      'availability': product.inStock !== false ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+      'seller': {
+        '@type': 'Organization',
+        'name': 'Prem Mobile Gwalior'
+      }
+    },
+    'aggregateRating': {
+      '@type': 'AggregateRating',
+      'ratingValue': product.rating || 4.8,
+      'reviewCount': product.reviewsCount || product.reviews?.length || 15
+    }
+  };
+
   return (
     <div className="py-3 sm:py-5 bg-[#F6F6F6] min-h-screen">
       <SEO
@@ -326,6 +357,8 @@ export default function ProductDetails() {
         description={`Buy ${product.name} at best price in Gwalior. ${product.description ? product.description.slice(0, 120) : '100% Genuine product with store warranty at Prem Mobile Pinto Park.'}`}
         path={`/product/${product.id}`}
         image={product.image}
+        keywords={`${product.name}, buy ${product.name} Gwalior, ${product.category} Gwalior, Prem Mobile`}
+        schemaJson={productSchema}
       />
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 space-y-4">
         

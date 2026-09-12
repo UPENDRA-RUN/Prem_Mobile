@@ -130,7 +130,7 @@ export default function Sale() {
             {/* ACTION BUTTONS */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
               <Link
-                to="/products"
+                to="/shop"
                 className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-[#ffd000] hover:bg-[#e6be00] text-[#050505] font-black text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 transition-transform hover:scale-102"
               >
                 <ShoppingBag className="w-4 h-4 text-[#050505]" />

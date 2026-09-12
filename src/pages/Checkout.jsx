@@ -154,7 +154,7 @@ export default function Checkout() {
             <p className="text-slate-500 text-sm mt-1">Please add items to your cart before proceeding to checkout.</p>
           </div>
           <Link
-            to="/products"
+            to="/shop"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#ffd000] hover:bg-[#e6bd00] text-[#050505] font-black text-xs uppercase tracking-wider shadow-md"
           >
             <span>SHOP PRODUCTS</span>

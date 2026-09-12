@@ -224,7 +224,7 @@ export default function AdminCategories() {
 
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <Link
-                    to={`/category/${cat.slug}`}
+                    to={`/categories/${cat.slug}`}
                     target="_blank"
                     className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100"
                     title="View on Store"

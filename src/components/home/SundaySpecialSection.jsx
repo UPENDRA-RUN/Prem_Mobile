@@ -58,7 +58,7 @@ export default function SundaySpecialSection() {
               {/* Action Buttons: Full width on mobile */}
               <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 justify-center lg:justify-start">
                 <Link
-                  to="/sale"
+                  to="/sunday-sale"
                   className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#FFD400] active:bg-[#e6be00] hover:bg-[#ffcb05] text-[#050505] font-black text-xs sm:text-sm uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 transition-transform active:scale-95 text-center"
                 >
                   <span>{isLive ? 'SHOP LIVE DEALS' : 'EXPLORE SUNDAY SALE'}</span>

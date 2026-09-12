@@ -1,5 +1,10 @@
 import React, { useEffect, lazy, Suspense } from 'react';
-import { Routes, Route, useLocation, Navigate, Link } from 'react-router-dom';
+import { Routes, Route, useLocation, Navigate, Link, useParams } from 'react-router-dom';
+
+function CategoryRedirect() {
+  const { category } = useParams();
+  return <Navigate to={`/categories/${category}`} replace />;
+}
 import { useAdminAuth } from './context/AdminAuthContext';
 
 // Layout Components
@@ -186,6 +191,7 @@ export default function App() {
                 <Route path="/products" element={<Navigate to="/shop" replace />} />
                 <Route path="/categories" element={<Categories />} />
                 <Route path="/categories/:category" element={<CategoryProducts />} />
+                <Route path="/category/:category" element={<CategoryRedirect />} />
                 <Route path="/product/:id" element={<ProductDetails />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/checkout" element={<Checkout />} />

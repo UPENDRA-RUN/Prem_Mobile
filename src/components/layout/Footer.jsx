@@ -145,13 +145,13 @@ export default function Footer() {
                   <Link to="/" className="hover:text-[#FFD400] transition-colors">Home</Link>
                 </li>
                 <li>
-                  <Link to="/products" className="hover:text-[#FFD400] transition-colors">All Products</Link>
+                  <Link to="/shop" className="hover:text-[#FFD400] transition-colors">All Products</Link>
                 </li>
                 <li>
                   <Link to="/categories" className="hover:text-[#FFD400] transition-colors">Categories</Link>
                 </li>
                 <li>
-                  <Link to="/sale" className="hover:text-[#FFD400] text-[#E31B23] font-bold transition-colors">Sunday Sale 🔥</Link>
+                  <Link to="/sunday-sale" className="hover:text-[#FFD400] text-[#E31B23] font-bold transition-colors">Sunday Sale 🔥</Link>
                 </li>
                 <li>
                   <Link to="/combos" className="hover:text-[#FFD400] transition-colors">Combos & Deals</Link>

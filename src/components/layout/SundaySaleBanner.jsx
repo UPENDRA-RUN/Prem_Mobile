@@ -31,7 +31,7 @@ export default function SundaySaleBanner() {
 
         <div className="flex items-center gap-2 flex-shrink-0">
           <Link
-            to="/sale"
+            to="/sunday-sale"
             className="inline-flex items-center gap-1 px-2.5 py-1 sm:px-3.5 sm:py-1 rounded-full bg-[#ffd000] active:bg-[#e6be00] hover:bg-white text-[#050505] font-black text-[9.5px] min-[380px]:text-[10.5px] sm:text-xs uppercase tracking-wider transition-all transform hover:scale-105 shadow-xs"
           >
             <span>SHOP NOW</span>

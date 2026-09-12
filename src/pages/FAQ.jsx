@@ -74,12 +74,27 @@ export default function FAQ() {
     }
   };
 
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    'mainEntity': faqQuestions.map((q) => ({
+      '@type': 'Question',
+      'name': q.question,
+      'acceptedAnswer': {
+        '@type': 'Answer',
+        'text': q.answer
+      }
+    }))
+  };
+
   return (
-    <div className="py-8 sm:py-12 bg-[#F6F6F6] min-h-screen">
+    <div className="py-6 sm:py-10 bg-[#F6F6F6] min-h-screen">
       <SEO
         title="Frequently Asked Questions (FAQ) | Prem Mobile Gwalior"
-        description="Find answers to common questions about store warranty, payment methods, Sunday sale, home delivery, and store location."
+        description="Find answers to common questions about store warranty, payment methods, Sunday sale, home delivery, and store location in Gwalior."
         path="/faq"
+        keywords="Prem Mobile FAQ, Prem Mobile store timing, Pinto Park mobile shop, mobile store Gwalior warranty, Prem Mobile Sunday Sale FAQ"
+        schemaJson={faqSchema}
       />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         
@@ -464,7 +479,7 @@ export default function FAQ() {
               </div>
 
               <Link
-                to="/contact"
+                to="/about"
                 className="w-full py-3 px-4 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-900 font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-colors"
               >
                 <Mail className="w-4 h-4" />

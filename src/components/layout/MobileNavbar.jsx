@@ -233,7 +233,7 @@ export default function MobileNavbar() {
               <span>🏠</span>
               <span>HOME</span>
             </Link>
-            <Link to="/products" onClick={() => setIsMobileMenuOpen(false)} className="px-3.5 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-xs font-bold text-[#050505] flex items-center gap-2">
+            <Link to="/shop" onClick={() => setIsMobileMenuOpen(false)} className="px-3.5 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-xs font-bold text-[#050505] flex items-center gap-2">
               <span>📦</span>
               <span>PRODUCTS</span>
             </Link>
@@ -242,7 +242,7 @@ export default function MobileNavbar() {
               <span>CATEGORIES</span>
             </Link>
             <Link
-              to="/sale"
+              to="/sunday-sale"
               onClick={() => setIsMobileMenuOpen(false)}
               className={`px-3.5 py-2.5 rounded-xl text-xs font-black flex items-center justify-between ${
                 isSundaySaleLive ? 'bg-[#e51b23] text-white shadow-sm' : 'bg-red-50 text-[#e51b23]'

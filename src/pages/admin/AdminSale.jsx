@@ -652,7 +652,7 @@ export default function AdminSale() {
             <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
           </button>
           <Link
-            to="/sale"
+            to="/sunday-sale"
             target="_blank"
             className="px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-slate-900 font-bold text-xs uppercase tracking-wider shadow-xs flex items-center gap-1.5 transition-colors"
           >

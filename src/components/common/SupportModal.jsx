@@ -86,7 +86,7 @@ export default function SupportModal({ isOpen, onClose }) {
       iconBg: 'bg-[#FFD400] text-[#050505]',
       badgeBg: 'bg-yellow-100 text-yellow-900 border-yellow-300',
       actionText: 'Go to Contact Form',
-      linkTo: '/contact'
+      linkTo: '/about'
     }
   ];
 

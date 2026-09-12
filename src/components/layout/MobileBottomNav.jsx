@@ -63,7 +63,7 @@ export default function MobileBottomNav() {
 
         {/* 3. SUNDAY SALE (SPECIAL PULSE BADGE) */}
         <NavLink
-          to="/sale"
+          to="/sunday-sale"
           className={({ isActive }) =>
             `flex flex-col items-center justify-center h-full relative transition-colors ${
               isActive

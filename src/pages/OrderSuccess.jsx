@@ -73,7 +73,7 @@ export default function OrderSuccess() {
           </button>
 
           <Link
-            to="/products"
+            to="/shop"
             className="w-full py-3.5 px-6 rounded-xl bg-[#ffd000] hover:bg-[#e6bd00] text-[#050505] font-black text-xs uppercase tracking-wider shadow-md flex items-center justify-center gap-2 transition-transform hover:scale-102"
           >
             <ShoppingBag className="w-4 h-4" />
