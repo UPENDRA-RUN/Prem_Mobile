@@ -214,6 +214,46 @@ export default function Combos() {
         )}
       </div>
 
+      {/* SEO COMBOS & BUNDLE PACKAGES GUIDE */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+        <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-10 shadow-sm space-y-6">
+          <div className="border-b border-slate-200 pb-4">
+            <span className="text-xs font-black text-[#e51b23] uppercase tracking-wider block mb-1">
+              PREM MOBILE GWALIOR • SUPER COMBO BUNDLE GUIDE
+            </span>
+            <h2 className="font-display font-black text-2xl sm:text-3xl text-[#050505]">
+              Why Buy Smartphone & Accessory Combo Bundles at Prem Mobile?
+            </h2>
+            <p className="text-sm text-slate-600 mt-2 leading-relaxed">
+              Prem Mobile Combo Packages are custom-curated bundles created specifically for Gwalior shoppers who want to buy smartphones alongside essential accessories like wireless earbuds, 25W fast chargers, toughened tempered glass, premium silicone cases, and high-capacity power banks at a fraction of standalone retail prices.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs sm:text-sm text-slate-700 leading-relaxed">
+            <div className="p-5 rounded-2xl bg-amber-50/60 border border-amber-200 space-y-2">
+              <h3 className="font-display font-black text-base text-[#050505]">💰 Unbeatable Extra Savings</h3>
+              <p>
+                By bundling items together into a single package, Prem Mobile passes bulk distributor savings directly to customers, reducing the overall cost by up to 50% compared to buying each accessory separately.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+              <h3 className="font-display font-black text-base text-[#050505]">🛡️ 100% Original Brand Guarantee</h3>
+              <p>
+                Every product included inside our combo packs — from boAt earbuds to Type-C fast chargers — is 100% genuine and comes with original manufacturer warranty cards and tax invoices.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+              <h3 className="font-display font-black text-base text-[#050505]">📍 Live Testing & Pinto Park Pickup</h3>
+              <p>
+                Visit Prem Mobile at Pinto Park, Jaderua Gate Ke Samne, Gwalior (M.P.) to physically inspect and test your full combo bundle before payment. Local store pickup and home delivery available.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 }

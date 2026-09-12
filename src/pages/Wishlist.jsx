@@ -130,6 +130,37 @@ export default function Wishlist() {
           </div>
         )}
 
+        {/* SEO WISHLIST & SHOPPING SAVER GUIDE */}
+        <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6 mt-10">
+          <div className="border-b border-slate-100 pb-3">
+            <span className="text-xs font-black text-[#E31B23] uppercase tracking-wider block mb-1">
+              PREM MOBILE GWALIOR • SAVED ITEMS & WISHLIST GUIDE
+            </span>
+            <h2 className="font-display font-black text-xl sm:text-2xl text-[#050505]">
+              Save Your Favorite Smartphones & Accessories
+            </h2>
+          </div>
+
+          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+            Your Prem Mobile wishlist allows you to bookmark smartphones, boAt earbuds, chargers, smartwatches, and gadgets to track price drops, compare models, or share your saved selection with friends and family before visiting our store at Pinto Park, Gwalior (M.P.).
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-slate-700">
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
+              <span className="font-bold text-[#050505] block">❤️ Persistent Wishlist</span>
+              <p className="text-slate-500">Your saved items remain securely stored across browsing sessions.</p>
+            </div>
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
+              <span className="font-bold text-[#050505] block">💬 Instant WhatsApp Reservations</span>
+              <p className="text-slate-500">Use the Enquire button to reserve your saved products directly on WhatsApp.</p>
+            </div>
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
+              <span className="font-bold text-[#050505] block">🏬 Pinto Park Store Pickup</span>
+              <p className="text-slate-500">Bring your saved wishlist to Prem Mobile Gwalior for instant live demos and pickup.</p>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   );

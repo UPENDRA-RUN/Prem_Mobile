@@ -188,7 +188,7 @@ router.post('/customer/login', (req, res) => {
     recordFailedLogin(cleanIdent);
     return res.status(401).json({
       success: false,
-      error: 'Account not found. Please create an account or check your credentials.'
+      error: 'Account not found. Please create an account.'
     });
   }
 

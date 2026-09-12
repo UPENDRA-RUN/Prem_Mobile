@@ -405,6 +405,44 @@ export default function Compare() {
           </table>
         </div>
 
+        {/* SEO SPECIFICATION COMPARISON & SHOPPING GUIDE */}
+        <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-10 shadow-sm space-y-6 mt-10">
+          <div className="border-b border-slate-200 pb-4">
+            <span className="text-xs font-black text-[#E31B23] uppercase tracking-wider block mb-1">
+              PREM MOBILE GWALIOR • PRODUCT COMPARISON & TECH EVALUATION GUIDE
+            </span>
+            <h2 className="font-display font-black text-2xl sm:text-3xl text-slate-800">
+              Compare Mobile & Electronics Specs Side-by-Side
+            </h2>
+            <p className="text-sm text-slate-600 mt-2 leading-relaxed">
+              Making the right choice between smartphones or wireless audio accessories can be challenging. Prem Mobile's comparison matrix evaluates up to 4 devices side-by-side across essential parameters including price, battery playtime, fast charging speed, driver dimensions, IP water resistance, warranty coverage, and customer ratings.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs sm:text-sm text-slate-700 leading-relaxed">
+            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+              <h3 className="font-display font-black text-base text-slate-800">📊 Side-by-Side Spec Evaluation</h3>
+              <p>
+                Compare technical specifications, battery capacities, screen refresh rates, audio driver sizes, and charging speeds to determine which gadget fits your exact usage requirements.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+              <h3 className="font-display font-black text-base text-slate-800">⭐ Verified Customer Ratings</h3>
+              <p>
+                Review real customer ratings and feedback alongside technical specifications to ensure you invest in a reliable device with proven customer satisfaction.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+              <h3 className="font-display font-black text-base text-slate-800">🏬 Live Demo at Pinto Park Store</h3>
+              <p>
+                Need help deciding? Visit Prem Mobile at Pinto Park, Gwalior to test audio clarity, mic performance, screen brightness, and phone ergonomics in person with store staff.
+              </p>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   );

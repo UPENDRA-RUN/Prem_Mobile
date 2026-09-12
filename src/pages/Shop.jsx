@@ -641,6 +641,44 @@ export default function Shop() {
 
         </div>
 
+        {/* SEO ELECTRONICS CATALOG & GWALIOR SHOPPING GUIDE */}
+        <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-10 shadow-sm space-y-6 mt-12">
+          <div className="border-b border-slate-200 pb-4">
+            <span className="text-xs font-black text-[#E31B23] uppercase tracking-wider block mb-1">
+              PREM MOBILE GWALIOR • FULL ELECTRONICS & ACCESSORIES CATALOG
+            </span>
+            <h2 className="font-display font-black text-2xl sm:text-3xl text-[#050505]">
+              Gwalior's Leading Mobile & Electronics Store Catalog
+            </h2>
+            <p className="text-sm text-slate-600 mt-2 leading-relaxed">
+              Explore Prem Mobile's full online catalog featuring the latest 5G smartphones, boAt basshead earbuds, 25W Type-C fast chargers, power banks, smartwatch straps, egg boilers, moto vlogging chest mounts, and daily tech accessories available in Gwalior (M.P.).
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs sm:text-sm text-slate-700 leading-relaxed">
+            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+              <h3 className="font-display font-black text-base text-[#050505]">📱 Original Brand Guarantee</h3>
+              <p>
+                All smartphones and electronic gadgets listed in our catalog are 100% genuine with official tax invoice and brand warranty.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+              <h3 className="font-display font-black text-base text-[#050505]">🔍 Advanced Multi-Filter Search</h3>
+              <p>
+                Filter by price range, brand, rating, or active Sunday Sale deals to easily locate the exact electronics accessory you need.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+              <h3 className="font-display font-black text-base text-[#050505]">📍 Pinto Park Store Location</h3>
+              <p>
+                Visit Prem Mobile at Pinto Park, Jaderua Gate Ke Samne, Gwalior for live product demos, expert assistance, and instant store pickup.
+              </p>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       {/* Mobile Filters Modal */}

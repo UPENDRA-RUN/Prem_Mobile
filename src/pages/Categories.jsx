@@ -65,6 +65,65 @@ export default function Categories() {
           ))}
         </div>
 
+        {/* SEO RICH CONTENT & CATEGORY BUYING GUIDE */}
+        <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-10 shadow-sm space-y-8 mt-12">
+          <div className="border-b border-slate-200 pb-4">
+            <span className="text-xs font-black text-[#e51b23] uppercase tracking-wider block mb-1">
+              PREM MOBILE GWALIOR — PRODUCT CATEGORIES & SHOPPING GUIDE
+            </span>
+            <h2 className="font-display font-black text-2xl sm:text-3xl text-[#050505]">
+              Explore Original Electronics & Accessories in Gwalior
+            </h2>
+            <p className="text-sm text-slate-600 mt-2 leading-relaxed max-w-4xl">
+              Welcome to the official category index of Prem Mobile located at Pinto Park, Jaderua Gate Ke Samne, Gwalior (M.P.). We offer a comprehensive selection of 100% genuine smartphones, wireless earbuds, fast chargers, power banks, smartwatch bands, and daily household electronics backed by authentic manufacturer warranty and store-level customer service.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-slate-700 text-xs sm:text-sm leading-relaxed">
+            <div className="space-y-3 p-5 rounded-2xl bg-slate-50 border border-slate-100">
+              <h3 className="font-display font-black text-base text-[#050505] flex items-center gap-2">
+                <span>📱 Smartphones & Mobiles</span>
+              </h3>
+              <p>
+                Browse top mobile brands including Samsung, Xiaomi, Realme, OnePlus, Vivo, Oppo, and Apple iPhone. Whether you are looking for high-performance 5G smartphones, gaming devices, or budget-friendly keypad phones, Prem Mobile delivers unbeatable offline pricing and live store demonstrations.
+              </p>
+            </div>
+
+            <div className="space-y-3 p-5 rounded-2xl bg-slate-50 border border-slate-100">
+              <h3 className="font-display font-black text-base text-[#050505] flex items-center gap-2">
+                <span>🎧 Audio & Wireless Earbuds</span>
+              </h3>
+              <p>
+                Experience crystal clear sound with boAt Bassheads, Airdopes, Noise, Realme Buds, and JBL bluetooth neckbands. We provide live sound testing at our store so you can verify bass output, mic quality, noise cancellation, and battery performance before making your purchase.
+              </p>
+            </div>
+
+            <div className="space-y-3 p-5 rounded-2xl bg-slate-50 border border-slate-100">
+              <h3 className="font-display font-black text-base text-[#050505] flex items-center gap-2">
+                <span>⚡ Fast Chargers & Power Banks</span>
+              </h3>
+              <p>
+                Keep your devices powered all day with 25W Type-C fast chargers, 65W GaN adapter bricks, heavy-duty braided cables, and 10,000mAh to 20,000mAh power banks. All charging equipment meets safety certifications to protect phone battery health.
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-[#050505] text-white rounded-2xl p-6 border-2 border-[#ffd000]/40 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <h4 className="font-display font-black text-base text-white">Need Personal Advice or Instant Stock Check?</h4>
+              <p className="text-xs text-slate-300 mt-1">Visit our Pinto Park store in Gwalior or send a quick message on WhatsApp for instant price quotes.</p>
+            </div>
+            <a
+              href="https://wa.me/919893947477?text=Hi%20Prem%20Mobile%2C%20I%20want%20to%20inquire%20about%20product%20categories"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-5 py-2.5 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white font-black text-xs uppercase tracking-wider shrink-0 transition-transform hover:scale-105"
+            >
+              WhatsApp Support
+            </a>
+          </div>
+        </div>
+
       </div>
     </div>
   );

@@ -135,6 +135,44 @@ export default function Offers() {
           <ProductGrid products={hotDeals} />
         </div>
 
+        {/* SEO OFFERS & PROMOTIONAL DEALS GUIDE */}
+        <div className="bg-[#111111] rounded-3xl border-2 border-[#FFD400]/40 p-6 sm:p-10 text-white space-y-6 mt-12 shadow-2xl">
+          <div className="border-b border-slate-800 pb-4">
+            <span className="text-xs font-black text-[#FFD400] uppercase tracking-wider block mb-1">
+              PREM MOBILE GWALIOR • OFFERS & DISCOUNT GUIDE
+            </span>
+            <h2 className="font-display font-black text-2xl sm:text-3xl text-white">
+              Official Store Deals & Mega Discounts in Gwalior
+            </h2>
+            <p className="text-sm text-slate-300 mt-2 leading-relaxed">
+              Prem Mobile in Pinto Park, Jaderua Gate Ke Samne, Gwalior (M.P.) brings you exclusive campaign offers on premium smartphones, boAt earphone audio gear, fast charging adapters, power banks, smartwatch bands, and egg boilers with discount rates up to 70% off regular retail prices.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs sm:text-sm text-slate-300 leading-relaxed">
+            <div className="p-5 rounded-2xl bg-[#050505] border border-slate-800 space-y-2">
+              <h3 className="font-display font-black text-base text-[#FFD400]">🔥 Deal Aise Jo Deewana Bana De</h3>
+              <p>
+                Our store motto reflects our daily commitment to offering Gwalior's best mobile prices with no hidden charges, live testing facilities, and transparent warranty cards.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-[#050505] border border-slate-800 space-y-2">
+              <h3 className="font-display font-black text-base text-white">📱 Instant WhatsApp Offer Claims</h3>
+              <p>
+                Found a deal you like? Click the WhatsApp order button to immediately lock in the promotional price with our Pinto Park store representatives.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-[#050505] border border-slate-800 space-y-2">
+              <h3 className="font-display font-black text-base text-[#E31B23]">🏬 Walk-in Pickup & Live Demos</h3>
+              <p>
+                Experience live audio demonstrations and smartphone hands-on testing before making your purchase at our Pinto Park store in Gwalior.
+              </p>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   );

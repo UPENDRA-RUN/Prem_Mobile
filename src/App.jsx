@@ -183,7 +183,7 @@ export default function App() {
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/shop" element={<Shop />} />
-                <Route path="/products" element={<Shop />} />
+                <Route path="/products" element={<Navigate to="/shop" replace />} />
                 <Route path="/categories" element={<Categories />} />
                 <Route path="/categories/:category" element={<CategoryProducts />} />
                 <Route path="/product/:id" element={<ProductDetails />} />
@@ -196,10 +196,10 @@ export default function App() {
                 <Route path="/offers" element={<Offers />} />
 
                 <Route path="/about" element={<About />} />
-                <Route path="/contact" element={<About />} />
+                <Route path="/contact" element={<Navigate to="/about" replace />} />
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<Login />} />
+                <Route path="/signup" element={<Navigate to="/login" replace />} />
                 <Route path="/account" element={<AccountSettings />} />
                 <Route path="/orders" element={<Orders />} />
                 <Route path="/wishlist" element={<Wishlist />} />

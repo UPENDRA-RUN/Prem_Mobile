@@ -83,6 +83,37 @@ export default function CategoryProducts() {
           />
         </div>
 
+        {/* SEO CATEGORY OVERVIEW BLOCK */}
+        <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6 mt-12">
+          <div className="border-b border-slate-100 pb-3">
+            <span className="text-xs font-black text-[#e51b23] uppercase tracking-wider block mb-1">
+              PREM MOBILE GWALIOR • {categoryName.toUpperCase()} GUIDE
+            </span>
+            <h2 className="font-display font-black text-xl sm:text-2xl text-[#050505]">
+              Buy Genuine {categoryName} in Gwalior (M.P.)
+            </h2>
+          </div>
+
+          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+            At <strong>Prem Mobile</strong> (Pinto Park, Jaderua Gate Ke Samne, Gwalior), we curate top-performing models in the <strong>{categoryName}</strong> collection. Every product listed in this category comes with authentic manufacturer seal, original tax billing, brand warranty, and live store testing assistance.
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+              <span className="font-bold text-[#050505] block mb-1">✓ 100% Original Products</span>
+              <p className="text-slate-500">Sourced directly from authorized distributors with official warranty cards.</p>
+            </div>
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+              <span className="font-bold text-[#050505] block mb-1">✓ Live Testing at Store</span>
+              <p className="text-slate-500">Visit Pinto Park, Gwalior to touch, test audio quality, and verify fast charging speed.</p>
+            </div>
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+              <span className="font-bold text-[#050505] block mb-1">✓ Instant WhatsApp Order</span>
+              <p className="text-slate-500">Send an inquiry on WhatsApp for rapid stock updates and local home delivery in Gwalior.</p>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   );

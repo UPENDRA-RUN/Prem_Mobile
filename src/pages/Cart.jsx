@@ -479,6 +479,44 @@ export default function Cart() {
 
         </div>
 
+        {/* SEO CART & STORE PICKUP ASSURANCE GUIDE */}
+        <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-10 shadow-sm space-y-6 mt-12">
+          <div className="border-b border-slate-200 pb-4">
+            <span className="text-xs font-black text-[#E31B23] uppercase tracking-wider block mb-1">
+              PREM MOBILE GWALIOR • SHOPPING CART & CHECKOUT ASSURANCE
+            </span>
+            <h2 className="font-display font-black text-2xl sm:text-3xl text-[#050505]">
+              Safe & Secure Ordering at Prem Mobile Gwalior
+            </h2>
+            <p className="text-sm text-slate-600 mt-2 leading-relaxed">
+              When you add items to your cart at Prem Mobile, you are guaranteed 100% original brand products, transparent pricing with no hidden fees, instant promo code discounts, and flexible fulfillment options including direct store pickup at Pinto Park, Gwalior or fast home delivery.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs sm:text-sm text-slate-700 leading-relaxed">
+            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+              <h3 className="font-display font-black text-base text-[#050505]">💳 Multiple Payment Options</h3>
+              <p>
+                Pay securely via UPI (Google Pay, PhonePe, Paytm), credit/debit cards, net banking, or choose store cash payment upon physical pickup at Pinto Park, Gwalior.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+              <h3 className="font-display font-black text-base text-[#050505]">📍 Free Store Pickup & Fitting</h3>
+              <p>
+                Select store pickup during checkout to get free tempered glass fitting, case installation, and audio testing performed by experienced Prem Mobile store staff.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+              <h3 className="font-display font-black text-base text-[#050505]">💬 1-Click WhatsApp Support</h3>
+              <p>
+                Have questions about your cart total or item availability? Click the WhatsApp enquiry button to immediately connect with our Gwalior store team.
+              </p>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       {/* Edit Variant Modal */}

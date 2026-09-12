@@ -331,6 +331,46 @@ export default function Sale() {
         </div>
       </div>
 
+      {/* SEO SUNDAY SALE & FLASH DISCOUNT GUIDE */}
+      <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-8">
+        <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-10 shadow-sm space-y-6">
+          <div className="border-b border-slate-200 pb-4">
+            <span className="text-xs font-black text-[#e51b23] uppercase tracking-wider block mb-1">
+              PREM MOBILE GWALIOR • SUNDAY SHOPPING SALE & FLASH DEALS GUIDE
+            </span>
+            <h2 className="font-display font-black text-2xl sm:text-3xl text-[#050505]">
+              Prem Mobile Sunday Sale & Weekly Flash Discounts
+            </h2>
+            <p className="text-sm text-slate-600 mt-2 leading-relaxed">
+              The Prem Mobile Sunday Sale is Gwalior's premier weekly mobile discount event, offering massive price drops on smartphones, boAt basshead earbuds, 25W fast chargers, power banks, smartwatch bands, and electronic accessories. Every deal is verified server-side with authentic brand warranty coverage.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs sm:text-sm text-slate-700 leading-relaxed">
+            <div className="p-5 rounded-2xl bg-red-50/50 border border-red-200 space-y-2">
+              <h3 className="font-display font-black text-base text-[#e51b23]">🔥 Server-Verified Sale Prices</h3>
+              <p>
+                All promotional prices are locked and verified directly by our server during checkout, ensuring transparent, tamper-proof discounts for online shoppers and store walk-ins alike.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+              <h3 className="font-display font-black text-base text-[#050505]">💬 Instant WhatsApp Order Reservation</h3>
+              <p>
+                Reserve your favorite sale deal instantly by clicking the WhatsApp order button to chat directly with store staff at Pinto Park, Gwalior for fast pickup or local delivery.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+              <h3 className="font-display font-black text-base text-[#050505]">🛡️ Original Brand Warranty Included</h3>
+              <p>
+                Sale pricing never compromises on product authenticity. Every discounted device comes complete with original tax billing and full manufacturer warranty.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 }
