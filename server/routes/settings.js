@@ -68,7 +68,7 @@ router.post('/', requireAdmin, (req, res) => {
     const allowedKeys = [
       'store_name', 'store_tagline', 'store_phone', 'store_whatsapp',
       'store_address', 'store_city', 'store_state', 'store_landmark',
-      'store_email', 'store_timing', 'store_closed_day'
+      'store_email', 'store_timing', 'store_closed_day', 'simulated_day'
     ];
 
     const updates = {};

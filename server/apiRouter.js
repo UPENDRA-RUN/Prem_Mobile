@@ -30,6 +30,12 @@ export function createApiRouter() {
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
 
+    // Security Headers
+    res.header('Referrer-Policy', 'strict-origin-when-cross-origin');
+    res.header('X-Frame-Options', 'SAMEORIGIN');
+    res.header('X-Content-Type-Options', 'nosniff');
+    res.header('Content-Security-Policy', "default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: blob:; img-src 'self' https: data: blob:; font-src 'self' https: data:; connect-src 'self' https: wss:;");
+
     if (req.method === 'OPTIONS') {
       return res.sendStatus(200);
     }

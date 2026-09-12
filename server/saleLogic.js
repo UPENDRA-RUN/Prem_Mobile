@@ -1,4 +1,5 @@
 import { db } from './db.js';
+import { getSundaySaleStatus } from './sundaySaleLogic.js';
 
 /**
  * Checks and returns the single active LIVE sale.
@@ -303,6 +304,28 @@ export function resolveServerProductPrice(productId) {
   const offPrice = product.offerPrice !== null && product.offerPrice !== undefined && Number(product.offerPrice) > 0
     ? Number(product.offerPrice)
     : regPrice;
+
+  const sundaySaleStatus = getSundaySaleStatus();
+  if (sundaySaleStatus.isLive && sundaySaleStatus.saleRecord) {
+    const sundaySaleItem = db.prepare(`
+      SELECT * FROM sunday_sale_items WHERE saleId = ? AND productId = ?
+    `).get(sundaySaleStatus.saleRecord.id, productId);
+
+    if (sundaySaleItem && Number(sundaySaleItem.salePrice) > 0) {
+      const sPrice = Number(sundaySaleItem.salePrice);
+      return {
+        productId: product.id,
+        name: product.name,
+        regularPrice: regPrice,
+        effectivePrice: sPrice,
+        finalUnitPrice: sPrice,
+        isSale: true,
+        isSundaySalePrice: true,
+        salePrice: sPrice,
+        savings: Math.max(0, regPrice - sPrice)
+      };
+    }
+  }
 
   const liveSale = getActiveLiveSale();
   if (liveSale) {

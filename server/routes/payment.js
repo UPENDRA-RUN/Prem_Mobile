@@ -73,6 +73,33 @@ router.post('/verify-razorpay-payment', (req, res) => {
       userId: bodyUserId
     } = req.body || {};
 
+    // Cryptographic HMAC SHA256 Verification
+    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing Razorpay payment verification credentials (order ID, payment ID, or signature).'
+      });
+    }
+
+    const expectedBody = `${razorpay_order_id}|${razorpay_payment_id}`;
+    const expectedSignature = crypto
+      .createHmac('sha256', RAZORPAY_KEY_SECRET)
+      .update(expectedBody)
+      .digest('hex');
+
+    const isSignatureValid = crypto.timingSafeEqual(
+      Buffer.from(expectedSignature, 'utf8'),
+      Buffer.from(razorpay_signature, 'utf8')
+    );
+
+    if (!isSignatureValid) {
+      console.warn(`[Payment Security Alert] Invalid Razorpay signature attempt for order ${razorpay_order_id}`);
+      return res.status(400).json({
+        success: false,
+        error: 'Payment verification failed: Invalid cryptographic signature.'
+      });
+    }
+
     const {
       customerName,
       mobile,

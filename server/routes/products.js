@@ -6,8 +6,34 @@ import { broadcastEvent } from '../events.js';
 
 const router = express.Router();
 
+// Helper to batch fetch review stats for a set of product IDs (eliminates N+1 queries)
+function buildReviewStatsMap(productIds = []) {
+  const map = new Map();
+  if (!Array.isArray(productIds) || productIds.length === 0) return map;
+
+  try {
+    const placeholders = productIds.map(() => '?').join(',');
+    const statsRows = db.prepare(`
+      SELECT productId, COUNT(*) as count, AVG(rating) as avgRating
+      FROM reviews
+      WHERE status = 'APPROVED' AND productId IN (${placeholders})
+      GROUP BY productId
+    `).all(...productIds);
+
+    for (const s of statsRows) {
+      map.set(s.productId, {
+        count: s.count,
+        rating: Number(Number(s.avgRating).toFixed(1))
+      });
+    }
+  } catch (e) {
+    // Fallback if query fails
+  }
+  return map;
+}
+
 // Helper to format product object with prices, badges, and discounts
-function formatProduct(p, sundayItemsMap = new Map()) {
+function formatProduct(p, sundayItemsMap = new Map(), reviewStatsMap = null) {
   let images = [];
   try {
     images = JSON.parse(p.images);
@@ -33,19 +59,26 @@ function formatProduct(p, sundayItemsMap = new Map()) {
 
   let rating = 4.8;
   let reviewsCount = 0;
-  try {
-    const stats = db.prepare(`
-      SELECT COUNT(*) as count, AVG(rating) as avgRating
-      FROM reviews
-      WHERE productId = ? AND status = 'APPROVED'
-    `).get(p.id);
-    if (stats && stats.count > 0) {
-      reviewsCount = stats.count;
-      rating = Number(Number(stats.avgRating).toFixed(1));
+  
+  if (reviewStatsMap && reviewStatsMap.has(p.id)) {
+    const stats = reviewStatsMap.get(p.id);
+    rating = stats.rating;
+    reviewsCount = stats.count;
+  } else {
+    try {
+      const stats = db.prepare(`
+        SELECT COUNT(*) as count, AVG(rating) as avgRating
+        FROM reviews
+        WHERE productId = ? AND status = 'APPROVED'
+      `).get(p.id);
+      if (stats && stats.count > 0) {
+        reviewsCount = stats.count;
+        rating = Number(Number(stats.avgRating).toFixed(1));
+      }
+    } catch (e) {
+      rating = 4.8;
+      reviewsCount = 12;
     }
-  } catch (e) {
-    rating = 4.8;
-    reviewsCount = 12;
   }
 
   return {
@@ -119,7 +152,8 @@ router.get('/', (req, res) => {
     }
   }
 
-  const products = rows.map(p => formatProduct(p, sundayItemsMap));
+  const reviewStatsMap = buildReviewStatsMap(rows.map(r => r.id));
+  const products = rows.map(p => formatProduct(p, sundayItemsMap, reviewStatsMap));
 
   res.json({
     success: true,
@@ -149,16 +183,18 @@ router.get('/:id', (req, res) => {
     if (saleItem) sundayItemsMap.set(product.id, saleItem);
   }
 
+  const reviewStatsMap = buildReviewStatsMap([product.id]);
   res.json({
     success: true,
-    product: formatProduct(product, sundayItemsMap)
+    product: formatProduct(product, sundayItemsMap, reviewStatsMap)
   });
 });
 
 // Admin: GET /api/products/admin/all (includes inactive)
 router.get('/admin/all', requireAdmin, (req, res) => {
   const rows = db.prepare('SELECT * FROM products ORDER BY id DESC').all();
-  const products = rows.map(p => formatProduct(p));
+  const reviewStatsMap = buildReviewStatsMap(rows.map(r => r.id));
+  const products = rows.map(p => formatProduct(p, new Map(), reviewStatsMap));
 
   res.json({
     success: true,

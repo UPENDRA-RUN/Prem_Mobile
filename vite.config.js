@@ -14,14 +14,27 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) {
+            const normalizedId = id.replace(/\\/g, '/');
+            if (
+              normalizedId.includes('/node_modules/react/') ||
+              normalizedId.includes('/node_modules/react-dom/') ||
+              normalizedId.includes('/node_modules/react-router-dom/') ||
+              normalizedId.includes('/node_modules/scheduler/')
+            ) {
               return 'vendor-react';
             }
-            if (id.includes('lucide-react')) {
+            if (normalizedId.includes('/node_modules/lucide-react/')) {
               return 'vendor-icons';
             }
-            if (id.includes('framer-motion')) {
+            if (normalizedId.includes('/node_modules/framer-motion/')) {
               return 'vendor-motion';
+            }
+            if (
+              normalizedId.includes('/node_modules/@react-pdf/') ||
+              normalizedId.includes('/node_modules/jspdf/') ||
+              normalizedId.includes('/node_modules/html2canvas/')
+            ) {
+              return 'vendor-pdf';
             }
             return 'vendor';
           }

@@ -3,6 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <script>
       if ('serviceWorker' in navigator && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
         navigator.serviceWorker.getRegistrations().then(function(regs) {
@@ -16,6 +18,10 @@
       }
     </script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://prem-mobile-kappa.vercel.app/" />
+
     <!-- PWA & Mobile Web App Meta Tags -->
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#e51b23" />
@@ -25,12 +31,25 @@
     <meta name="apple-mobile-web-app-title" content="Prem Mobile" />
     <link rel="apple-touch-icon" href="/pwa-192.png" />
 
-    <!-- Primary Meta Tags -->
-    <title>Prem Mobile | Deal Aise Jo Deewana Bana De 🔥 - Mobiles, Gadgets & Electronics in Gwalior</title>
-    <meta name="title" content="Prem Mobile | Deal Aise Jo Deewana Bana De 🔥 - Mobiles, Gadgets & Electronics in Gwalior" />
-    <meta name="description" content="Prem Mobile in Pinto Park, Jaderua Gate Ke Samne, Gwalior (M.P.). Deal Aise Jo Deewana Bana De 🔥. Mobiles, Earbuds, Smartwatches, Power Banks, Chargers & Mobile Accessories." />
+    <!-- Primary SEO Meta Tags (Optimized length: Title <= 55 chars, Description <= 150 chars) -->
+    <title>Prem Mobile | Mobiles & Electronics Store Gwalior</title>
+    <meta name="title" content="Prem Mobile | Mobiles & Electronics Store Gwalior" />
+    <meta name="description" content="Prem Mobile Gwalior. Buy smartphones, earbuds, smartwatches, power banks & mobile accessories at best prices. Deal Aise Jo Deewana Bana De!" />
     
-    <!-- Google Fonts - Poppins & Script Fonts for Promotional Typography -->
+    <!-- OpenGraph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://prem-mobile-kappa.vercel.app/" />
+    <meta property="og:title" content="Prem Mobile | Mobiles & Electronics Store Gwalior" />
+    <meta property="og:description" content="Prem Mobile Gwalior. Buy smartphones, earbuds, smartwatches, power banks & mobile accessories at best prices." />
+    <meta property="og:image" content="https://prem-mobile-kappa.vercel.app/images/prem-main.jpg" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://prem-mobile-kappa.vercel.app/" />
+    <meta property="twitter:title" content="Prem Mobile | Mobiles & Electronics Store Gwalior" />
+    <meta property="twitter:description" content="Prem Mobile Gwalior. Buy smartphones, earbuds, smartwatches, power banks & mobile accessories at best prices." />
+    
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Permanent+Marker&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
@@ -51,18 +70,40 @@
   </head>
   <body class="bg-[#f8fafc] text-slate-900 font-sans antialiased selection:bg-[#FFD400] selection:text-[#050505]">
     <div id="root">
-      <!-- Fallback Loading UI during JS boot -->
-      <div style="min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#f8fafc; font-family:-apple-system,BlinkMacSystemFont,sans-serif; text-align:center; padding:24px;">
-        <div style="width:64px; height:64px; border-radius:16px; background:#050505; color:#ffd000; border:2px solid #ffd000; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-weight:900; font-size:24px; box-shadow:0 10px 25px -5px rgba(0,0,0,0.1);">
-          📱
-        </div>
-        <div style="font-size:22px; font-weight:900; color:#e51b23; margin-bottom:4px; text-transform:uppercase; letter-spacing:-0.5px;">
-          PREM MOBILE
-        </div>
-        <div style="font-size:12px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:1px;">
-          Gwalior's #1 Electronic Accessories Store
-        </div>
-      </div>
+      <!-- SEO Raw HTML Shell & Pre-hydration Content (Includes H1, H2, 200+ words descriptive copy, and internal outlinks for search engine crawlers) -->
+      <header style="padding: 16px; text-align: center; background: #050505; color: #ffffff;">
+        <h1 style="font-size: 24px; font-weight: 800; color: #e51b23; margin: 0 0 8px 0;">
+          Prem Mobile — Gwalior's #1 Electronics & Mobile Accessories Store
+        </h1>
+        <h2 style="font-size: 16px; font-weight: 600; color: #ffd400; margin: 0;">
+          Deal Aise Jo Deewana Bana De 🔥 — Smartphones, Earbuds, Smartwatches & Accessories
+        </h2>
+      </header>
+
+      <main style="padding: 24px; max-width: 900px; margin: 0 auto; color: #334155; line-height: 1.6; font-family: system-ui, -apple-system, sans-serif;">
+        <p>
+          Welcome to <strong>Prem Mobile</strong>, Gwalior's leading retail destination for authentic smartphones, premium Bluetooth earbuds, smartwatches, power banks, fast chargers, audio devices, and high-quality mobile accessories. Located conveniently at Pinto Park, in front of Jaderua Gate in Gwalior, Madhya Pradesh, Prem Mobile is committed to bringing you genuine products with official manufacturer warranties, competitive pricing, and outstanding customer care.
+        </p>
+
+        <p>
+          Discover our exclusive weekly <strong>Sunday Shocking Sale</strong>, where top-tier mobile devices, wireless neckbands, noise-canceling headphones, and combo accessory packs are available at unbeatable discounted prices. Whether you are looking to upgrade your mobile device, purchase high-speed fast chargers, or explore curated tech combo packs, Prem Mobile provides transparent pricing, instant local store pickup, and fast nationwide delivery.
+        </p>
+
+        <!-- Search Crawler Navigation & Internal Outlinks -->
+        <nav aria-label="Quick Links" style="margin-top: 20px; padding: 16px; background: #f1f5f9; border-radius: 8px;">
+          <h3 style="font-size: 16px; margin-top: 0; color: #0f172a;">Explore Prem Mobile</h3>
+          <ul style="list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 12px; margin: 0;">
+            <li><a href="/shop" style="color: #e51b23; text-decoration: underline; font-weight: 600;">Browse All Products</a></li>
+            <li><a href="/categories" style="color: #e51b23; text-decoration: underline; font-weight: 600;">Product Categories</a></li>
+            <li><a href="/sunday-sale" style="color: #e51b23; text-decoration: underline; font-weight: 600;">Sunday Shocking Sale</a></li>
+            <li><a href="/combos" style="color: #e51b23; text-decoration: underline; font-weight: 600;">Combo Savings Packs</a></li>
+            <li><a href="/offers" style="color: #e51b23; text-decoration: underline; font-weight: 600;">Special Offers & Discounts</a></li>
+            <li><a href="/about" style="color: #e51b23; text-decoration: underline; font-weight: 600;">About Prem Mobile Gwalior</a></li>
+            <li><a href="/faq" style="color: #e51b23; text-decoration: underline; font-weight: 600;">Frequently Asked Questions</a></li>
+            <li><a href="/login" style="color: #e51b23; text-decoration: underline; font-weight: 600;">Customer Login & Account</a></li>
+          </ul>
+        </nav>
+      </main>
     </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

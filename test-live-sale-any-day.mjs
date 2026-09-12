@@ -13,7 +13,7 @@ async function runTests() {
   const loginRes = await fetch(`${BASE_URL}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: 'admin@premmobile.com', password: 'admin123' })
+    body: JSON.stringify({ email: 'admin@premmobile.com', password: process.env.ADMIN_PASSWORD || 'Prem@2026Admin' })
   });
   const loginData = await loginRes.json();
   if (!loginData.success || !loginData.token) {
@@ -38,6 +38,13 @@ async function runTests() {
     throw new Error(`Test 1 failed: Expected OFFLINE, got: ${JSON.stringify(pubData1)}`);
   }
 
+  // Get active product IDs from catalog
+  const prodsRes = await fetch(`${BASE_URL}/products`);
+  const prodsData = await prodsRes.json();
+  const validProds = prodsData.products || [];
+  const prod1Id = validProds[0]?.id || 1;
+  const prod2Id = validProds[1]?.id || 2;
+
   // TEST 2: Admin configures sale for a Wednesday (ANY day of the week)
   console.log('\nTEST 2: Admin can configure sale for ANY day (e.g. Wednesday 10 Sept to Friday 12 Sept).');
   const saveRes = await fetch(`${BASE_URL}/sale/admin/save`, {
@@ -50,8 +57,8 @@ async function runTests() {
       startTime: '10:00',
       endTime: '20:00',
       items: [
-        { productId: 1, salePrice: 699 }, // Regular 1249
-        { productId: 2, salePrice: 449 }  // Regular 799
+        { productId: prod1Id, salePrice: 699 },
+        { productId: prod2Id, salePrice: 449 }
       ]
     })
   });
@@ -105,8 +112,8 @@ async function runTests() {
   const pubData3 = await pubRes3.json();
   if (pubData3.isLive === true && pubData3.items.length === 2) {
     console.log(`  ✓ PASSED: Sale is LIVE for customers! Showing ${pubData3.items.length} discounted products.`);
-    const item1 = pubData3.items.find(i => i.productId === 1);
-    console.log(`    Product #1: Regular ₹${item1.regularPrice} -> Sale ₹${item1.salePrice} (Save ₹${item1.savings})`);
+    const item1 = pubData3.items.find(i => i.productId === prod1Id);
+    console.log(`    Product #${prod1Id}: Regular ₹${item1.regularPrice} -> Sale ₹${item1.salePrice} (Save ₹${item1.savings})`);
   } else {
     throw new Error(`Test 6 failed: ${JSON.stringify(pubData3)}`);
   }
@@ -123,7 +130,7 @@ async function runTests() {
       city: 'Gwalior',
       state: 'Madhya Pradesh',
       pincode: '474005',
-      items: [{ productId: 1, quantity: 1, price: 10 }] // Tampered client price ₹10
+      items: [{ productId: prod1Id, quantity: 1, price: 10 }] // Tampered client price ₹10
     })
   });
   const orderData = await orderRes.json();
@@ -186,10 +193,11 @@ async function runTests() {
 
   // TEST 11: Product regular prices remain untouched
   console.log('\nTEST 11: Normal product prices remain intact without permanent overwrite.');
-  const prodRes = await fetch(`${BASE_URL}/products/1`);
+  const prodRes = await fetch(`${BASE_URL}/products/${prod1Id}`);
   const prodData = await prodRes.json();
-  if (prodData.product.regularPrice === 1249) {
-    console.log(`  ✓ PASSED: Regular price remains exactly ₹1249 in catalog.`);
+  const origPrice = validProds[0]?.regularPrice || prodData.product?.regularPrice;
+  if (prodData.product && prodData.product.regularPrice === origPrice) {
+    console.log(`  ✓ PASSED: Regular price remains exactly ₹${origPrice} in catalog.`);
   } else {
     throw new Error(`Test 11 failed: Price was overwritten: ${JSON.stringify(prodData)}`);
   }

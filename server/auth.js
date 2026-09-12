@@ -54,12 +54,19 @@ export function verifyToken(token) {
   }
 }
 
-// In-memory brute-force attempt tracker
-const loginAttempts = new Map();
+// Database-backed persistent rate limiting with in-memory fallback
+const inMemoryLoginAttempts = new Map();
 
 export function checkLoginAttempts(identifier) {
   const key = String(identifier || '').trim().toLowerCase();
-  const record = loginAttempts.get(key);
+  let record = null;
+
+  try {
+    record = db.prepare('SELECT key, count, firstAttempt, lockedUntil FROM login_attempts WHERE key = ?').get(key);
+  } catch (e) {
+    record = inMemoryLoginAttempts.get(key);
+  }
+
   if (!record) return { allowed: true };
 
   const now = Date.now();
@@ -72,7 +79,7 @@ export function checkLoginAttempts(identifier) {
   }
 
   if (record.lockedUntil && now >= record.lockedUntil) {
-    loginAttempts.delete(key);
+    clearLoginAttempts(key);
     return { allowed: true };
   }
 
@@ -82,7 +89,17 @@ export function checkLoginAttempts(identifier) {
 export function recordFailedLogin(identifier) {
   const key = String(identifier || '').trim().toLowerCase();
   const now = Date.now();
-  const record = loginAttempts.get(key) || { count: 0, firstAttempt: now };
+  let record = null;
+
+  try {
+    record = db.prepare('SELECT key, count, firstAttempt, lockedUntil FROM login_attempts WHERE key = ?').get(key);
+  } catch (e) {
+    record = inMemoryLoginAttempts.get(key);
+  }
+
+  if (!record) {
+    record = { count: 0, firstAttempt: now, lockedUntil: null };
+  }
 
   // Reset if window older than 15 minutes
   if (now - record.firstAttempt > 15 * 60 * 1000) {
@@ -91,16 +108,33 @@ export function recordFailedLogin(identifier) {
   }
 
   record.count += 1;
+  let lockedUntil = null;
   if (record.count >= 5) {
-    record.lockedUntil = now + 5 * 60 * 1000; // 5 minute lock
+    lockedUntil = now + 5 * 60 * 1000; // 5 minute lock
+    record.lockedUntil = lockedUntil;
   }
 
-  loginAttempts.set(key, record);
+  try {
+    db.prepare(`
+      INSERT INTO login_attempts (key, count, firstAttempt, lockedUntil)
+      VALUES (?, ?, ?, ?)
+      ON CONFLICT(key) DO UPDATE SET
+        count = excluded.count,
+        firstAttempt = excluded.firstAttempt,
+        lockedUntil = excluded.lockedUntil
+    `).run(key, record.count, record.firstAttempt, record.lockedUntil || null);
+  } catch (e) {
+    inMemoryLoginAttempts.set(key, record);
+  }
 }
 
 export function clearLoginAttempts(identifier) {
   const key = String(identifier || '').trim().toLowerCase();
-  loginAttempts.delete(key);
+  try {
+    db.prepare('DELETE FROM login_attempts WHERE key = ?').run(key);
+  } catch (e) {
+    inMemoryLoginAttempts.delete(key);
+  }
 }
 
 // Middleware to protect admin routes

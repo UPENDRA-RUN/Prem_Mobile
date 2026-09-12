@@ -219,6 +219,13 @@ export function initDatabase() {
       createdAt TEXT NOT NULL,
       updatedAt TEXT NOT NULL
     );
+
+    CREATE TABLE IF NOT EXISTS login_attempts (
+      key TEXT PRIMARY KEY,
+      count INTEGER NOT NULL,
+      firstAttempt INTEGER NOT NULL,
+      lockedUntil INTEGER
+    );
   `);
 
   // Migration: Add new columns if upgrading existing database

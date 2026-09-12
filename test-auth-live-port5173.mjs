@@ -25,7 +25,7 @@ async function run() {
   console.log('TEST 1: Admin Login with valid credentials');
   const adminRes = await request('/auth/login', {
     method: 'POST',
-    body: JSON.stringify({ email: 'admin@premmobile.com', password: 'admin123' })
+    body: JSON.stringify({ email: 'admin@premmobile.com', password: process.env.ADMIN_PASSWORD || 'Prem@2026Admin' })
   });
   if (adminRes.ok && adminRes.data.token && adminRes.data.admin.role === 'ADMIN') {
     console.log('  ✓ PASSED: Admin authenticated with role ADMIN');

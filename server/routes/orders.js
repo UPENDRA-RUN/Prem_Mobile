@@ -292,14 +292,14 @@ router.get('/my-orders', (req, res) => {
     const params = [];
 
     if (payload && (payload.userId || payload.adminId)) {
-      query = 'SELECT * FROM orders WHERE userId = ? OR (length(?) > 0 AND lower(email) = ?) OR (length(?) > 0 AND replace(mobile, "-", "") = ?) ORDER BY id DESC';
+      query = "SELECT * FROM orders WHERE userId = ? OR (length(?) > 0 AND lower(email) = ?) OR (length(?) > 0 AND replace(mobile, '-', '') = ?) ORDER BY id DESC";
       params.push(
         payload.userId || payload.adminId,
         payload.email || '', (payload.email || '').toLowerCase(),
         payload.mobile || '', (payload.mobile || '').replace(/\D/g, '')
       );
     } else if (queryMobile || queryEmail) {
-      query = 'SELECT * FROM orders WHERE (length(?) > 0 AND replace(mobile, "-", "") LIKE ?) OR (length(?) > 0 AND lower(email) = ?) ORDER BY id DESC';
+      query = "SELECT * FROM orders WHERE (length(?) > 0 AND replace(mobile, '-', '') LIKE ?) OR (length(?) > 0 AND lower(email) = ?) ORDER BY id DESC";
       params.push(queryMobile || '', `%${queryMobile}%`, queryEmail || '', queryEmail || '');
     } else {
       return res.status(401).json({ success: false, error: 'Authentication required to view orders' });

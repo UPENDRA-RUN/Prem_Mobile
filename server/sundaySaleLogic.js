@@ -5,26 +5,40 @@ import { db } from './db.js';
  * Uses Indian Standard Time (Asia/Kolkata) — always real time.
  */
 export function getCurrentDayInfo() {
-  const now = new Date();
-  const istFormatter = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'Asia/Kolkata',
-    weekday: 'long',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit'
-  });
+  let simulatedDay = 'REAL';
+  try {
+    const settingRow = db.prepare("SELECT value FROM settings WHERE key = 'simulated_day'").get();
+    if (settingRow && settingRow.value) {
+      simulatedDay = String(settingRow.value).toUpperCase().trim();
+    }
+  } catch (e) {
+    // fallback
+  }
 
-  const parts = istFormatter.formatToParts(now);
-  const weekday = parts.find(p => p.type === 'weekday')?.value || 'Sunday';
-  const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-  const dayIndex = dayNames.findIndex(d => d.toLowerCase() === weekday.toLowerCase());
+  const dayNames = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
+  let weekday = '';
+  let dayIndex = -1;
+
+  if (simulatedDay !== 'REAL' && dayNames.includes(simulatedDay)) {
+    dayIndex = dayNames.indexOf(simulatedDay);
+    weekday = simulatedDay.charAt(0) + simulatedDay.slice(1).toLowerCase();
+  } else {
+    const now = new Date();
+    const istFormatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Asia/Kolkata',
+      weekday: 'long'
+    });
+    const parts = istFormatter.formatToParts(now);
+    weekday = parts.find(p => p.type === 'weekday')?.value || 'Sunday';
+    dayIndex = dayNames.findIndex(d => d.toLowerCase() === weekday.toLowerCase());
+  }
 
   return {
     dayOfWeek: dayIndex >= 0 ? dayIndex : 0,
     dayName: weekday,
     isSunday: dayIndex === 0,
-    isSimulated: false,
-    simulatedDay: 'REAL'
+    isSimulated: simulatedDay !== 'REAL',
+    simulatedDay
   };
 }
 
