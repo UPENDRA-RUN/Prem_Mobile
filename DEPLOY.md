@@ -76,13 +76,19 @@ This ensures the backend accepts requests from your Vercel frontend.
 
 ---
 
-## Step 5: Set Up UptimeRobot
+## Step 5: Keepalive Setup (Zero Maintenance 24/7 Uptime)
 
-1. Go to [uptimerobot.com](https://uptimerobot.com)
-2. Add New Monitor → HTTP(s)
-3. URL: `https://YOUR-RENDER-URL.onrender.com/api/health`
-4. Monitoring Interval: 5 minutes
-5. This keeps the Render service alive (free tier sleeps after inactivity)
+To prevent Render's free tier from sleeping after 15 minutes of inactivity:
+
+### Option A: GitHub Actions (Recommended — 100% Automated, Never Pauses)
+The repository includes `.github/workflows/keepalive.yml` which automatically pings `/api/health` every 10 minutes from GitHub.
+- Works out of the box as soon as the repo is pushed to GitHub.
+- Requires zero manual login renewals or maintenance.
+
+### Option B: cron-job.org (Alternative Free Option)
+1. Go to [cron-job.org](https://cron-job.org) (Free account, never expires/pauses).
+2. Create Cronjob → Target URL: `https://YOUR-RENDER-URL.onrender.com/api/health`.
+3. Set execution schedule to **Every 10 Minutes**.
 
 ---
 
